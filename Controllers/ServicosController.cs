@@ -23,6 +23,22 @@ namespace AgoraHora.Api.Controllers
             return Ok(new { message = "Serviços listados com sucesso.", data = lista });
         }
 
+        [HttpGet("{estabelecimentoId:int}")]
+        public async Task<IActionResult> Listar(int estabelecimentoId, [FromQuery] int page = 1, [FromQuery] int pageSize = 20)
+        {
+            page = page < 1 ? 1 : page;
+            pageSize = pageSize is < 1 or > 100 ? 20 : pageSize;
+
+            var query = _db.Servicos.AsNoTracking()
+                .Where(s => s.EstabelecimentoId == estabelecimentoId && s.Ativo)
+                .OrderBy(s => s.Nome);
+
+            var total = await query.CountAsync();
+            var dados = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+
+            return Ok(new { message = "Serviços listados.", page, pageSize, total, data = dados });
+        }
+
         [HttpGet("id/{id:int}")]
         public async Task<IActionResult> Obter(int id)
         {

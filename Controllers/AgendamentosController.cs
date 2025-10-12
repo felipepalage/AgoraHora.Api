@@ -23,7 +23,6 @@ public class AgendamentosController : ControllerBase
                 .FirstOrDefaultAsync(s => s.Id == dto.ServicoId && s.Ativo);
             if (serv is null) return BadRequest(new { message = "Serviço inválido." });
 
-            // valida existência básica
             if (!await _db.Profissionais.AnyAsync(p => p.Id == dto.ProfissionalId && p.EstabelecimentoId == dto.EstabelecimentoId && p.Ativo))
                 return BadRequest(new { message = "Profissional inválido." });
             if (!await _db.Clientes.AnyAsync(c => c.Id == dto.ClienteId && c.EstabelecimentoId == dto.EstabelecimentoId))
