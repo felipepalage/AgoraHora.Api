@@ -47,6 +47,27 @@ namespace AgoraHora.Api.Migrations
                     table.PrimaryKey("PK_TB_CLIENTE", x => x.Id);
                 });
 
+               migrationBuilder.CreateTable(
+                name: "TB_ESTABELECIMENTO",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nome = table.Column<string>(maxLength: 200, nullable: false),
+                    Endereco = table.Column<string>(maxLength: 300, nullable: true),
+                    ImagemUrl = table.Column<string>(maxLength: 300, nullable: true),
+                    AvaliacaoMedia = table.Column<decimal>(type: "decimal(4,2)", nullable: false),
+                    AbreMin = table.Column<int>(nullable: false),
+                    FechaMin = table.Column<int>(nullable: false),
+                    Ativo = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TB_ESTABELECIMENTO", x => x.Id);
+                });
+
+
+
             migrationBuilder.CreateTable(
                 name: "TB_ESTABELECIMENTO",
                 columns: table => new
@@ -131,6 +152,10 @@ namespace AgoraHora.Api.Migrations
 
             migrationBuilder.DropTable(
                 name: "TB_SERVICO");
+
+            migrationBuilder.DropTable(
+              name: "TB_CONFIGURACAO");
+
         }
     }
 }

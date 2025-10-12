@@ -8,6 +8,7 @@ namespace AgoraHora.Api.Data;
 public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> o) : base(o) { }
+    public DbSet<Configuracao> Configuracoes { get; set; }
 
     public DbSet<Estabelecimento> Estabelecimentos => Set<Estabelecimento>();
     public DbSet<Cliente> Clientes => Set<Cliente>();
@@ -31,5 +32,10 @@ public class AppDbContext : DbContext
         b.Entity<Agendamento>().ToTable("TB_AGENDAMENTO");
         b.Entity<Agendamento>().Property(x => x.Status).HasConversion<int>();
         b.Entity<Agendamento>().HasIndex(x => new { x.ProfissionalId, x.DtInicio, x.DtFim });
+
+        b.Entity<Configuracao>().ToTable("TB_CONFIGURACAO");
+
+
+
     }
 }

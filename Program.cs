@@ -37,10 +37,9 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.UseDefaultFiles();   
-app.UseStaticFiles();    
-
 app.UseCors(Cors);
+app.UseStaticFiles();         
+app.MapControllers().RequireCors(Cors);
 
 // Health
 app.MapGet("/health", () => Results.Ok(new { ok = true }));

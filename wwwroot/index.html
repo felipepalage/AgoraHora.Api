@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard - AgoraHora</title>
+  <style>
+    :root{ --brand-navy:#0f2b5c; --brand-teal:#19b7a6; --brand-teal-hover:#139987; --bg:#f5f7fa; --card:#fff; --muted:#8a94a6; --radius:16px }
+    *{box-sizing:border-box}
+    body{margin:0; background:var(--bg); color:#1c2430; font:500 15px/1.45 Inter, system-ui, Segoe UI, Roboto, Arial, sans-serif;}
+    header{background:#fff; border-bottom:1px solid #e9eef5; position:sticky; top:0; z-index:10}
+    .top{max-width:1200px; margin:auto; padding:14px 20px; display:flex; align-items:center; gap:14px; justify-content:space-between}
+    .brand{display:flex; align-items:center; gap:10px}
+    .brand svg{width:34px; height:34px}
+    .brand .name{font-weight:800; font-size:20px; color:var(--brand-navy)}
+    .user{display:flex; align-items:center; gap:12px; color:var(--muted)}
+    .btn{padding:10px 14px; border:none; border-radius:10px; background:var(--brand-teal); color:#fff; font-weight:700; cursor:pointer}
+    .btn:hover{background:var(--brand-teal-hover)}
+    .container{max-width:1200px; margin:24px auto; padding:0 20px}
+    .grid{display:grid; gap:16px}
+    @media(min-width:900px){ .grid-3{grid-template-columns:repeat(3,1fr)} .grid-2{grid-template-columns:2fr 3fr}}
+    .card{background:var(--card); border-radius:20px; padding:20px; box-shadow:0 16px 40px rgba(15,43,92,.06), 0 4px 12px rgba(15,43,92,.05)}
+    .kpi{display:flex; align-items:center; justify-content:space-between}
+    .kpi h3{margin:0; font-size:14px; color:var(--muted)}
+    .kpi strong{font-size:30px; color:var(--brand-navy)}
+    .actions{display:grid; gap:10px; grid-template-columns:repeat(2,1fr)}
+    .action{border:1px solid #e6ecf5; border-radius:14px; padding:14px; background:#fff; text-decoration:none; color:#0b1324; font-weight:700; text-align:center}
+    .action:hover{border-color:#cbd6e6}
+    table{width:100%; border-collapse:collapse}
+    th,td{padding:12px 10px; border-bottom:1px solid #eef2f7; text-align:left}
+    th{color:#30405a; font-size:13px}
+    .empty{color:var(--muted); padding:6px 0}
+    .badge{display:inline-block; padding:4px 8px; border-radius:10px; font-size:12px; background:#eefaf8; color:#0d6e64}
+    .searchbar{display:flex; gap:10px; margin-bottom:12px}
+    input, select{width:100%; padding:10px 12px; border:1px solid #e3e8ef; border-radius:10px; outline:none}
+    input:focus, select:focus{box-shadow:0 0 0 4px rgba(25,183,166,.12)}
+    .error{margin-top:10px; color:#c62828; font-weight:700; display:none}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="top">
+      <div class="brand" aria-label="AgoraHora">
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+          <circle cx="32" cy="32" r="28" fill="none" stroke="#19b7a6" stroke-width="6"/>
+          <path d="M20 33.5l7 7 17-17" fill="none" stroke="#19b7a6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="name">AgoraHora</div>
+      </div>
+      <div class="user">
+        <span id="usuario-nome">Bem-vindo!</span>
+        <button class="btn" id="logout">Voltar</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="grid grid-3">
+      <div class="card kpi"><h3>Agendados (hoje)</h3><strong id="kpi-hoje">–</strong></div>
+      <div class="card kpi"><h3>Atendidos</h3><strong id="kpi-atendidos">–</strong></div>
+      <div class="card kpi"><h3>Cancelados</h3><strong id="kpi-cancelados">–</strong></div>
+    </section>
+
+    <section class="grid grid-2" style="margin-top:16px">
+      <div class="card">
+        <h2 style="margin:0 0 12px;color:var(--brand-navy)">Acesso rápido</h2>
+        <div class="actions">
+          <a class="action" href="agendamentos.html">Agendamentos</a>
+          <a class="action" href="servicos.html">Serviços</a>
+          <a class="action" href="profissionais.html">Profissionais</a>
+          <a class="action" href="configuracoes.html">Configurações</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="searchbar">
+          <input id="filtro-data" type="date"/>
+          <select id="filtro-status">
+            <option value="">Todos os status</option>
+            <option value="PENDENTE">Pendente</option>
+            <option value="CONFIRMADO">Confirmado</option>
+            <option value="ATENDIDO">Atendido</option>
+            <option value="CANCELADO">Cancelado</option>
+          </select>
+          <button class="btn" id="btn-filtrar">Filtrar</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Cliente</th><th>Serviço</th><th>Profissional</th><th>Data</th><th>Status</th></tr></thead>
+            <tbody id="tbody-agendamentos"><tr><td class="empty" colspan="5">Carregando…</td></tr></tbody>
+          </table>
+        </div>
+        <div id="erro" class="error">Não foi possível carregar os agendamentos.</div>
+      </div>
+    </section>
+  </main>
+
+ <script>
+  const API_BASE = "http://localhost:7050/api";
+  const PROFISSIONAL_ID = 1; // ajuste se precisar
+
+  const fmt = d => new Date(d).toLocaleString('pt-BR',
+                    {hour:'2-digit',minute:'2-digit',day:'2-digit',month:'2-digit'});
+
+  const kHoje = document.getElementById('kpi-hoje');
+  const kAtendidos = document.getElementById('kpi-atendidos');
+  const kCancelados = document.getElementById('kpi-cancelados');
+  const tbody = document.getElementById('tbody-agendamentos');
+  const erro = document.getElementById('erro');
+  const filtroData = document.getElementById('filtro-data');
+  const filtroStatus = document.getElementById('filtro-status');
+
+  const todayISO = new Date().toISOString().slice(0,10);
+  filtroData.value = todayISO;
+
+  document.getElementById('logout').onclick = () => { location.href = 'index.html'; };
+  document.getElementById('btn-filtrar').onclick = carregar;
+
+  async function getJSON(url){
+    const r = await fetch(url);
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    return r.json();
+  }
+
+  async function carregar(){
+    erro.style.display='none';
+    tbody.innerHTML = `<tr><td class="empty" colspan="5">Carregando…</td></tr>`;
+
+    const dia = filtroData.value || todayISO;
+    const ini = `${dia}T00:00:00`;
+    const fim = `${dia}T23:59:59`;
+
+    const url = `${API_BASE}/agendamentos/profissional?profissionalId=${PROFISSIONAL_ID}&ini=${encodeURIComponent(ini)}&fim=${encodeURIComponent(fim)}`;
+
+    try{
+      const resp = await getJSON(url);
+      const dados = Array.isArray(resp) ? resp : (resp.data ?? []);
+      const statusFiltro = filtroStatus.value;
+      const lista = statusFiltro ? dados.filter(a => (a.status || '').toUpperCase() === statusFiltro.toUpperCase()) : dados;
+      renderTabela(lista);
+      renderKPIs(dados);
+    }catch(e){
+      console.error(e);
+      erro.style.display='block';
+      tbody.innerHTML = `<tr><td class="empty" colspan="5">Sem dados.</td></tr>`;
+      kHoje.textContent = kAtendidos.textContent = kCancelados.textContent = '–';
+    }
+  }
+
+  function renderTabela(lista){
+    if(!lista.length){
+      tbody.innerHTML = `<tr><td class="empty" colspan="5">Nenhum agendamento.</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = lista.slice(0,8).map(a=>{
+      return `<tr>
+        <td>${a.cliente ?? '—'}</td>
+        <td>${a.servico ?? '—'}</td>
+        <td>${a.profissional ?? '—'}</td>
+        <td>${fmt(a.dtInicio)}</td>
+        <td><span class="badge">${a.status ?? 'Pendente'}</span></td>
+      </tr>`;
+    }).join('');
+  }
+
+  function renderKPIs(hoje){
+    const atendidos = hoje.filter(a => (a.status||'').toUpperCase()==='CONCLUIDO').length;
+    const cancelados = hoje.filter(a => (a.status||'').toUpperCase()==='CANCELADO').length;
+    kHoje.textContent = hoje.length;
+    kAtendidos.textContent = atendidos;
+    kCancelados.textContent = cancelados;
+  }
+
+  const nome = localStorage.getItem('ah_user_name');
+  if(nome) document.getElementById('usuario-nome').textContent = `Olá, ${nome}!`;
+
+  carregar();
+</script>
+
+</body>
+</html>

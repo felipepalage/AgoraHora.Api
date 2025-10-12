@@ -11,22 +11,15 @@ public class ServicosController : ControllerBase
 {
     private readonly AppDbContext _db;
     public ServicosController(AppDbContext db) => _db = db;
-
-    // GET /api/servicos/por-estabelecimento/1?page=1&pageSize=20
-    [HttpGet("por-estabelecimento/{estabelecimentoId:int}")]
-    public async Task<IActionResult> Listar(int estabelecimentoId, [FromQuery] int page = 1, [FromQuery] int pageSize = 20)
+    [HttpGet("{estabelecimentoId:int}")]
+    public async Task<IActionResult> Listar(int estabelecimentoId)
     {
-        page = page < 1 ? 1 : page;
-        pageSize = pageSize is < 1 or > 100 ? 20 : pageSize;
-
-        var q = _db.Servicos.AsNoTracking()
+        var dados = await _db.Servicos.AsNoTracking()
             .Where(s => s.EstabelecimentoId == estabelecimentoId && s.Ativo)
-            .OrderBy(s => s.Nome);
-
-        var total = await q.CountAsync();
-        var dados = await q.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
-
-        return Ok(new { message = "Serviços listados.", page, pageSize, total, data = dados });
+            .OrderBy(s => s.Nome)
+            .Select(s => new { id = s.Id, nome = s.Nome, preco = s.Preco, duracao = s.DuracaoMin })
+            .ToListAsync();
+        return Ok(new { data = dados });
     }
 
     // GET /api/servicos/id/10

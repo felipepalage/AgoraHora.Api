@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Configurações - AgoraHora</title>
+<style>
+  :root{--brand-navy:#0f2b5c;--brand-teal:#19b7a6;--brand-teal-hover:#139987;--bg:#f5f7fa;--card:#fff;--muted:#8a94a6}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:#1c2430;font:500 15px/1.45 Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif}
+  header{background:#fff;border-bottom:1px solid #e9eef5;position:sticky;top:0;z-index:10}
+  .top{max-width:1200px;margin:auto;padding:14px 20px;display:flex;align-items:center;gap:14px;justify-content:space-between}
+  .brand{display:flex;align-items:center;gap:10px}.brand svg{width:34px;height:34px}.brand .name{font-weight:800;font-size:20px;color:var(--brand-navy)}
+  .btn{padding:10px 14px;border:none;border-radius:10px;background:var(--brand-teal);color:#fff;font-weight:700;cursor:pointer}
+  .btn:hover{background:var(--brand-teal-hover)}
+  .container{max-width:800px;margin:24px auto;padding:0 20px}
+  .card{background:var(--card);border-radius:20px;padding:20px;box-shadow:0 16px 40px rgba(15,43,92,.06),0 4px 12px rgba(15,43,92,.05)}
+  label{display:block;margin:8px 0 6px;color:var(--brand-navy);font-weight:700}
+  input,textarea{width:100%;padding:10px 12px;border:1px solid #e3e8ef;border-radius:10px;outline:none}
+  textarea{min-height:90px;resize:vertical}
+  input:focus,textarea:focus{box-shadow:0 0 0 4px rgba(25,183,166,.12)}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:700px){.row{grid-template-columns:1fr}}
+  .muted{color:var(--muted)}
+</style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <div class="brand" aria-label="AgoraHora">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="28" fill="none" stroke="#19b7a6" stroke-width="6"/><path d="M20 33.5l7 7 17-17" fill="none" stroke="#19b7a6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="name">AgoraHora</div>
+    </div>
+    <button class="btn" id="logout">Voltar</button>
+  </div>
+</header>
+
+<main class="container">
+  <div class="card">
+    <h2 style="margin-top:0;color:var(--brand-navy)">Dados do Estabelecimento</h2>
+    <div class="row">
+      <div>
+        <label for="nome">Nome</label>
+        <input id="nome" placeholder="Ex.: Barbearia Estilo">
+      </div>
+      <div>
+        <label for="telefone">Telefone/WhatsApp</label>
+        <input id="telefone" placeholder="(11) 99999-9999">
+      </div>
+    </div>
+    <label for="endereco">Endereço</label>
+    <input id="endereco" placeholder="Rua, número, bairro, cidade">
+    <label for="horarios">Horários (descrição)</label>
+    <textarea id="horarios" placeholder="Seg-Sex 09:00-19:00, Sáb 09:00-14:00"></textarea>
+    <label for="descricao">Descrição</label>
+    <textarea id="descricao" placeholder="Fale um pouco sobre a barbearia"></textarea>
+    <button class="btn" id="btn-salvar" style="margin-top:10px">Salvar</button>
+    <div id="ok" class="muted" style="display:none;margin-top:8px">Configurações salvas!</div>
+  </div>
+</main>
+
+<script>
+  // ===== CONFIG =====
+  const API_BASE = "http://localhost:7050/api";
+  const estabId = Number(new URLSearchParams(location.search).get("estab") || 1);
+
+  // UI
+  document.getElementById("logout").onclick = () => { location.href = "index.html"; };
+  const $ = (id)=>document.getElementById(id);
+  const ok = $("ok");
+
+  // ===== LOAD (GET) =====
+  async function load() {
+    // Nome do estabelecimento: só leitura (evita PUT parcial com [Required] no backend)
+    try {
+      const rEst = await fetch(`${API_BASE}/estabelecimentos/id/${estabId}`);
+      if (rEst.ok) {
+        const je = await rEst.json();
+        $("nome").value = je?.data?.nome ?? "";
+      }
+    } catch {}
+
+    // Configuração: telefone/endereco/horarios/descricao
+    try {
+      const rCfg = await fetch(`${API_BASE}/configuracao/${estabId}`);
+      if (rCfg.ok) {
+        const jc = await rCfg.json();
+        const c = jc?.data || {};
+        $("telefone").value = c.telefone || "";
+        $("endereco").value = c.endereco || "";
+        $("horarios").value = c.horarios || "";
+        $("descricao").value = c.descricao || "";
+      }
+    } catch {}
+  }
+
+  // ===== SAVE (PUT) =====
+  $("btn-salvar").onclick = async () => {
+    const body = {
+      telefone: $("telefone").value.trim(),
+      endereco: $("endereco").value.trim(),
+      horarios: $("horarios").value.trim(),
+      descricao: $("descricao").value.trim()
+    };
+
+    try {
+      const r = await fetch(`${API_BASE}/configuracao/${estabId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      ok.style.display = "block";
+      setTimeout(() => ok.style.display = "none", 1500);
+    } catch (e) {
+      console.error(e);
+      alert("Falha ao salvar configurações.");
+    }
+  };
+
+  load();
+</script>
+
+</body>
+</html>

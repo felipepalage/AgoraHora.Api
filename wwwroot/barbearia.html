@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detalhes da Barbearia - AgoraHora</title>
+    <style>
+        :root {
+            --brand-navy: #0f2b5c;
+            --brand-teal: #19b7a6;
+            --brand-teal-hover: #139987;
+            --bg: #f5f7fa;
+            --card: #fff;
+            --muted: #8a94a6
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: #1c2430;
+            font: 500 15px/1.5 Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif
+        }
+
+        header {
+            background: #fff;
+            border-bottom: 1px solid #e9eef5;
+            position: sticky;
+            top: 0;
+            z-index: 10
+        }
+
+        .top {
+            max-width: 1200px;
+            margin: auto;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            justify-content: space-between
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+            .brand svg {
+                width: 34px;
+                height: 34px
+            }
+
+            .brand .name {
+                font-weight: 800;
+                font-size: 20px;
+                color: var(--brand-navy)
+            }
+
+        .btn {
+            padding: 10px 14px;
+            border: none;
+            border-radius: 12px;
+            background: var(--brand-teal);
+            color: #fff;
+            font-weight: 800;
+            cursor: pointer;
+            text-decoration: none
+        }
+
+            .btn:hover {
+                background: var(--brand-teal-hover)
+            }
+
+        .btn-ghost {
+            background: #e7f7f5;
+            color: #0f6d64
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px
+        }
+
+        .hero-card {
+            display: grid;
+            gap: 16px;
+            grid-template-columns: 1fr;
+            background: var(--card);
+            border-radius: 20px;
+            padding: 16px;
+            border: 1px solid #eff4fb;
+            box-shadow: 0 12px 30px rgba(15,43,92,.07),0 4px 12px rgba(15,43,92,.05)
+        }
+
+        .cover {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 14px
+        }
+
+        .shop-head {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            flex-wrap: wrap
+        }
+
+        .shop-title {
+            margin: 0;
+            color: var(--brand-navy)
+        }
+
+        .muted {
+            color: var(--muted)
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            background: #e0f8f5;
+            color: #0d6e64
+        }
+
+            .badge.off {
+                background: #ffeaea;
+                color: #c62828
+            }
+
+        .rating {
+            color: #ffb400;
+            font-weight: 800
+        }
+
+        @media(min-width:900px) {
+            .hero-card {
+                grid-template-columns: 320px 1fr
+            }
+
+            .cover {
+                height: 100%
+            }
+        }
+
+        .grid {
+            display: grid;
+            gap: 16px
+        }
+
+        @media(min-width:900px) {
+            .grid-2 {
+                grid-template-columns: 2fr 3fr
+            }
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 16px;
+            border: 1px solid #eff4fb;
+            box-shadow: 0 12px 30px rgba(15,43,92,.07),0 4px 12px rgba(15,43,92,.05)
+        }
+
+        h3 {
+            margin: 0 0 10px;
+            color: var(--brand-navy)
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 6px;
+            font-weight: 800;
+            color: var(--brand-navy)
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e3e8ef;
+            border-radius: 12px;
+            outline: none
+        }
+
+            input:focus, select:focus {
+                box-shadow: 0 0 0 4px rgba(25,183,166,.12)
+            }
+
+        .servico-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            border: 1px solid #e9eef5;
+            border-radius: 12px;
+            margin: 8px 0
+        }
+
+        .srv-meta {
+            color: #425168;
+            font-size: 13px
+        }
+
+        .legend {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            font-size: 13px;
+            color: #425168
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%
+        }
+
+            .dot.free {
+                background: #19b7a6
+            }
+
+            .dot.busy {
+                background: #e35151
+            }
+
+            .dot.past {
+                background: #c7cedb
+            }
+
+        .slots {
+            display: grid;
+            gap: 8px;
+            grid-template-columns: repeat(auto-fit,minmax(90px,1fr));
+            margin-top: 12px
+        }
+
+        .slot {
+            padding: 10px 8px;
+            border: 1px solid #e3e8ef;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            background: #fff;
+            font-weight: 800;
+            transition: transform .06s ease,background .15s ease,border .15s ease
+        }
+
+            .slot:hover {
+                border-color: #cfe3df
+            }
+
+            .slot.selected {
+                background: #19b7a6;
+                color: #fff;
+                border-color: #19b7a6
+            }
+
+            .slot.busy {
+                background: #ffecec;
+                color: #c62828;
+                border-color: #ffd4d4;
+                cursor: not-allowed
+            }
+
+            .slot.past {
+                background: #f3f6fb;
+                color: #9aa6b2;
+                cursor: not-allowed
+            }
+
+        .summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 12px
+        }
+
+        .pill {
+            background: #e7f7f5;
+            color: #0f6d64;
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-weight: 800
+        }
+
+        .error {
+            margin-top: 8px;
+            color: #c62828;
+            font-weight: 800;
+            display: none
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="top">
+            <div class="brand" aria-label="AgoraHora">
+                <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="28" fill="none" stroke="#19b7a6" stroke-width="6" /><path d="M20 33.5l7 7 17-17" fill="none" stroke="#19b7a6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                <div class="name">AgoraHora</div>
+            </div>
+            <a class="btn btn-ghost" href="home-cliente.html">Voltar</a>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="hero-card">
+            <img id="cover" class="cover" src="img/barbearia1.jpg" alt="Foto da barbearia">
+            <div>
+                <div class="shop-head">
+                    <div>
+                        <h2 id="shop-name" class="shop-title">Barbearia</h2>
+                        <div class="muted" id="shop-address">Endereço</div>
+                        <div class="muted">Avaliação: <span class="rating" id="shop-rating">⭐ 4.8</span></div>
+                    </div>
+                    <div style="margin-left:auto"><span id="shop-open" class="badge">Aberta agora</span></div>
+                </div>
+                <p class="muted" style="margin:10px 0 0">Escolha um serviço, um profissional, selecione a data e confirme seu horário.</p>
+            </div>
+        </section>
+
+        <section class="grid grid-2" style="margin-top:16px">
+            <div class="card">
+                <h3>Serviços</h3>
+                <div id="lista-servicos"></div>
+            </div>
+
+            <div class="card">
+                <h3>Agendar</h3>
+                <label for="prof">Profissional</label>
+                <select id="prof"></select>
+
+                <label for="data">Data</label>
+                <input type="date" id="data" />
+
+                <div class="legend" style="margin-top:6px">
+                    <span class="legend"><span class="dot free"></span>Disponível</span>
+                    <span class="legend"><span class="dot busy"></span>Indisponível</span>
+                    <span class="legend"><span class="dot past"></span>Passado</span>
+                </div>
+
+                <div id="slots" class="slots" style="margin-top:10px"></div>
+
+                <div class="summary">
+                    <span id="sum-servico" class="pill">Serviço: —</span>
+                    <span id="sum-prof" class="pill">Prof.: —</span>
+                    <span id="sum-data" class="pill">Data: —</span>
+                    <span id="sum-hora" class="pill">Hora: —</span>
+                </div>
+
+                <div id="erro" class="error">Selecione serviço, profissional, data e horário.</div>
+
+                <div style="margin-top:10px;display:flex;gap:10px;justify-content:flex-end">
+                    <button class="btn btn-ghost" onclick="limparSelecao()">Limpar</button>
+                    <button class="btn" onclick="confirmar()">Confirmar Agendamento</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // ===== CONFIG =====
+        const API = 'http://localhost:7050/api';
+        const estabelecimentoId = Number(new URLSearchParams(location.search).get('id') || 1);
+        const clienteId = 2; // ajuste após login
+
+        // ===== HELPERS =====
+        const $ = s => document.querySelector(s);
+        const $$ = s => document.querySelectorAll(s);
+        const fmtBR = d => new Date(d).toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit' });
+        const toHM = d => `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+        const overlapHM = (aI, aF, bI, bF) => aI < bF && bI < aF;
+
+        // ===== LOADERS =====
+        async function loadServicos() {
+            const r = await fetch(`${API}/servicos/${estabelecimentoId}`);
+            const j = await r.json(); return j.data ?? [];
+        }
+        async function loadProfissionais() {
+            const r = await fetch(`${API}/profissionais/${estabelecimentoId}`);
+            const j = await r.json(); return j.data ?? j;
+        }
+        async function loadAgendamentosDia(profId, dataISO) {
+            const ini = `${dataISO}T00:00:00`, fim = `${dataISO}T23:59:59`;
+            const r = await fetch(`${API}/agendamentos/profissional?profissionalId=${profId}&ini=${encodeURIComponent(ini)}&fim=${encodeURIComponent(fim)}`);
+            const j = await r.json();
+            return (j.data ?? []).map(a => ({ dtInicio: new Date(a.dtInicio), dtFim: new Date(a.dtFim), status: a.status }));
+        }
+
+        // ===== HERO MOCK (opcional) =====
+        (function hero() {
+            $('#shop-name').textContent = `Estabelecimento #${estabelecimentoId}`;
+            $('#shop-address').textContent = '—';
+            $('#shop-open').textContent = 'Aberta agora';
+        })();
+
+        // ===== UI STATE =====
+        const listaServ = $('#lista-servicos');
+        const selProf = $('#prof');
+        const inputData = $('#data');
+        const slotsEl = $('#slots');
+
+        let servicos = [];
+        let servicoSelecionado = null;
+        let slotSelecionado = null;
+
+        function atualizarResumo(hora = '') {
+            $('#sum-servico').textContent = `Serviço: ${servicoSelecionado ? servicoSelecionado.nome : '—'}`;
+            const profNome = selProf.options[selProf.selectedIndex]?.textContent || '—';
+            $('#sum-prof').textContent = `Prof.: ${profNome}`;
+            $('#sum-data').textContent = `Data: ${fmtBR(inputData.value || new Date().toISOString().slice(0, 10))}`;
+            $('#sum-hora').textContent = `Hora: ${hora || '—'}`;
+        }
+
+        async function gerarSlots() {
+            slotsEl.innerHTML = ''; slotSelecionado = null; atualizarResumo('');
+            if (!selProf.value) return;
+            const dur = servicoSelecionado?.duracao ?? 30;
+            const profId = Number(selProf.value);
+            const dataISO = inputData.value;
+
+            const ags = await loadAgendamentosDia(profId, dataISO);
+            const busy = ags
+                .filter(a => a.status !== 'Cancelado')
+                .map(a => ({ ini: toHM(a.dtInicio), fim: toHM(a.dtFim) }));
+
+            const start = new Date(`${dataISO}T09:00:00`);
+            const end = new Date(`${dataISO}T18:00:00`);
+            const now = new Date();
+
+            for (let t = new Date(start); t < end; t = new Date(t.getTime() + 15 * 60000)) {
+                const iniHM = toHM(t);
+                const fimHM = toHM(new Date(t.getTime() + dur * 60000));
+                if (new Date(`${dataISO}T${fimHM}:00`) > end) break;
+
+                const isPast = new Date(`${dataISO}T${iniHM}:00`) < now;
+                const isBusy = busy.some(b => overlapHM(iniHM, fimHM, b.ini, b.fim));
+
+                const btn = document.createElement('button');
+                btn.className = 'slot' + (isBusy ? ' busy' : isPast ? ' past' : '');
+                btn.textContent = iniHM;
+                btn.disabled = isBusy || isPast;
+                btn.onclick = () => {
+                    $$('#slots .slot.selected').forEach(s => s.classList.remove('selected'));
+                    btn.classList.add('selected'); slotSelecionado = iniHM;
+                    $('#erro').style.display = 'none'; atualizarResumo(iniHM);
+                };
+                slotsEl.appendChild(btn);
+            }
+        }
+
+        function limparSelecao() {
+            servicoSelecionado = null; slotSelecionado = null;
+            $$('#lista-servicos .servico-item').forEach(i => i.style.borderColor = '#e9eef5');
+            atualizarResumo(''); gerarSlots();
+        }
+        window.limparSelecao = limparSelecao;
+
+        async function confirmar() {
+            const erro = $('#erro');
+            if (!servicoSelecionado || !selProf.value || !inputData.value || !slotSelecionado) {
+                erro.style.display = 'block'; return;
+            }
+            const payload = {
+                estabelecimentoId,
+                clienteId,
+                profissionalId: Number(selProf.value),
+                servicoId: servicoSelecionado.id,
+                dtInicio: `${inputData.value}T${slotSelecionado}:00`
+            };
+            try {
+                const r = await fetch(`${API}/agendamentos`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const j = await r.json().catch(() => ({}));
+                if (!r.ok) throw new Error(j.message || `HTTP ${r.status}`);
+                alert('Agendamento criado com sucesso.');
+                gerarSlots();
+            } catch (e) {
+                erro.textContent = `Falha ao agendar: ${e.message}`;
+                erro.style.display = 'block';
+            }
+        }
+        window.confirmar = confirmar;
+
+        // ===== INIT =====
+        (async function init() {
+            const hojeISO = new Date().toISOString().slice(0, 10);
+            inputData.value = hojeISO; inputData.min = hojeISO;
+
+            // serviços
+            servicos = await loadServicos();
+            listaServ.innerHTML = '';
+            servicos.forEach(s => {
+                const el = document.createElement('div'); el.className = 'servico-item';
+                el.innerHTML = `
+            <div>
+              <div style="font-weight:800;color:#0f2b5c">${s.nome}</div>
+              <div class="srv-meta">R$ ${Number(s.preco).toFixed(2).replace('.', ',')} • ${s.duracao} min</div>
+            </div>
+            <button class="btn btn-ghost">Escolher</button>`;
+                el.querySelector('button').onclick = () => {
+                    servicoSelecionado = s;
+                    $$('#lista-servicos .servico-item').forEach(i => i.style.borderColor = '#e9eef5');
+                    el.style.borderColor = '#19b7a6'; atualizarResumo(); gerarSlots();
+                };
+                listaServ.appendChild(el);
+            });
+
+            // profissionais
+            const profs = await loadProfissionais();
+            selProf.innerHTML = '';
+            (profs || []).forEach(p => {
+                const o = document.createElement('option'); o.value = p.id; o.textContent = p.nome; selProf.appendChild(o);
+            });
+
+            selProf.addEventListener('change', gerarSlots);
+            inputData.addEventListener('change', gerarSlots);
+
+            atualizarResumo(); gerarSlots();
+        })();
+    </script>
+</body>
+</html>
