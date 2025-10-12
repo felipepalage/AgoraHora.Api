@@ -36,6 +36,25 @@ public class Profissional
     [Required] public string Nome { get; set; } = null!;
     public bool Ativo { get; set; } = true;
 }
+public class Usuario
+{
+    public int Id { get; set; }
+    public string Email { get; set; } = null!;
+    public string Nome { get; set; } = null!;
+    public string SenhaHash { get; set; } = null!;
+    public bool Ativo { get; set; } = true;
+    public ICollection<UsuarioEstabelecimento> Estabelecimentos { get; set; } = new List<UsuarioEstabelecimento>();
+}
+
+public class UsuarioEstabelecimento
+{
+    public int UsuarioId { get; set; }
+    public Usuario Usuario { get; set; } = null!;
+    public int EstabelecimentoId { get; set; }
+    public Estabelecimento Estabelecimento { get; set; } = null!;
+    public string Papel { get; set; } = "owner";
+}
+
 
 public class Servico
 {
