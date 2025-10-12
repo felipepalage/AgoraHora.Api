@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - AgoraHora</title>
+  <style>
+    :root{ --brand-navy:#0f2b5c; --brand-teal:#19b7a6; --brand-teal-hover:#139987; --bg:#f5f7fa; --card:#ffffff; --danger:#c62828; }
+    *{box-sizing:border-box}
+    body{ margin:0; background:var(--bg); color:#1c2430; font:500 16px/1.4 Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; min-height:100dvh; display:grid; place-items:center; }
+    .card{ width:100%; max-width:420px; background:var(--card); border-radius:24px; padding:36px 28px; box-shadow:0 20px 50px rgba(15,43,92,.08),0 6px 16px rgba(15,43,92,.06) }
+    .brand{ display:flex; align-items:center; gap:12px; justify-content:center; margin-bottom:10px }
+    .brand svg{ width:44px; height:44px }
+    .brand .name{ font-weight:800; font-size:30px; letter-spacing:.2px; color:var(--brand-navy) }
+    h1{ margin:8px 0 18px; text-align:center; font-size:28px; color:var(--brand-navy) }
+    label{ display:block; font-size:14px; color:var(--brand-navy); margin:10px 0 6px }
+    .input{ width:100%; padding:12px 14px; border:1px solid #e3e8ef; border-radius:10px; background:#fff; color:#0b1324 }
+    .input:focus{ border-color:#c7d2e5; box-shadow:0 0 0 4px rgba(25,183,166,.12); outline:0 }
+    .btn{ width:100%; margin-top:16px; border:0; border-radius:12px; padding:14px 16px; font-weight:700; color:#fff; background:var(--brand-teal); cursor:pointer }
+    .btn:hover{ background:var(--brand-teal-hover) }
+    .error{ margin-top:14px; text-align:center; color:var(--danger); font-weight:700; display:none }
+    .overlay{ position:fixed; inset:0; background:rgba(0,0,0,.35); display:none; align-items:center; justify-content:center; }
+    .modal{ width:min(92vw,420px); background:#fff; border-radius:20px; padding:22px; box-shadow:0 10px 30px rgba(0,0,0,.2) }
+    .modal h2{ margin:0 0 10px; color:var(--brand-navy); font-size:22px }
+    .list{ margin:12px 0 0; display:grid; gap:10px }
+    .opt{ width:100%; text-align:left; padding:12px 14px; border-radius:12px; border:1px solid #e3e8ef; background:#fff; cursor:pointer }
+    .opt:hover{ box-shadow:0 0 0 4px rgba(25,183,166,.12) }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="brand" aria-label="AgoraHora">
+      <svg viewBox="0 0 64 64" aria-hidden="true">
+        <circle cx="32" cy="32" r="28" fill="none" stroke="#19b7a6" stroke-width="6"/>
+        <path d="M20 33.5l7 7 17-17" fill="none" stroke="#19b7a6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="name">AgoraHora</div>
+    </div>
+
+    <h1>Login</h1>
+
+    <form id="form-login" novalidate>
+      <label for="email">E-mail</label>
+      <input id="email" name="email" type="email" class="input" placeholder="E-mail" autocomplete="username" required />
+      <label for="senha">Senha</label>
+      <input id="senha" name="senha" type="password" class="input" placeholder="Senha" autocomplete="current-password" required minlength="3"/>
+      <button class="btn" type="submit">Entrar</button>
+      <div id="erro" class="error">Credenciais inválidas.</div>
+    </form>
+  </main>
+
+  <!-- seletor de estabelecimento -->
+  <div id="sel-overlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="sel-title">
+    <div class="modal">
+      <h2 id="sel-title">Escolha o estabelecimento</h2>
+      <div id="sel-list" class="list"></div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = '/api'; // mesma origem
+
+    // já logado
+    (function(){
+      const t = localStorage.getItem('ah_token');
+      const e = localStorage.getItem('ah_estab');
+      if(t && e) location.href = 'index.html';
+    })();
+
+    const form = document.getElementById('form-login');
+    const erro = document.getElementById('erro');
+
+    form.addEventListener('submit', async (e)=>{
+      e.preventDefault(); erro.style.display='none';
+
+      const email = document.getElementById('email').value.trim();
+      const senha = document.getElementById('senha').value;
+
+      if(!email || !senha){ return showError('Informe e-mail e senha.'); }
+
+      try{
+        // 1) login
+        const resp = await fetch(`${API_BASE}/usuarios/login`, {
+          method:'POST',
+          headers:{ 'Content-Type':'application/json' },
+          body: JSON.stringify({ email, senha })
+        });
+
+        if(!resp.ok){ return showError(await safeMsg(resp, 'Credenciais inválidas.')); }
+
+        const { token } = await resp.json();
+        if(!token){ return showError('Token ausente.'); }
+        localStorage.setItem('ah_token', token);
+        localStorage.setItem('ah_user_name', email.split('@')[0] || 'Usuário');
+
+        // 2) estabelecimentos do usuário
+        const me = await fetch(`${API_BASE}/usuarios/me/estabelecimentos`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if(!me.ok){ return showError(await safeMsg(me, 'Falha ao obter estabelecimentos.')); }
+
+        const estabs = await me.json();
+        if(!Array.isArray(estabs) || estabs.length === 0){ return showError('Usuário sem estabelecimento vinculado.'); }
+
+        if(estabs.length === 1){
+          const estabId = estabs[0].estabelecimentoId ?? estabs[0].EstabelecimentoId;
+          localStorage.setItem('ah_estab', String(estabId));
+          return location.href = 'index.html';
+        }
+
+        // 3) escolher quando houver mais de um
+        openEstabSelector(estabs, (chosenId)=>{
+          localStorage.setItem('ah_estab', String(chosenId));
+          location.href = 'index.html';
+        });
+
+      }catch(err){
+        console.error(err);
+        showError('Falha de comunicação com a API.');
+      }
+    });
+
+    function showError(msg){ erro.textContent = msg; erro.style.display = 'block'; }
+
+    async function safeMsg(resp, fallback){
+      try{ const j = await resp.json(); return j?.message || fallback; }
+      catch{ return fallback; }
+    }
+
+    function openEstabSelector(estabs, onChoose){
+      const overlay = document.getElementById('sel-overlay');
+      const list = document.getElementById('sel-list');
+      list.innerHTML = '';
+
+      estabs.forEach(e=>{
+        const id = e.estabelecimentoId ?? e.EstabelecimentoId;
+        const papel = e.papel ?? e.Papel ?? '';
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'opt';
+        btn.textContent = `ID ${id} ${papel ? `• ${papel}` : ''}`;
+        btn.addEventListener('click', ()=>{ overlay.style.display = 'none'; onChoose(id); });
+        list.appendChild(btn);
+      });
+
+      overlay.style.display = 'flex';
+    }
+  </script>
+</body>
+</html>
