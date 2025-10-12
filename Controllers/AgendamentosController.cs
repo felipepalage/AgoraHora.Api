@@ -62,6 +62,74 @@ public class AgendamentosController : ControllerBase
             return StatusCode(500, new { message = "Erro inesperado.", detalhe = ex.Message });
         }
     }
+    [HttpGet("profissional")]
+    public async Task<IActionResult> ListarPorProfissional(
+     [FromQuery] int profissionalId,
+     [FromQuery] DateTime ini,
+     [FromQuery] DateTime fim,
+     [FromQuery] string? status)
+    {
+        if (profissionalId <= 0 || fim <= ini)
+            return BadRequest(new { message = "Parâmetros inválidos." });
+
+        StatusAgendamento? statusEnum = null;
+        if (!string.IsNullOrWhiteSpace(status) &&
+            Enum.TryParse(status, true, out StatusAgendamento st))
+            statusEnum = st;
+
+        var baseQ =
+            from a in _db.Agendamentos.AsNoTracking()
+            where a.ProfissionalId == profissionalId
+               && a.DtInicio < fim
+               && a.DtFim > ini
+            select a;
+
+        if (statusEnum.HasValue)
+            baseQ = baseQ.Where(a => a.Status == statusEnum.Value);
+
+        var lista = await (
+            from a in baseQ
+            join c in _db.Clientes.AsNoTracking() on a.ClienteId equals c.Id
+            join s in _db.Servicos.AsNoTracking() on a.ServicoId equals s.Id
+            join p in _db.Profissionais.AsNoTracking() on a.ProfissionalId equals p.Id
+            select new
+            {
+                a.Id,
+                Cliente = c.Nome,
+                Servico = s.Nome,
+                Profissional = p.Nome,
+                a.DtInicio,
+                a.DtFim,
+                a.Status,
+                a.Observacao
+            })
+            .OrderBy(x => x.DtInicio)
+            .ToListAsync();
+
+        var data = lista.Select(x => new
+        {
+            id = x.Id,
+            cliente = x.Cliente,
+            servico = x.Servico,
+            profissional = x.Profissional,
+            dtInicio = x.DtInicio,
+            dtFim = x.DtFim,
+            status = x.Status switch
+            {
+                StatusAgendamento.Pendente => "Pendente",
+                StatusAgendamento.Confirmado => "Confirmado",
+                StatusAgendamento.Cancelado => "Cancelado",
+                StatusAgendamento.Concluido => "Concluído"
+            },
+            observacao = x.Observacao
+        });
+
+        return Ok(new { message = "Ok", data });
+    }
+
+
+
+
 
     [HttpGet("{id:int}")]
     public async Task<IActionResult> Obter(int id)
