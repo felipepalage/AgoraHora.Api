@@ -3,90 +3,65 @@ using AgoraHora.Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace AgoraHora.Api.Controllers
+namespace AgoraHora.Api.Controllers;
+
+[ApiController]
+[Route("api/servicos")]
+public class ServicosController : ControllerBase
 {
-    [ApiController]
-    [Route("api/servicos")]
-    public class ServicosController : ControllerBase
+    private readonly AppDbContext _db;
+    public ServicosController(AppDbContext db) => _db = db;
+
+    // GET /api/servicos/por-estabelecimento/1?page=1&pageSize=20
+    [HttpGet("por-estabelecimento/{estabelecimentoId:int}")]
+    public async Task<IActionResult> Listar(int estabelecimentoId, [FromQuery] int page = 1, [FromQuery] int pageSize = 20)
     {
-        private readonly AppDbContext _db;
-        public ServicosController(AppDbContext db) => _db = db;
+        page = page < 1 ? 1 : page;
+        pageSize = pageSize is < 1 or > 100 ? 20 : pageSize;
 
-        [HttpGet("{estabelecimentoId:int}")]
-        public async Task<IActionResult> Listar(int estabelecimentoId)
+        var q = _db.Servicos.AsNoTracking()
+            .Where(s => s.EstabelecimentoId == estabelecimentoId && s.Ativo)
+            .OrderBy(s => s.Nome);
+
+        var total = await q.CountAsync();
+        var dados = await q.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+
+        return Ok(new { message = "Serviços listados.", page, pageSize, total, data = dados });
+    }
+
+    // GET /api/servicos/id/10
+    [HttpGet("id/{id:int}")]
+    public async Task<IActionResult> Obter(int id)
+    {
+        var s = await _db.Servicos.FindAsync(id);
+        if (s is null) return NotFound(new { message = "Serviço não encontrado." });
+        return Ok(new { message = "Serviço encontrado.", data = s });
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Criar([FromBody] Servico s)
+    {
+        try
         {
-            var lista = await _db.Servicos.AsNoTracking()
-                .Where(s => s.EstabelecimentoId == estabelecimentoId && s.Ativo)
-                .OrderBy(s => s.Nome)
-                .ToListAsync();
+            s.Nome = s.Nome.Trim();
 
-            return Ok(new { message = "Serviços listados com sucesso.", data = lista });
+            bool existe = await _db.Servicos.AsNoTracking()
+                .AnyAsync(x => x.EstabelecimentoId == s.EstabelecimentoId && x.Nome == s.Nome);
+
+            if (existe) return Conflict(new { message = "Já existe um serviço com esse nome nesse estabelecimento." });
+
+            _db.Servicos.Add(s);
+            await _db.SaveChangesAsync();
+
+            return Ok(new { message = "Serviço criado com sucesso.", data = s });
         }
-
-        [HttpGet("{estabelecimentoId:int}")]
-        public async Task<IActionResult> Listar(int estabelecimentoId, [FromQuery] int page = 1, [FromQuery] int pageSize = 20)
+        catch (DbUpdateException ex)
         {
-            page = page < 1 ? 1 : page;
-            pageSize = pageSize is < 1 or > 100 ? 20 : pageSize;
-
-            var query = _db.Servicos.AsNoTracking()
-                .Where(s => s.EstabelecimentoId == estabelecimentoId && s.Ativo)
-                .OrderBy(s => s.Nome);
-
-            var total = await query.CountAsync();
-            var dados = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
-
-            return Ok(new { message = "Serviços listados.", page, pageSize, total, data = dados });
+            return StatusCode(500, new { message = "Erro ao salvar serviço.", detalhe = ex.InnerException?.Message });
         }
-
-        [HttpGet("id/{id:int}")]
-        public async Task<IActionResult> Obter(int id)
+        catch (Exception ex)
         {
-            var servico = await _db.Servicos.FindAsync(id);
-            if (servico == null)
-                return NotFound(new { message = "Serviço não encontrado." });
-
-            return Ok(new { message = "Serviço encontrado.", data = servico });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Criar([FromBody] Servico s)
-        {
-            try
-            {
-                s.Nome = s.Nome.Trim();
-
-                bool existe = await _db.Servicos.AsNoTracking()
-                    .AnyAsync(x => x.EstabelecimentoId == s.EstabelecimentoId && x.Nome == s.Nome);
-
-                if (existe)
-                    return Conflict(new { message = "Já existe um serviço com esse nome nesse estabelecimento." });
-
-                _db.Servicos.Add(s);
-                await _db.SaveChangesAsync();
-
-                return Ok(new
-                {
-                    message = "Serviço criado com sucesso.",
-                    data = s
-                });
-            }
-            catch (DbUpdateException ex)
-            {
-                return StatusCode(500, new
-                {
-                    message = "Erro ao salvar serviço.",
-                    detalhe = ex.InnerException?.Message
-                });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new
-                {
-                    message = "Erro inesperado.",
-                    detalhe = ex.Message
-                });
-            }
+            return StatusCode(500, new { message = "Erro inesperado.", detalhe = ex.Message });
         }
     }
 }

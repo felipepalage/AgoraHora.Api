@@ -1,10 +1,9 @@
-﻿namespace AgoraHora.Api.Models
+﻿namespace AgoraHora.Api.Models;
+
+public enum StatusAgendamento
 {
-    public enum StatusAgendamento
-    {
-        Pendente = 1,
-        Confirmado = 2,
-        Cancelado = 3,
-        Concluido = 4
-    }
+    Pendente = 1,
+    Confirmado = 2,
+    Cancelado = 3,
+    Concluido = 4
 }
