@@ -55,14 +55,19 @@ namespace AgoraHora.Api.Data
                 .HasForeignKey(x => x.EstabelecimentoId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // ===== PROFISSIONAL
-            b.Entity<Profissional>().ToTable("TB_PROFISSIONAL");
-            b.Entity<Profissional>().HasIndex(x => new { x.EstabelecimentoId, x.Nome });
-            b.Entity<Profissional>()
-                .HasOne<Estabelecimento>()
-                .WithMany()
-                .HasForeignKey(x => x.EstabelecimentoId)
-                .OnDelete(DeleteBehavior.Cascade);
+            b.Entity<Profissional>(e =>
+            {
+                e.ToTable("TB_PROFISSIONAL");
+                e.HasIndex(x => new { x.EstabelecimentoId, x.Nome });
+                e.Property(p => p.Nome).IsRequired();
+                e.Property(p => p.Especialidade).HasMaxLength(200);
+
+                e.HasOne<Estabelecimento>()
+                 .WithMany()
+                 .HasForeignKey(x => x.EstabelecimentoId)
+                 .OnDelete(DeleteBehavior.Cascade);
+            });
+
 
             // ===== SERVICO
             b.Entity<Servico>().ToTable("TB_SERVICO");

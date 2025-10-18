@@ -34,8 +34,10 @@ public class Profissional
     public int Id { get; set; }
     public int EstabelecimentoId { get; set; }
     [Required] public string Nome { get; set; } = null!;
+    public string? Especialidade { get; set; }  
     public bool Ativo { get; set; } = true;
 }
+
 public class Usuario
 {
     public int Id { get; set; }

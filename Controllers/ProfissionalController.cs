@@ -54,11 +54,13 @@ public class ProfissionaisController : ControllerBase
         if (dbP is null) return NotFound(new { message = "Profissional não encontrado." });
 
         dbP.Nome = p.Nome?.Trim() ?? dbP.Nome;
+        dbP.Especialidade = p.Especialidade?.Trim() ?? dbP.Especialidade; // adicione aqui
         dbP.Ativo = p.Ativo;
 
         await _db.SaveChangesAsync();
         return Ok(new { message = "Profissional atualizado.", data = dbP });
     }
+
 
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Remover(int id)

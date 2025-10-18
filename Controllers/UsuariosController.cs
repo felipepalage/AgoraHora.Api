@@ -104,25 +104,23 @@ public class UsuariosController : ControllerBase
             .Include(x => x.Estabelecimentos)
             .FirstOrDefaultAsync(x => x.Email == dto.Email && x.Ativo);
         if (u is null || !BCrypt.Net.BCrypt.Verify(dto.Senha, u.SenhaHash))
-            return Unauthorized();
+            return Unauthorized(new { message = "Usuário ou senha inválidos." });
 
         var estabs = string.Join(",", u.Estabelecimentos.Select(e => e.EstabelecimentoId));
-        var claims = new List<Claim> {
-            new(JwtRegisteredClaimNames.Sub, u.Id.ToString()),
-            new("estabs", estabs)
-        };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_cfg["Jwt:Key"]!));
-        var token = new JwtSecurityToken(
-            claims: claims,
-            expires: DateTime.UtcNow.AddDays(7),
-            signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
-        );
-        return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        var claims = new[] {
+            new Claim(JwtRegisteredClaimNames.Sub, u.Id.ToString()),
+            new Claim("estabs", estabs)
+        };
+        var jwt = new JwtSecurityToken(claims: claims, expires: DateTime.UtcNow.AddDays(7), signingCredentials: creds);
+        return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(jwt) });
     }
 
-    // 4) Meus estabelecimentos
-    [HttpGet("me/estabelecimentos")]
+
+// 4) Meus estabelecimentos
+[HttpGet("me/estabelecimentos")]
     [Authorize]
     public async Task<IActionResult> GetMeEstabelecimentos()
     {
