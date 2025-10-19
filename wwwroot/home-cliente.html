@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Escolha sua Barbearia - AgoraHora</title>
+    <style>
+        :root {
+            --brand-navy: #0f2b5c;
+            --brand-teal: #19b7a6;
+            --brand-teal-hover: #139987;
+            --bg: #f5f7fa;
+            --card: #fff;
+            --muted: #8a94a6
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: #1c2430;
+            font: 500 15px/1.5 Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif
+        }
+
+        header {
+            background: #fff;
+            border-bottom: 1px solid #e9eef5;
+            position: sticky;
+            top: 0;
+            z-index: 10
+        }
+
+        .top {
+            max-width: 1200px;
+            margin: auto;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            justify-content: space-between
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+            .brand svg {
+                width: 34px;
+                height: 34px
+            }
+
+            .brand .name {
+                font-weight: 800;
+                font-size: 20px;
+                color: var(--brand-navy)
+            }
+
+        .hero {
+            background: radial-gradient(800px 300px at 90% -20%, rgba(25,183,166,.18), transparent 60%), radial-gradient(700px 280px at -10% 10%, rgba(15,43,92,.12), transparent 60%), linear-gradient(180deg,#fff,#f7fbfa);
+            border-bottom: 1px solid #e9eef5;
+        }
+
+        .hero-wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 22px 20px 18px;
+            text-align: center
+        }
+
+        .hero h1 {
+            margin: 0;
+            color: var(--brand-navy);
+            font-size: clamp(22px,4.2vw,30px)
+        }
+
+        .hero p {
+            margin: 6px 0 0;
+            color: #3b4761
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 18px auto 26px;
+            padding: 0 20px
+        }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+            justify-content: center
+        }
+
+            .filters input, .filters select {
+                padding: 12px 14px;
+                border: 1px solid #e3e8ef;
+                border-radius: 12px;
+                outline: none;
+                font-size: 14px;
+                min-width: 240px;
+                background: #fff
+            }
+
+                .filters input:focus, .filters select:focus {
+                    box-shadow: 0 0 0 4px rgba(25,183,166,.12)
+                }
+
+        .chips {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 14px
+        }
+
+        .chip {
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: #e7f7f5;
+            color: #0f6d64;
+            font-weight: 800;
+            cursor: pointer;
+            border: 1px solid #c7efe9
+        }
+
+            .chip.active {
+                background: #19b7a6;
+                color: #fff;
+                border-color: #19b7a6
+            }
+
+        .grid {
+            display: grid;
+            gap: 16px;
+            grid-template-columns: repeat(auto-fit,minmax(280px,1fr))
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 20px;
+            border: 1px solid #eff4fb;
+            overflow: hidden;
+            box-shadow: 0 10px 28px rgba(15,43,92,.07),0 4px 12px rgba(15,43,92,.05);
+            transition: transform .12s ease, box-shadow .2s ease
+        }
+
+            .card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 18px 48px rgba(15,43,92,.12),0 6px 16px rgba(15,43,92,.08)
+            }
+
+        /* imagem estável e bonita */
+        .thumb {
+            width: 100%;
+            aspect-ratio: 16/9; /* mantém proporção */
+            height: auto;
+            object-fit: cover;
+            background: #eef2f7;
+            display: block;
+        }
+
+        .card-body {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px
+        }
+
+        .barbearia-nome {
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: var(--brand-navy)
+        }
+
+        .barbearia-endereco {
+            color: var(--muted);
+            font-size: .92rem
+        }
+
+        .meta {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap
+        }
+
+        .rating {
+            font-size: .95rem;
+            color: #ffb400
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            background: #e0f8f5;
+            color: #0d6e64
+        }
+
+            .badge.off {
+                background: #ffeaea;
+                color: #c62828
+            }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center
+        }
+
+        .btn {
+            padding: 10px 14px;
+            border: none;
+            border-radius: 12px;
+            background: var(--brand-teal);
+            color: #fff;
+            font-weight: 800;
+            cursor: pointer;
+            text-decoration: none
+        }
+
+            .btn:hover {
+                background: var(--brand-teal-hover)
+            }
+
+        .fav-btn {
+            background: #fff;
+            border: 1px solid #e9eef5;
+            font-size: 18px;
+            cursor: pointer;
+            color: #c8c8c8;
+            line-height: 1;
+            padding: 8px 10px;
+            border-radius: 12px
+        }
+
+            .fav-btn.active {
+                color: #e11d48;
+                border-color: #ffd1dc;
+                background: #fff5f7
+            }
+
+        .skeleton {
+            background: #fff;
+            border-radius: 20px;
+            border: 1px solid #eff4fb;
+            overflow: hidden;
+            animation: pulse 1.2s infinite
+        }
+
+        .sk-img {
+            aspect-ratio: 16/9;
+            background: linear-gradient(90deg,#eef2f7 25%,#f5f7fa 37%,#eef2f7 63%)
+        }
+
+        .sk-lines {
+            padding: 16px
+        }
+
+        .sk-line {
+            height: 12px;
+            background: linear-gradient(90deg,#eef2f7 25%,#f5f7fa 37%,#eef2f7 63%);
+            border-radius: 8px;
+            margin: 8px 0
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: .95
+            }
+
+            50% {
+                opacity: .65
+            }
+
+            100% {
+                opacity: .95
+            }
+        }
+
+        .empty-wrap {
+            background: #fff;
+            border: 1px dashed #d7e2f0;
+            border-radius: 16px;
+            padding: 22px;
+            text-align: center;
+            color: #6b778c
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="top">
+            <div class="brand" aria-label="AgoraHora">
+                <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="28" fill="none" stroke="#19b7a6" stroke-width="6" /><path d="M20 33.5l7 7 17-17" fill="none" stroke="#19b7a6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                <div class="name">AgoraHora</div>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-wrap">
+            <h1>Encontre a barbearia perfeita</h1>
+            <p>Busque, filtre e agende em poucos cliques — simples e rápido.</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <div class="filters">
+            <input type="text" id="search" placeholder="Buscar barbearia..." aria-label="Buscar barbearia" />
+            <select id="filterOrder" aria-label="Ordenar por">
+                <option value="">Ordenar por</option>
+                <option value="avaliacao">Melhor Avaliação</option>
+                <option value="abertas">Apenas Abertas</option>
+            </select>
+        </div>
+
+        <div class="chips" id="chips">
+            <button class="chip active" data-chip="todas">Todas</button>
+            <button class="chip" data-chip="abertas">Aberta agora</button>
+            <button class="chip" data-chip="top">Top avaliadas</button>
+        </div>
+
+        <div class="grid" id="lista-barbearias">
+            <div class="skeleton"><div class="sk-img"></div><div class="sk-lines"><div class="sk-line" style="width:70%"></div><div class="sk-line" style="width:40%"></div><div class="sk-line" style="width:55%"></div></div></div>
+            <div class="skeleton"><div class="sk-img"></div><div class="sk-lines"><div class="sk-line" style="width:60%"></div><div class="sk-line" style="width:45%"></div><div class="sk-line" style="width:55%"></div></div></div>
+            <div class="skeleton"><div class="sk-img"></div><div class="sk-lines"><div class="sk-line" style="width:66%"></div><div class="sk-line" style="width:42%"></div><div class="sk-line" style="width:55%"></div></div></div>
+        </div>
+    </main>
+
+    <script>
+        const lista = document.getElementById('lista-barbearias');
+        const search = document.getElementById('search');
+        const filterOrder = document.getElementById('filterOrder');
+        const chips = document.getElementById('chips');
+
+        const favKey = 'ah_favs';
+        const favs = new Set(JSON.parse(localStorage.getItem(favKey) || '[]'));
+        const saveFavs = () => localStorage.setItem(favKey, JSON.stringify([...favs]));
+
+        async function api(path) {
+            const r = await fetch('/api' + path);
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            return r.json();
+        }
+
+        // Normaliza e protege o URL da imagem
+        function normalizeImageUrl(u) {
+            const fallback = 'img/barbearia1.jpg';
+            try {
+                if (!u) return fallback;
+                u = String(u).trim();
+                // suporte a URLs começando com //
+                if (u.startsWith('//')) return location.protocol + u;
+                // corrige espaços
+                if (/^https?:/i.test(u)) {
+                    const url = new URL(u);
+                    url.pathname = url.pathname.split('/').map(encodeURIComponent).join('/');
+                    return url.toString();
+                }
+                // relativo ou data URL
+                return u;
+            } catch { return fallback; }
+        }
+
+        function cardHTML(b) {
+            const href = `barbearia.html?id=${b.id}`;
+            const imgUrl = normalizeImageUrl(b.img);
+            return `
+          <div class="card">
+            <img class="thumb"
+                 loading="lazy"
+                 src="${imgUrl}"
+                 alt="Foto da ${b.nome}"
+                 referrerpolicy="no-referrer"
+                 crossorigin="anonymous"
+                 onerror="this.onerror=null;this.src='img/barbearia1.jpg'">
+            <div class="card-body">
+              <div>
+                <div class="barbearia-nome">${b.nome}</div>
+                <div class="barbearia-endereco">${b.endereco || ''}</div>
+                <div class="meta">
+                  <div class="rating">⭐ ${Number(b.avaliacao ?? 0).toFixed(1)}</div>
+                  <span class="badge ${b.aberta ? '' : 'off'}">${b.aberta ? 'Aberta agora' : 'Fechada'}</span>
+                </div>
+              </div>
+              <div class="card-footer">
+                <a class="btn" href="${href}">Ver detalhes</a>
+                <button class="fav-btn ${favs.has(b.id) ? 'active' : ''}" aria-pressed="${favs.has(b.id)}" title="Favoritar" data-id="${b.id}">
+                  ${favs.has(b.id) ? '❤️' : '🤍'}
+                </button>
+              </div>
+            </div>
+          </div>`;
+        }
+
+        function bindFavs() {
+            lista.querySelectorAll('.fav-btn').forEach(btn => {
+                const id = Number(btn.dataset.id);
+                btn.addEventListener('click', e => {
+                    e.preventDefault(); e.stopPropagation();
+                    const active = btn.classList.toggle('active');
+                    btn.textContent = active ? '❤️' : '🤍';
+                    btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+                    if (active) favs.add(id); else favs.delete(id);
+                    saveFavs();
+                });
+            });
+        }
+
+        async function carregar() {
+            const chip = chips.querySelector('.chip.active')?.dataset?.chip || 'todas';
+            const abertas = chip === 'abertas' ? 'true' : '';
+            const order = filterOrder.value || (chip === 'top' ? 'avaliacao' : '');
+            const q = encodeURIComponent(search.value.trim());
+            const resp = await api(`/estabelecimentos?q=${q}&order=${order}&abertas=${abertas}`);
+            return resp.data ?? [];
+        }
+
+        function render(data) {
+            if (!data.length) {
+                lista.innerHTML = `<div class="empty-wrap">Nenhuma barbearia encontrada. Tente limpar os filtros.</div>`;
+                return;
+            }
+            lista.innerHTML = data.map(cardHTML).join('');
+            bindFavs();
+        }
+
+        async function applyFilters() {
+            try { render(await carregar()); }
+            catch { lista.innerHTML = `<div class="empty-wrap">Erro ao carregar.</div>`; }
+        }
+
+        chips.addEventListener('click', e => {
+            const btn = e.target.closest('.chip'); if (!btn) return;
+            chips.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            applyFilters();
+        });
+
+        let t; search.addEventListener('input', () => { clearTimeout(t); t = setTimeout(applyFilters, 160); });
+        filterOrder.addEventListener('change', applyFilters);
+
+        applyFilters();
+    </script>
+</body>
+</html>

@@ -4,6 +4,7 @@ using AgoraHora.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AgoraHora.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251018230849_AddEnderecoToConfiguracao")]
+    partial class AddEnderecoToConfiguracao
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -133,27 +136,6 @@ namespace AgoraHora.Api.Migrations
                     b.ToTable("TB_CONFIGURACAO", (string)null);
                 });
 
-            modelBuilder.Entity("AgoraHora.Api.Models.Especialidade", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Nome")
-                        .IsUnique();
-
-                    b.ToTable("TB_ESPECIALIDADE", (string)null);
-                });
-
             modelBuilder.Entity("AgoraHora.Api.Models.Estabelecimento", b =>
                 {
                     b.Property<int>("Id")
@@ -163,20 +145,14 @@ namespace AgoraHora.Api.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AbreMin")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(540);
+                        .HasColumnType("int");
 
                     b.Property<bool>("Ativo")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
+                        .HasColumnType("bit");
 
                     b.Property<decimal>("AvaliacaoMedia")
-                        .ValueGeneratedOnAdd()
-                        .HasPrecision(3, 2)
-                        .HasColumnType("decimal(3,2)")
-                        .HasDefaultValue(0m);
+                        .HasPrecision(4, 2)
+                        .HasColumnType("decimal(4,2)");
 
                     b.Property<string>("Endereco")
                         .IsRequired()
@@ -184,9 +160,7 @@ namespace AgoraHora.Api.Migrations
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<int>("FechaMin")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(1080);
+                        .HasColumnType("int");
 
                     b.Property<string>("ImagemUrl")
                         .IsRequired()
@@ -233,21 +207,6 @@ namespace AgoraHora.Api.Migrations
                     b.HasIndex("EstabelecimentoId", "Nome");
 
                     b.ToTable("TB_PROFISSIONAL", (string)null);
-                });
-
-            modelBuilder.Entity("AgoraHora.Api.Models.ProfissionalEspecialidade", b =>
-                {
-                    b.Property<int>("ProfissionalId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("EspecialidadeId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ProfissionalId", "EspecialidadeId");
-
-                    b.HasIndex("EspecialidadeId");
-
-                    b.ToTable("TB_PROFISSIONAL_ESPECIALIDADE", (string)null);
                 });
 
             modelBuilder.Entity("AgoraHora.Api.Models.Servico", b =>
@@ -399,25 +358,6 @@ namespace AgoraHora.Api.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("AgoraHora.Api.Models.ProfissionalEspecialidade", b =>
-                {
-                    b.HasOne("AgoraHora.Api.Models.Especialidade", "Especialidade")
-                        .WithMany("ProfissionalEspecialidades")
-                        .HasForeignKey("EspecialidadeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("AgoraHora.Api.Models.Profissional", "Profissional")
-                        .WithMany("ProfissionalEspecialidades")
-                        .HasForeignKey("ProfissionalId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Especialidade");
-
-                    b.Navigation("Profissional");
-                });
-
             modelBuilder.Entity("AgoraHora.Api.Models.Servico", b =>
                 {
                     b.HasOne("AgoraHora.Api.Models.Estabelecimento", null)
@@ -444,16 +384,6 @@ namespace AgoraHora.Api.Migrations
                     b.Navigation("Estabelecimento");
 
                     b.Navigation("Usuario");
-                });
-
-            modelBuilder.Entity("AgoraHora.Api.Models.Especialidade", b =>
-                {
-                    b.Navigation("ProfissionalEspecialidades");
-                });
-
-            modelBuilder.Entity("AgoraHora.Api.Models.Profissional", b =>
-                {
-                    b.Navigation("ProfissionalEspecialidades");
                 });
 
             modelBuilder.Entity("AgoraHora.Api.Models.Usuario", b =>

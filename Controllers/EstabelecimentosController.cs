@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using AgoraHora.Api.Data;
+﻿using AgoraHora.Api.Data;
 using AgoraHora.Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +11,15 @@ public class EstabelecimentosController : ControllerBase
 {
     private readonly AppDbContext _db;
     public EstabelecimentosController(AppDbContext db) => _db = db;
+
+    private static bool EstaAberta(int abreMin, int fechaMin, DateTime? agora = null)
+    {
+        var now = agora ?? DateTime.Now;
+        var nowMin = now.Hour * 60 + now.Minute;
+        return abreMin < fechaMin
+            ? nowMin >= abreMin && nowMin < fechaMin
+            : nowMin >= abreMin || nowMin < fechaMin;
+    }
 
     [HttpGet]
     public async Task<IActionResult> Listar(
@@ -32,23 +40,20 @@ public class EstabelecimentosController : ControllerBase
             baseQ = baseQ.Where(e => EF.Functions.Like(e.Nome, $"%{term}%"));
         }
 
-        // tempo local SP
-        var tz = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-            ? "E. South America Standard Time"
-            : "America/Sao_Paulo";
-        var now = TimeZoneInfo.ConvertTime(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById(tz));
-        var nowMin = now.Hour * 60 + now.Minute;
+        var nowMin = DateTime.Now.Hour * 60 + DateTime.Now.Minute;
 
         var proj = baseQ.Select(e => new
         {
             id = e.Id,
             nome = e.Nome,
             endereco = e.Endereco,
-            avaliacao = e.AvaliacaoMedia,
+            avaliacao = e.AvaliacaoMedia,                  // decimal(3,2)
             img = e.ImagemUrl,
             abreMin = e.AbreMin,
             fechaMin = e.FechaMin,
-            aberta = nowMin >= e.AbreMin && nowMin < e.FechaMin
+            aberta = e.AbreMin < e.FechaMin
+                ? nowMin >= e.AbreMin && nowMin < e.FechaMin
+                : nowMin >= e.AbreMin || nowMin < e.FechaMin
         });
 
         if (abertas == true) proj = proj.Where(x => x.aberta);
@@ -69,15 +74,12 @@ public class EstabelecimentosController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<IActionResult> Obter(int id)
     {
-        var tz = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-            ? "E. South America Standard Time"
-            : "America/Sao_Paulo";
-        var now = TimeZoneInfo.ConvertTime(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById(tz));
-        var nowMin = now.Hour * 60 + now.Minute;
+        var nowMin = DateTime.Now.Hour * 60 + DateTime.Now.Minute;
 
         var e = await _db.Estabelecimentos.AsNoTracking()
             .Where(x => x.Id == id && x.Ativo)
-            .Select(x => new {
+            .Select(x => new
+            {
                 id = x.Id,
                 nome = x.Nome,
                 endereco = x.Endereco,
@@ -85,7 +87,9 @@ public class EstabelecimentosController : ControllerBase
                 avaliacao = x.AvaliacaoMedia,
                 abreMin = x.AbreMin,
                 fechaMin = x.FechaMin,
-                aberta = nowMin >= x.AbreMin && nowMin < x.FechaMin
+                aberta = x.AbreMin < x.FechaMin
+                    ? nowMin >= x.AbreMin && nowMin < x.FechaMin
+                    : nowMin >= x.AbreMin || nowMin < x.FechaMin
             })
             .FirstOrDefaultAsync();
 
@@ -102,7 +106,7 @@ public class EstabelecimentosController : ControllerBase
             return BadRequest(new { message = "Nome, Endereco e ImagemUrl são obrigatórios." });
 
         if (e.AvaliacaoMedia is < 0 or > 5) return BadRequest(new { message = "AvaliacaoMedia deve estar entre 0 e 5." });
-        if (e.AbreMin is < 0 or > 1440 || e.FechaMin is < 0 or > 1440 || e.AbreMin >= e.FechaMin)
+        if (e.AbreMin is < 0 or > 1440 || e.FechaMin is < 0 or > 1440 || e.AbreMin == e.FechaMin)
             return BadRequest(new { message = "Horário inválido (AbreMin/FechaMin)." });
 
         _db.Estabelecimentos.Add(e);
@@ -119,16 +123,38 @@ public class EstabelecimentosController : ControllerBase
         dbE.Nome = string.IsNullOrWhiteSpace(e.Nome) ? dbE.Nome : e.Nome.Trim();
         dbE.Endereco = string.IsNullOrWhiteSpace(e.Endereco) ? dbE.Endereco : e.Endereco.Trim();
         dbE.ImagemUrl = string.IsNullOrWhiteSpace(e.ImagemUrl) ? dbE.ImagemUrl : e.ImagemUrl.Trim();
-        dbE.AvaliacaoMedia = (e.AvaliacaoMedia is >= 0 and <= 5) ? e.AvaliacaoMedia : dbE.AvaliacaoMedia;
+
+        // Só altera avaliação quando o cliente enviar explicitamente no PUT
+        if (e.AvaliacaoMedia is >= 0 and <= 5) dbE.AvaliacaoMedia = e.AvaliacaoMedia;
+
         if (e.AbreMin is >= 0 and <= 1440) dbE.AbreMin = e.AbreMin;
         if (e.FechaMin is >= 0 and <= 1440) dbE.FechaMin = e.FechaMin;
         dbE.Ativo = e.Ativo;
 
-        if (dbE.AbreMin >= dbE.FechaMin)
-            return BadRequest(new { message = "Horário inválido (AbreMin deve ser < FechaMin)." });
+        if (dbE.AbreMin == dbE.FechaMin)
+            return BadRequest(new { message = "Horário inválido (AbreMin não pode ser igual a FechaMin)." });
 
         await _db.SaveChangesAsync();
         return Ok(new { message = "Estabelecimento atualizado.", data = dbE });
+    }
+
+    [HttpPatch("{id:int}/avaliacao")]
+    public async Task<IActionResult> AtualizarAvaliacao(int id, [FromBody] AvaliacaoDto dto)
+    {
+        if (dto?.Nota is null || dto.Nota is < 0 or > 5)
+            return BadRequest(new { message = "Nota deve estar entre 0 e 5." });
+
+        var e = await _db.Estabelecimentos.FindAsync(id);
+        if (e is null) return NotFound(new { message = "Estabelecimento não encontrado." });
+
+        e.AvaliacaoMedia = (decimal)dto.Nota.Value;
+        await _db.SaveChangesAsync();
+        return Ok(new { message = "Avaliação atualizada.", data = new { id = e.Id, avaliacao = e.AvaliacaoMedia } });
+    }
+
+    public sealed class AvaliacaoDto
+    {
+        public double? Nota { get; set; }
     }
 
     [HttpDelete("{id:int}")]

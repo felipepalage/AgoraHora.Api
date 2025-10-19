@@ -1,115 +1,386 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Profissionais - AgoraHora</title>
-<style>
-  :root{--brand-navy:#0f2b5c;--brand-teal:#19b7a6;--brand-teal-hover:#139987;--bg:#f5f7fa;--card:#fff;--muted:#8a94a6}
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:#1c2430;font:500 15px/1.45 Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif}
-  header{background:#fff;border-bottom:1px solid #e9eef5;position:sticky;top:0;z-index:10}
-  .top{max-width:1200px;margin:auto;padding:14px 20px;display:flex;align-items:center;gap:14px;justify-content:space-between}
-  .brand{display:flex;align-items:center;gap:10px}.brand svg{width:34px;height:34px}.brand .name{font-weight:800;font-size:20px;color:var(--brand-navy)}
-  .btn{padding:10px 14px;border:none;border-radius:10px;background:var(--brand-teal);color:#fff;font-weight:700;cursor:pointer}
-  .btn:hover{background:var(--brand-teal-hover)}
-  .container{max-width:1200px;margin:24px auto;padding:0 20px}
-  .grid{display:grid;gap:16px}@media(min-width:900px){.grid-2{grid-template-columns:1fr 2fr}}
-  .card{background:var(--card);border-radius:20px;padding:20px;box-shadow:0 16px 40px rgba(15,43,92,.06),0 4px 12px rgba(15,43,92,.05)}
-  label{display:block;margin:8px 0 6px;color:var(--brand-navy);font-weight:700}
-  input{width:100%;padding:10px 12px;border:1px solid #e3e8ef;border-radius:10px;outline:none}
-  input:focus{box-shadow:0 0 0 4px rgba(25,183,166,.12)}
-  table{width:100%;border-collapse:collapse} th,td{padding:12px 10px;border-bottom:1px solid #eef2f7;text-align:left} th{color:#30405a;font-size:13px}
-  .empty{color:var(--muted);padding:6px 0}
-</style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profissionais - AgoraHora</title>
+    <style>
+        :root {
+            --brand-navy: #0f2b5c;
+            --brand-teal: #19b7a6;
+            --brand-teal-hover: #139987;
+            --bg: #f5f7fa;
+            --card: #fff;
+            --muted: #8a94a6
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: #1c2430;
+            font: 500 15px/1.45 Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif
+        }
+
+        header {
+            background: #fff;
+            border-bottom: 1px solid #e9eef5;
+            position: sticky;
+            top: 0;
+            z-index: 10
+        }
+
+        .top {
+            max-width: 1200px;
+            margin: auto;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            justify-content: space-between
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+            .brand svg {
+                width: 34px;
+                height: 34px
+            }
+
+            .brand .name {
+                font-weight: 800;
+                font-size: 20px;
+                color: var(--brand-navy)
+            }
+
+        .btn {
+            padding: 10px 14px;
+            border: none;
+            border-radius: 10px;
+            background: var(--brand-teal);
+            color: #fff;
+            font-weight: 700;
+            cursor: pointer
+        }
+
+            .btn:hover {
+                background: var(--brand-teal-hover)
+            }
+
+        .btn-ghost {
+            padding: 6px 10px;
+            border: 1px solid #e3e8ef;
+            border-radius: 8px;
+            background: #fff;
+            color: #1c2430;
+            cursor: pointer;
+            font-weight: 700
+        }
+
+            .btn-ghost:hover {
+                background: #f2f6fa
+            }
+
+        .btn-danger {
+            padding: 6px 10px;
+            border: 1px solid #f2d6d6;
+            border-radius: 8px;
+            background: #ffecec;
+            color: #a30000;
+            cursor: pointer;
+            font-weight: 700
+        }
+
+            .btn-danger:hover {
+                background: #ffd9d9
+            }
+
+        .container {
+            max-width: 1200px;
+            margin: 24px auto;
+            padding: 0 20px
+        }
+
+        .grid {
+            display: grid;
+            gap: 16px
+        }
+
+        @media(min-width:900px) {
+            .grid-2 {
+                grid-template-columns: 1fr 2fr
+            }
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 16px 40px rgba(15,43,92,.06),0 4px 12px rgba(15,43,92,.05)
+        }
+
+        label {
+            display: block;
+            margin: 8px 0 6px;
+            color: var(--brand-navy);
+            font-weight: 700
+        }
+
+        input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e3e8ef;
+            border-radius: 10px;
+            outline: none
+        }
+
+            input:focus {
+                box-shadow: 0 0 0 4px rgba(25,183,166,.12)
+            }
+
+        table {
+            width: 100%;
+            border-collapse: collapse
+        }
+
+        th, td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #eef2f7;
+            text-align: left
+        }
+
+        th {
+            color: #30405a;
+            font-size: 13px
+        }
+
+        .empty {
+            color: var(--muted);
+            padding: 6px 0
+        }
+
+        .row-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap
+        }
+
+        .td-actions {
+            width: 260px
+        }
+
+        .hint {
+            color: #6b7280;
+            font-size: 12px;
+            margin-top: 4px
+        }
+    </style>
 </head>
 <body>
-<header>
-  <div class="top">
-    <div class="brand" aria-label="AgoraHora">
-      <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="28" fill="none" stroke="#19b7a6" stroke-width="6"/><path d="M20 33.5l7 7 17-17" fill="none" stroke="#19b7a6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="name">AgoraHora</div>
-    </div>
-    <button class="btn" id="logout">Voltar</button>
-  </div>
-</header>
+    <header>
+        <div class="top">
+            <div class="brand" aria-label="AgoraHora">
+                <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="28" fill="none" stroke="#19b7a6" stroke-width="6" /><path d="M20 33.5l7 7 17-17" fill="none" stroke="#19b7a6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                <div class="name">AgoraHora</div>
+            </div>
+            <button class="btn" id="logout">Voltar</button>
+        </div>
+    </header>
 
-<main class="container grid grid-2">
-  <div class="card">
-    <h2 style="margin-top:0;color:var(--brand-navy)">Cadastrar profissional</h2>
-    <label for="nome">Nome</label>
-    <input id="nome" placeholder="Ex.: João Silva">
-    <label for="especialidade">Especialidade</label>
-    <input id="especialidade" placeholder="Ex.: Barba, Corte, Infantil">
-    <button class="btn" id="btn-salvar" style="margin-top:10px">Salvar</button>
-    <div id="msg" class="empty" style="display:none;margin-top:8px">Salvo!</div>
-  </div>
+    <main class="container grid grid-2">
+        <div class="card">
+            <h2 style="margin-top:0;color:var(--brand-navy)">Cadastrar profissional</h2>
+            <label for="nome">Nome</label>
+            <input id="nome" placeholder="Ex.: João Silva">
+            <label for="especialidade">Especialidades (vírgula separa)</label>
+            <input id="especialidade" placeholder="Ex.: Barba, Corte, Infantil">
+            <div class="hint">Use vírgula para várias especialidades.</div>
+            <button class="btn" id="btn-salvar" style="margin-top:10px">Salvar</button>
+            <div id="msg" class="empty" style="display:none;margin-top:8px">Salvo!</div>
+        </div>
 
-  <div class="card">
-    <h2 style="margin-top:0;color:var(--brand-navy)">Profissionais</h2>
-    <table>
-      <thead><tr><th>Nome</th><th>Especialidade</th></tr></thead>
-      <tbody id="tbody"><tr><td class="empty" colspan="2">Sem profissionais…</td></tr></tbody>
-    </table>
-  </div>
-</main>
+        <div class="card">
+            <h2 style="margin-top:0;color:var(--brand-navy)">Profissionais</h2>
+            <table>
+                <thead>
+                    <tr><th>Nome</th><th>Especialidades</th><th class="td-actions">Ações</th></tr>
+                </thead>
+                <tbody id="tbody"><tr><td class="empty" colspan="3">Sem profissionais…</td></tr></tbody>
+            </table>
+        </div>
+    </main>
 
-<script>
-  const tbody = document.getElementById('tbody');
-  const msg   = document.getElementById('msg');
-  document.getElementById('logout').onclick = () => location.href = 'index.html';
+    <script>
+        const tbody = document.getElementById('tbody');
+        const msg = document.getElementById('msg');
+        document.getElementById('logout').onclick = () => location.href = 'index.html';
 
-  // ID do estabelecimento salvo após login
-  const estabId = Number(localStorage.getItem('ah_estabelecimentoId') || 1);
+        const estabId = Number(localStorage.getItem('ah_estabelecimentoId') || 1);
+        let listaCache = [];
+        let editingId = null;
 
-  async function api(path, opts = {}) {
-    const headers = { 'Content-Type': 'application/json' };
-    const token = localStorage.getItem('ah_token');
-    if (token) headers['Authorization'] = 'Bearer ' + token;
+        async function api(path, opts = {}) {
+            const headers = { 'Content-Type': 'application/json' };
+            const token = localStorage.getItem('ah_token');
+            if (token) headers['Authorization'] = 'Bearer ' + token;
 
-    const res = await fetch('/api' + path, {
-      method: opts.method || 'GET',
-      headers,
-      body: opts.body ? JSON.stringify(opts.body) : undefined
-    });
-    if (!res.ok) throw new Error(await res.text());
-    const ct = res.headers.get('content-type') || '';
-    return ct.includes('application/json') ? res.json() : res.text();
-  }
+            const res = await fetch('/api' + path, {
+                method: opts.method || 'GET',
+                headers,
+                body: opts.body ? JSON.stringify(opts.body) : undefined
+            });
+            if (!res.ok) throw new Error(await res.text());
+            const ct = res.headers.get('content-type') || '';
+            return ct.includes('application/json') ? res.json() : res.text();
+        }
 
-  function render(lista){
-    if (!lista.length){
-      tbody.innerHTML = `<tr><td class="empty" colspan="2">Sem profissionais…</td></tr>`;
-      return;
-    }
-    tbody.innerHTML = lista.map(p =>
-      `<tr><td>${p.nome ?? p.Nome}</td><td>${p.especialidade ?? p.Especialidade ?? '—'}</td></tr>`
-    ).join("");
-  }
+        const parseTags = (txt) =>
+            (txt || '')
+                .split(',')
+                .map(s => s.trim())
+                .filter(Boolean);
 
-  async function carregar(){
-    const r = await api(`/profissionais/${estabId}?page=1&pageSize=50`);
-    const dados = Array.isArray(r) ? r : (r.data ?? []);
-    render(dados);
-  }
+        function tdInputs(p) {
+            const nome = (p.nome ?? p.Nome ?? '').trim();
+            // usa array Especialidades se vier do backend; senão cai no legado
+            const list = (p.especialidades ?? p.Especialidades);
+            const espTxt = Array.isArray(list) && list.length
+                ? list.join(', ')
+                : (p.especialidade ?? p.Especialidade ?? '');
+            return `
+          <td><input id="edit-nome" value="${nome}"/></td>
+          <td><input id="edit-esp"  value="${espTxt}" placeholder="Separe por vírgulas"/></td>
+          <td class="td-actions">
+            <div class="row-actions">
+              <button class="btn-ghost" data-action="save" data-id="${p.id ?? p.Id}">Salvar</button>
+              <button class="btn-ghost" data-action="cancel" data-id="${p.id ?? p.Id}">Cancelar</button>
+            </div>
+          </td>`;
+        }
 
-  document.getElementById('btn-salvar').onclick = async () => {
-    const nome = document.getElementById('nome').value.trim();
-    const especialidade = document.getElementById('especialidade').value.trim();
-    if (!nome){ alert('Informe o nome.'); return; }
+        function tdRead(p) {
+            const id = p.id ?? p.Id;
+            const nome = p.nome ?? p.Nome ?? '';
+            const list = (p.especialidades ?? p.Especialidades);
+            const esp = Array.isArray(list) && list.length
+                ? list.join(', ')
+                : (p.especialidade ?? p.Especialidade ?? '—');
+            return `
+          <td>${nome}</td>
+          <td>${esp}</td>
+          <td class="td-actions">
+            <div class="row-actions">
+              <button class="btn-ghost" data-action="edit" data-id="${id}">Editar</button>
+              <button class="btn-danger" data-action="delete" data-id="${id}">Apagar</button>
+            </div>
+          </td>`;
+        }
 
-    await api('/profissionais', {
-      method: 'POST',
-      body: { EstabelecimentoId: estabId, Nome: nome, Especialidade: especialidade }
-    });
+        function render(lista) {
+            listaCache = lista.slice();
+            if (!lista.length) {
+                tbody.innerHTML = `<tr><td class="empty" colspan="3">Sem profissionais…</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = lista.map(p => {
+                const id = p.id ?? p.Id;
+                return `<tr data-id="${id}">${editingId === id ? tdInputs(p) : tdRead(p)}</tr>`;
+            }).join("");
+        }
 
-    document.getElementById('nome').value = '';
-    document.getElementById('especialidade').value = '';
-    msg.style.display = 'block';
-    setTimeout(()=> msg.style.display='none',1500);
-    await carregar();
-  };
+        async function carregar() {
+            const r = await api(`/profissionais/${estabId}?page=1&pageSize=50`);
+            const dados = Array.isArray(r) ? r : (r.data ?? []);
+            editingId = null;
+            render(dados);
+        }
 
-  carregar();
-</script>
+        // Criar profissional + especialidades N:N
+        document.getElementById('btn-salvar').onclick = async () => {
+            const nome = document.getElementById('nome').value.trim();
+            const espTxt = document.getElementById('especialidade').value.trim();
+            if (!nome) { alert('Informe o nome.'); return; }
+
+            // 1) cria profissional (compatível com campo legado)
+            const created = await api('/profissionais', {
+                method: 'POST',
+                body: { EstabelecimentoId: estabId, Nome: nome, Especialidade: espTxt }
+            });
+
+            // 2) grava vínculos N:N (se houver especialidades)
+            const id = created?.data?.id ?? created?.data?.Id;
+            const nomes = parseTags(espTxt);
+            if (id && nomes.length) {
+                await api(`/profissionais/id/${id}/especialidades`, {
+                    method: 'PUT',
+                    body: { nomes }
+                });
+            }
+
+            document.getElementById('nome').value = '';
+            document.getElementById('especialidade').value = '';
+            msg.style.display = 'block';
+            setTimeout(() => msg.style.display = 'none', 1500);
+            await carregar();
+        };
+
+        // Editar/Salvar/Apagar
+        tbody.addEventListener('click', async (e) => {
+            const btn = e.target.closest('button');
+            if (!btn) return;
+            const action = btn.dataset.action;
+            const id = Number(btn.dataset.id);
+            const tr = tbody.querySelector(`tr[data-id="${id}"]`);
+            const p = listaCache.find(x => (x.id ?? x.Id) === id);
+
+            try {
+                if (action === 'edit') {
+                    editingId = id;
+                    tr.innerHTML = tdInputs(p);
+                    tr.querySelector('#edit-nome').focus();
+                }
+                if (action === 'cancel') {
+                    editingId = null;
+                    tr.innerHTML = tdRead(p);
+                }
+                if (action === 'save') {
+                    const nome = tr.querySelector('#edit-nome').value.trim();
+                    const espTxt = tr.querySelector('#edit-esp').value.trim();
+                    if (!nome) { alert('Nome é obrigatório.'); return; }
+
+                    // 1) atualiza dados básicos (mantém legado)
+                    await api(`/profissionais/${id}`, {
+                        method: 'PUT',
+                        body: { Nome: nome, Especialidade: espTxt }
+                    });
+
+                    // 2) regrava especialidades N:N
+                    const nomes = parseTags(espTxt);
+                    await api(`/profissionais/id/${id}/especialidades`, {
+                        method: 'PUT',
+                        body: { nomes }
+                    });
+
+                    await carregar();
+                }
+                if (action === 'delete') {
+                    if (!confirm('Confirmar exclusão do profissional?')) return;
+                    await api(`/profissionais/${id}`, { method: 'DELETE' });
+                    await carregar();
+                }
+            } catch (err) {
+                alert('Erro: ' + (err?.message || err));
+            }
+        });
+
+        carregar();
+    </script>
 </body>
 </html>

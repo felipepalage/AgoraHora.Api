@@ -28,27 +28,25 @@ namespace AgoraHora.Api.Controllers
         [HttpPut("{estabelecimentoId:int}")]
         public async Task<IActionResult> Update(int estabelecimentoId, [FromBody] Configuracao model)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(new { message = "Dados inválidos." });
-
             var cfg = await _db.Configuracoes
                 .FirstOrDefaultAsync(x => x.EstabelecimentoId == estabelecimentoId);
 
-            if (cfg == null)
+            if (cfg is null)
             {
                 model.EstabelecimentoId = estabelecimentoId;
                 _db.Configuracoes.Add(model);
-            }
-            else
-            {
-                cfg.Telefone = model.Telefone;
-                cfg.Endereco = model.Endereco;
-                cfg.Horarios = model.Horarios;
-                cfg.Descricao = model.Descricao;
+                await _db.SaveChangesAsync();
+                return CreatedAtAction(nameof(Get), new { estabelecimentoId }, new { message = "Criado.", data = model });
             }
 
+            cfg.Telefone = model.Telefone;
+            cfg.Endereco = model.Endereco;
+            cfg.Horarios = model.Horarios;
+            cfg.Descricao = model.Descricao;
+
             await _db.SaveChangesAsync();
-            return Ok(new { message = "Configuração salva com sucesso." });
+            return Ok(new { message = "Atualizado.", data = cfg });
         }
+
     }
 }

@@ -20,7 +20,7 @@
   .badge{display:inline-block;padding:4px 8px;border-radius:10px;font-size:12px;background:#eefaf8;color:#0d6e64}
   .empty{color:var(--muted);padding:6px 0}
   .error{margin-top:10px;color:#c62828;font-weight:700;display:none}
-  @media(min-width:700px){ .searchbar > *{flex:1} .searchbar button{flex:0 0 auto} }
+  @media(min-width:800px){ .searchbar > *{flex:1} .searchbar button{flex:0 0 auto} }
 </style>
 </head>
 <body>
@@ -30,7 +30,7 @@
       <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="28" fill="none" stroke="#19b7a6" stroke-width="6"/><path d="M20 33.5l7 7 17-17" fill="none" stroke="#19b7a6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <div class="name">AgoraHora</div>
     </div>
-    <button class="btn" id="logout">Voltar</button>
+    <button class="btn" id="voltar">Voltar</button>
   </div>
 </header>
 
@@ -38,6 +38,7 @@
   <div class="card">
     <h2 style="margin-top:0;color:var(--brand-navy)">Agendamentos</h2>
     <div class="searchbar">
+      <select id="profissional"></select>
       <input id="filtro-data" type="date"/>
       <select id="filtro-status" title="Status">
         <option value="">Todos</option>
@@ -57,22 +58,43 @@
 </main>
 
 <script>
-  const API = '/api';              // mesma origem
-  const PROFISSIONAL_ID = 2;
+  const API_BASE = 'http://localhost:7050/api'; // ajuste se necessário
+  const qs = new URLSearchParams(location.search);
+  const estabelecimentoId = Number(qs.get('estabelecimentoId') || 1);
 
-  const fmt = d => new Date(d).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
-  const filtroData = document.getElementById('filtro-data');
+  const selProf   = document.getElementById('profissional');
+  const filtroData   = document.getElementById('filtro-data');
   const filtroStatus = document.getElementById('filtro-status');
   const tbody = document.getElementById('tbody');
-  const erro = document.getElementById('erro');
-  document.getElementById('logout').onclick = () => location.href = 'index.html';
+  const erro  = document.getElementById('erro');
+
+  // ===== BOTÃO VOLTAR =====
+  document.getElementById('voltar').onclick = () => {
+    if (document.referrer && document.referrer !== location.href)
+      history.back();
+    else
+      window.location.href = 'index.html';
+  };
+
   filtroData.value = new Date().toISOString().slice(0,10);
   document.getElementById('btn-filtrar').onclick = carregar;
+  selProf.onchange = carregar;
 
-  async function getJSON(url){
-    const res = await fetch(url);      // sem headers
-    if(!res.ok) throw new Error('HTTP '+res.status);
-    return res.json();
+  const fmt = d => new Date(d).toLocaleString('pt-BR',{
+    day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'
+  });
+
+  async function j(url){
+    const r = await fetch(url);
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    return r.json();
+  }
+
+  async function carregarProfissionais(){
+    const url = `${API_BASE}/profissionais/${estabelecimentoId}`;
+    const js = await j(url);
+    const profs = js.data ?? js;
+    selProf.innerHTML = profs.map(p => `<option value="${p.id}">${p.nome}</option>`).join('');
   }
 
   async function carregar(){
@@ -82,19 +104,23 @@
     const dia = filtroData.value || new Date().toISOString().slice(0,10);
     const ini = `${dia}T00:00:00`;
     const fim = `${dia}T23:59:59`;
+    const profId = selProf.value;
+
+    if(!profId){
+      tbody.innerHTML = `<tr><td class="empty" colspan="5">Selecione um profissional.</td></tr>`;
+      return;
+    }
+
+    const url = `${API_BASE}/agendamentos/profissional` +
+                `?profissionalId=${encodeURIComponent(profId)}` +
+                `&ini=${encodeURIComponent(ini)}` +
+                `&fim=${encodeURIComponent(fim)}` +
+                (filtroStatus.value ? `&status=${encodeURIComponent(filtroStatus.value)}` : '');
 
     try{
-      const url = `${API}/agendamentos/profissional` +
-                  `?profissionalId=${encodeURIComponent(PROFISSIONAL_ID)}` +
-                  `&ini=${encodeURIComponent(ini)}` +
-                  `&fim=${encodeURIComponent(fim)}` +
-                  (filtroStatus.value ? `&status=${encodeURIComponent(filtroStatus.value)}` : '');
-
-      const json = await getJSON(url);
-      const itens = Array.isArray(json) ? json : (json.data?.itens ?? json.data ?? []);
-      const statusFiltro = (filtroStatus.value || '').toUpperCase();
-      const lista = statusFiltro ? itens.filter(x => (x.status || '').toUpperCase() === statusFiltro) : itens;
-      render(lista);
+      const js = await j(url);
+      const list = js.data ?? [];
+      render(list);
     }catch(e){
       console.error(e);
       erro.style.display = 'block';
@@ -104,26 +130,24 @@
 
   function render(lista){
     if(!lista.length){
-      tbody.innerHTML = `<tr><td class="empty" colspan="5">Nenhum agendamento.</td></tr>`;
+      tbody.innerHTML = `<tr><td class="empty" colspan="5">Nenhum agendamento para os filtros.</td></tr>`;
       return;
     }
-    tbody.innerHTML = lista.map(a=>{
-      const cliente = a.cliente ?? a.clienteNome ?? '—';
-      const servico = a.servico ?? a.servicoNome ?? '—';
-      const profissional = a.profissional ?? a.profissionalNome ?? '—';
-      const data = a.dtInicio ?? a.data ?? a.dataHora ?? a.DtInicio ?? '';
-      const status = (a.status ?? a.Status ?? 'Pendente').toString();
-      return `<tr>
-        <td>${cliente}</td>
-        <td>${servico}</td>
-        <td>${profissional}</td>
-        <td>${fmt(data)}</td>
-        <td><span class="badge">${status}</span></td>
-      </tr>`;
-    }).join('');
+    tbody.innerHTML = lista.map(a => `
+      <tr>
+        <td>${a.cliente ?? '—'}</td>
+        <td>${a.servico ?? '—'}</td>
+        <td>${a.profissional ?? '—'}</td>
+        <td>${fmt(a.dtInicio)}</td>
+        <td><span class="badge">${a.status ?? 'Pendente'}</span></td>
+      </tr>
+    `).join('');
   }
 
-  carregar();
+  (async function init(){
+    await carregarProfissionais();
+    await carregar();
+  })();
 </script>
 </body>
 </html>

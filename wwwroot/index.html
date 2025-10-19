@@ -12,7 +12,6 @@
             --bg: #f5f7fa;
             --card: #fff;
             --muted: #8a94a6;
-            --radius: 16px
         }
 
         * {
@@ -23,7 +22,7 @@
             margin: 0;
             background: var(--bg);
             color: #1c2430;
-            font: 500 15px/1.45 Inter, system-ui, Segoe UI, Roboto, Arial, sans-serif;
+            font: 500 15px/1.45 Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif
         }
 
         header {
@@ -107,7 +106,7 @@
             background: var(--card);
             border-radius: 20px;
             padding: 20px;
-            box-shadow: 0 16px 40px rgba(15,43,92,.06), 0 4px 12px rgba(15,43,92,.05)
+            box-shadow: 0 16px 40px rgba(15,43,92,.06),0 4px 12px rgba(15,43,92,.05)
         }
 
         .kpi {
@@ -169,14 +168,31 @@
             padding: 6px 0
         }
 
+        /* Badges de status */
         .badge {
             display: inline-block;
             padding: 4px 8px;
             border-radius: 10px;
             font-size: 12px;
-            background: #eefaf8;
-            color: #0d6e64
+            background: #eef2f7;
+            color: #374151
         }
+
+        .badge--red {
+            background: #ffe5e5;
+            color: #b91c1c
+        }
+        /* CANCELADO */
+        .badge--orange {
+            background: #fff3e6;
+            color: #b45309
+        }
+        /* PENDENTE  */
+        .badge--green {
+            background: #e7f7f0;
+            color: #0f766e
+        }
+        /* CONFIRMADO / CONCLUÍDO */
 
         .searchbar {
             display: flex;
@@ -202,16 +218,24 @@
             font-weight: 700;
             display: none
         }
+
+        .legend {
+            color: #6b7280;
+            font-size: 13px;
+            margin-bottom: 8px
+        }
+
+        .grid-1 {
+            display: grid;
+            gap: 16px
+        }
     </style>
 </head>
 <body>
     <header>
         <div class="top">
             <div class="brand" aria-label="AgoraHora">
-                <svg viewBox="0 0 64 64" aria-hidden="true">
-                    <circle cx="32" cy="32" r="28" fill="none" stroke="#19b7a6" stroke-width="6" />
-                    <path d="M20 33.5l7 7 17-17" fill="none" stroke="#19b7a6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
+                <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="28" fill="none" stroke="#19b7a6" stroke-width="6" /><path d="M20 33.5l7 7 17-17" fill="none" stroke="#19b7a6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg>
                 <div class="name">AgoraHora</div>
             </div>
             <div class="user">
@@ -221,14 +245,14 @@
         </div>
     </header>
 
-    <main class="container">
+    <main class="container grid-1">
         <section class="grid grid-3">
-            <div class="card kpi"><h3>Agendados (hoje)</h3><strong id="kpi-hoje">–</strong></div>
+            <div class="card kpi"><h3>Agendados</h3><strong id="kpi-hoje">–</strong></div>
             <div class="card kpi"><h3>Atendidos</h3><strong id="kpi-atendidos">–</strong></div>
             <div class="card kpi"><h3>Cancelados</h3><strong id="kpi-cancelados">–</strong></div>
         </section>
 
-        <section class="grid grid-2" style="margin-top:16px">
+        <section class="grid grid-2">
             <div class="card">
                 <h2 style="margin:0 0 12px;color:var(--brand-navy)">Acesso rápido</h2>
                 <div class="actions">
@@ -246,19 +270,41 @@
                         <option value="">Todos os status</option>
                         <option value="PENDENTE">Pendente</option>
                         <option value="CONFIRMADO">Confirmado</option>
-                        <option value="ATENDIDO">Atendido</option>
+                        <option value="CONCLUIDO">Concluído</option>
                         <option value="CANCELADO">Cancelado</option>
                     </select>
                     <button class="btn" id="btn-filtrar">Filtrar</button>
                 </div>
                 <div class="table-wrap">
                     <table>
-                        <thead><tr><th>Cliente</th><th>Serviço</th><th>Profissional</th><th>Data</th><th>Status</th></tr></thead>
-                        <tbody id="tbody-agendamentos"><tr><td class="empty" colspan="5">Carregando…</td></tr></tbody>
+                        <thead>
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Serviço</th>
+                                <th>Profissional</th>
+                                <th>Data</th>
+                                <th>Hora</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-agendamentos">
+                            <tr><td class="empty" colspan="6">Carregando…</td></tr>
+                        </tbody>
                     </table>
                 </div>
                 <div id="erro" class="error">Não foi possível carregar os agendamentos.</div>
             </div>
+        </section>
+
+        <!-- Desempenho mensal (CONCLUÍDO) -->
+        <section class="card">
+            <h2 style="margin:0 0 6px;color:var(--brand-navy)">Desempenho no mês — <span id="mes-prof">Profissional</span></h2>
+            <div id="mes-legenda" class="legend">—</div>
+            <table>
+                <thead><tr><th>Serviço / Especialidade</th><th>Quantidade no mês</th></tr></thead>
+                <tbody id="tbody-mes"><tr><td class="empty" colspan="2">Carregando…</td></tr></tbody>
+                <tfoot><tr><th>Total atendidos</th><th id="mes-total">0</th></tr></tfoot>
+            </table>
         </section>
     </main>
 
@@ -275,15 +321,19 @@
             location.href = 'login.html';
         };
 
-        // same-origin API
+        // api
         async function api(path) {
             const r = await fetch('/api' + path, { headers: { Authorization: 'Bearer ' + token } });
             if (!r.ok) throw new Error('HTTP ' + r.status);
             return r.json();
         }
 
-        const PROFISSIONAL_ID = 1; // ajuste se necessário
-        const fmt = d => new Date(d).toLocaleString('pt-BR', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' });
+        // config
+        const PROFISSIONAL_ID = 1;
+        const fmtData = d => new Date(d).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+        const fmtHora = d => new Date(d).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+        // elems
         const kHoje = document.getElementById('kpi-hoje');
         const kAtendidos = document.getElementById('kpi-atendidos');
         const kCancelados = document.getElementById('kpi-cancelados');
@@ -291,47 +341,124 @@
         const erro = document.getElementById('erro');
         const filtroData = document.getElementById('filtro-data');
         const filtroStatus = document.getElementById('filtro-status');
+
+        const tbodyMes = document.getElementById('tbody-mes');
+        const mesTotal = document.getElementById('mes-total');
+        const mesLegenda = document.getElementById('mes-legenda');
+        const mesProf = document.getElementById('mes-prof');
+
         const todayISO = new Date().toISOString().slice(0, 10);
         filtroData.value = todayISO;
         document.getElementById('btn-filtrar').onclick = carregar;
 
+        function statusClass(st) {
+            const s = String(st || '').toUpperCase();
+            if (s === 'CANCELADO') return 'badge--red';
+            if (s === 'PENDENTE') return 'badge--orange';
+            if (s === 'CONFIRMADO') return 'badge--green';
+            if (s === 'CONCLUIDO' || s === 'CONCLUÍDO') return 'badge--green';
+            return '';
+        }
+
         async function carregar() {
             erro.style.display = 'none';
-            tbody.innerHTML = `<tr><td class="empty" colspan="5">Carregando…</td></tr>`;
+            tbody.innerHTML = `<tr><td class="empty" colspan="6">Carregando…</td></tr>`;
+
             const dia = filtroData.value || todayISO;
             const ini = `${dia}T00:00:00`;
             const fim = `${dia}T23:59:59`;
+
             try {
                 const r = await api(`/agendamentos/profissional?profissionalId=${PROFISSIONAL_ID}&ini=${encodeURIComponent(ini)}&fim=${encodeURIComponent(fim)}`);
                 const dados = Array.isArray(r) ? r : (r.data ?? []);
-                const fil = filtroStatus.value ? dados.filter(a => (a.status || '').toUpperCase() === filtroStatus.value) : dados;
+                const fil = filtroStatus.value
+                    ? dados.filter(a => String(a.status || '').toUpperCase() === filtroStatus.value)
+                    : dados;
                 renderTabela(fil);
                 renderKPIs(dados);
             } catch (e) {
                 erro.style.display = 'block';
-                tbody.innerHTML = `<tr><td class="empty" colspan="5">Sem dados.</td></tr>`;
+                tbody.innerHTML = `<tr><td class="empty" colspan="6">Sem dados.</td></tr>`;
                 kHoje.textContent = kAtendidos.textContent = kCancelados.textContent = '–';
             }
+
+            await carregarResumoMes();
         }
 
         function renderTabela(lista) {
-            if (!lista.length) { tbody.innerHTML = `<tr><td class="empty" colspan="5">Nenhum agendamento.</td></tr>`; return; }
-            tbody.innerHTML = lista.slice(0, 8).map(a => `
-          <tr>
-            <td>${a.cliente ?? '—'}</td>
-            <td>${a.servico ?? '—'}</td>
-            <td>${a.profissional ?? '—'}</td>
-            <td>${fmt(a.dtInicio)}</td>
-            <td><span class="badge">${a.status ?? 'PENDENTE'}</span></td>
-          </tr>`).join('');
+            if (!lista.length) {
+                tbody.innerHTML = `<tr><td class="empty" colspan="6">Nenhum agendamento.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = lista.slice(0, 8).map(a => {
+                const st = a.status ?? 'PENDENTE';
+                return `
+            <tr>
+              <td>${a.cliente ?? '—'}</td>
+              <td>${a.servico ?? a.especialidade ?? '—'}</td>
+              <td>${a.profissional ?? '—'}</td>
+              <td>${fmtData(a.dtInicio)}</td>
+              <td>${fmtHora(a.dtInicio)}</td>
+              <td><span class="badge ${statusClass(st)}">${st}</span></td>
+            </tr>`;
+            }).join('');
         }
 
         function renderKPIs(hoje) {
-            const atendidos = hoje.filter(a => (a.status || '').toUpperCase() === 'CONCLUIDO').length;
-            const cancelados = hoje.filter(a => (a.status || '').toUpperCase() === 'CANCELADO').length;
+            const atendidos = hoje.filter(a => String(a.status || '').toUpperCase() === 'CONCLUIDO').length;
+            const cancelados = hoje.filter(a => String(a.status || '').toUpperCase() === 'CANCELADO').length;
             kHoje.textContent = hoje.length;
             kAtendidos.textContent = atendidos;
             kCancelados.textContent = cancelados;
+        }
+
+        function rangeMesAtual() {
+            const d = new Date();
+            const ini = new Date(d.getFullYear(), d.getMonth(), 1);
+            const fim = new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 59, 999);
+            return {
+                ini: ini.toISOString(), fim: fim.toISOString(),
+                label: ini.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })
+            };
+        }
+
+        async function getProfNome(id) {
+            try {
+                const r = await api(`/profissionais/id/${id}`);
+                return r?.data?.nome ?? r?.data?.Nome ?? `#${id}`;
+            } catch { return `#${id}`; }
+        }
+
+        async function carregarResumoMes() {
+            const { ini, fim, label } = rangeMesAtual();
+            mesLegenda.textContent = label;
+            mesProf.textContent = await getProfNome(PROFISSIONAL_ID);
+
+            tbodyMes.innerHTML = `<tr><td class="empty" colspan="2">Carregando…</td></tr>`;
+            mesTotal.textContent = '0';
+
+            try {
+                const r = await api(`/agendamentos/profissional?profissionalId=${PROFISSIONAL_ID}&ini=${encodeURIComponent(ini)}&fim=${encodeURIComponent(fim)}`);
+                const dados = Array.isArray(r) ? r : (r.data ?? []);
+                const atendidos = dados.filter(a => String(a.status || '').toUpperCase() === 'CONCLUIDO');
+
+                const mapa = {};
+                for (const a of atendidos) {
+                    const key = (a.servico ?? a.especialidade ?? '—').trim() || '—';
+                    mapa[key] = (mapa[key] || 0) + 1;
+                }
+                const rows = Object.entries(mapa).sort((a, b) => b[1] - a[1]);
+
+                if (!rows.length) {
+                    tbodyMes.innerHTML = `<tr><td class="empty" colspan="2">Sem atendimentos concluídos no mês.</td></tr>`;
+                    mesTotal.textContent = '0';
+                    return;
+                }
+                tbodyMes.innerHTML = rows.map(([nome, qt]) => `<tr><td>${nome}</td><td>${qt}</td></tr>`).join('');
+                mesTotal.textContent = String(atendidos.length);
+            } catch (e) {
+                tbodyMes.innerHTML = `<tr><td class="empty" colspan="2">Erro ao carregar.</td></tr>`;
+            }
         }
 
         const nome = localStorage.getItem('ah_user_name');

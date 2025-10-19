@@ -14,6 +14,7 @@ public class AgendamentosController : ControllerBase
     private readonly AppDbContext _db;
     public AgendamentosController(AppDbContext db) => _db = db;
 
+    // POST /api/agendamentos
     [HttpPost]
     public async Task<IActionResult> Criar([FromBody] AgendamentoCreateDto dto)
     {
@@ -23,10 +24,13 @@ public class AgendamentosController : ControllerBase
                 .FirstOrDefaultAsync(s => s.Id == dto.ServicoId && s.Ativo);
             if (serv is null) return BadRequest(new { message = "Serviço inválido." });
 
-            if (!await _db.Profissionais.AnyAsync(p => p.Id == dto.ProfissionalId && p.EstabelecimentoId == dto.EstabelecimentoId && p.Ativo))
-                return BadRequest(new { message = "Profissional inválido." });
-            if (!await _db.Clientes.AnyAsync(c => c.Id == dto.ClienteId && c.EstabelecimentoId == dto.EstabelecimentoId))
-                return BadRequest(new { message = "Cliente inválido." });
+            var profOk = await _db.Profissionais
+                .AnyAsync(p => p.Id == dto.ProfissionalId && p.EstabelecimentoId == dto.EstabelecimentoId && p.Ativo);
+            if (!profOk) return BadRequest(new { message = "Profissional inválido." });
+
+            var cliOk = await _db.Clientes
+                .AnyAsync(c => c.Id == dto.ClienteId && c.EstabelecimentoId == dto.EstabelecimentoId);
+            if (!cliOk) return BadRequest(new { message = "Cliente inválido." });
 
             var dtFim = dto.DtInicio.AddMinutes(serv.DuracaoMin);
 
@@ -62,12 +66,14 @@ public class AgendamentosController : ControllerBase
             return StatusCode(500, new { message = "Erro inesperado.", detalhe = ex.Message });
         }
     }
+
+    // GET /api/agendamentos/profissional?profissionalId=&ini=&fim=&status=
     [HttpGet("profissional")]
     public async Task<IActionResult> ListarPorProfissional(
-     [FromQuery] int profissionalId,
-     [FromQuery] DateTime ini,
-     [FromQuery] DateTime fim,
-     [FromQuery] string? status)
+        [FromQuery] int profissionalId,
+        [FromQuery] DateTime ini,
+        [FromQuery] DateTime fim,
+        [FromQuery] string? status)
     {
         if (profissionalId <= 0 || fim <= ini)
             return BadRequest(new { message = "Parâmetros inválidos." });
@@ -127,15 +133,35 @@ public class AgendamentosController : ControllerBase
         return Ok(new { message = "Ok", data });
     }
 
-
-
-
-
+    // GET /api/agendamentos/{id}
     [HttpGet("{id:int}")]
     public async Task<IActionResult> Obter(int id)
     {
         var ag = await _db.Agendamentos.FindAsync(id);
         if (ag is null) return NotFound(new { message = "Agendamento não encontrado." });
         return Ok(new { message = "Agendamento encontrado.", data = ag });
+    }
+
+    // DELETE /api/agendamentos/{id}
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Cancelar(int id)
+    {
+        var ag = await _db.Agendamentos.FindAsync(id);
+        if (ag is null)
+            return NotFound(new { message = "Agendamento não encontrado." });
+
+        if (ag.Status == StatusAgendamento.Cancelado)
+            return BadRequest(new { message = "Agendamento já está cancelado." });
+
+        if (ag.Status == StatusAgendamento.Concluido)
+            return BadRequest(new { message = "Agendamento já foi concluído." });
+
+        ag.Status = StatusAgendamento.Cancelado;
+        ag.Observacao = string.IsNullOrEmpty(ag.Observacao)
+            ? "Cancelado pelo cliente"
+            : $"{ag.Observacao} | Cancelado pelo cliente";
+
+        await _db.SaveChangesAsync();
+        return Ok(new { message = "Agendamento cancelado com sucesso.", data = ag });
     }
 }

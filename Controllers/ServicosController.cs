@@ -11,6 +11,7 @@ public class ServicosController : ControllerBase
 {
     private readonly AppDbContext _db;
     public ServicosController(AppDbContext db) => _db = db;
+
     [HttpGet("{estabelecimentoId:int}")]
     public async Task<IActionResult> Listar(int estabelecimentoId)
     {
@@ -22,7 +23,6 @@ public class ServicosController : ControllerBase
         return Ok(new { data = dados });
     }
 
-    // GET /api/servicos/id/10
     [HttpGet("id/{id:int}")]
     public async Task<IActionResult> Obter(int id)
     {
@@ -34,27 +34,54 @@ public class ServicosController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Criar([FromBody] Servico s)
     {
-        try
+        if (string.IsNullOrWhiteSpace(s.Nome))
+            return BadRequest(new { message = "Nome é obrigatório." });
+
+        s.Nome = s.Nome.Trim();
+
+        var existe = await _db.Servicos.AsNoTracking()
+            .AnyAsync(x => x.EstabelecimentoId == s.EstabelecimentoId && x.Nome == s.Nome);
+
+        if (existe) return Conflict(new { message = "Já existe um serviço com esse nome nesse estabelecimento." });
+
+        _db.Servicos.Add(s);
+        await _db.SaveChangesAsync();
+        return Ok(new { message = "Serviço criado com sucesso.", data = s });
+    }
+
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Atualizar(int id, [FromBody] Servico s)
+    {
+        var dbS = await _db.Servicos.FindAsync(id);
+        if (dbS is null) return NotFound(new { message = "Serviço não encontrado." });
+
+        var novoNome = s.Nome?.Trim() ?? dbS.Nome;
+        if (!string.Equals(novoNome, dbS.Nome, StringComparison.OrdinalIgnoreCase))
         {
-            s.Nome = s.Nome.Trim();
-
-            bool existe = await _db.Servicos.AsNoTracking()
-                .AnyAsync(x => x.EstabelecimentoId == s.EstabelecimentoId && x.Nome == s.Nome);
-
-            if (existe) return Conflict(new { message = "Já existe um serviço com esse nome nesse estabelecimento." });
-
-            _db.Servicos.Add(s);
-            await _db.SaveChangesAsync();
-
-            return Ok(new { message = "Serviço criado com sucesso.", data = s });
+            var conflito = await _db.Servicos.AsNoTracking().AnyAsync(x =>
+                x.EstabelecimentoId == dbS.EstabelecimentoId &&
+                x.Nome == novoNome &&
+                x.Id != dbS.Id);
+            if (conflito) return Conflict(new { message = "Já existe um serviço com esse nome nesse estabelecimento." });
+            dbS.Nome = novoNome;
         }
-        catch (DbUpdateException ex)
-        {
-            return StatusCode(500, new { message = "Erro ao salvar serviço.", detalhe = ex.InnerException?.Message });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { message = "Erro inesperado.", detalhe = ex.Message });
-        }
+
+        if (s.DuracaoMin > 0) dbS.DuracaoMin = s.DuracaoMin;
+        if (s.Preco >= 0) dbS.Preco = s.Preco;
+        dbS.Ativo = s.Ativo || dbS.Ativo;
+
+        await _db.SaveChangesAsync();
+        return Ok(new { message = "Serviço atualizado.", data = new { dbS.Id, dbS.Nome, dbS.Preco, dbS.DuracaoMin } });
+    }
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Remover(int id)
+    {
+        var dbS = await _db.Servicos.FindAsync(id);
+        if (dbS is null) return NotFound(new { message = "Serviço não encontrado." });
+
+        _db.Servicos.Remove(dbS);
+        await _db.SaveChangesAsync();
+        return Ok(new { message = "Serviço removido." });
     }
 }

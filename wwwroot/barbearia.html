@@ -80,6 +80,14 @@
             color: #0f6d64
         }
 
+        .btn-danger {
+            background: #e35151
+        }
+
+            .btn-danger:hover {
+                background: #c63838
+            }
+
         .container {
             max-width: 1200px;
             margin: 20px auto;
@@ -101,7 +109,8 @@
             width: 100%;
             height: 200px;
             object-fit: cover;
-            border-radius: 14px
+            border-radius: 14px;
+            background: #eef2f7
         }
 
         .shop-head {
@@ -297,6 +306,44 @@
             font-weight: 800;
             display: none
         }
+
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(11,19,36,.45);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 50
+        }
+
+        .modal {
+            width: min(520px,100%);
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(15,43,92,.25);
+            padding: 18px
+        }
+
+            .modal h3 {
+                margin: 0 0 8px
+            }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 12px
+        }
+
+        .ok {
+            background: #e7f7f5;
+            border: 1px solid #caefe8;
+            border-radius: 14px;
+            padding: 12px;
+            margin-top: 8px
+        }
     </style>
 </head>
 <body>
@@ -312,15 +359,20 @@
 
     <main class="container">
         <section class="hero-card">
-            <img id="cover" class="cover" src="img/barbearia1.jpg" alt="Foto da barbearia">
+            <img id="cover" class="cover"
+                 src="img/barbearia1.jpg"
+                 alt="Foto da barbearia"
+                 referrerpolicy="no-referrer"
+                 crossorigin="anonymous"
+                 onerror="this.onerror=null;this.src='img/barbearia1.jpg'">
             <div>
                 <div class="shop-head">
                     <div>
                         <h2 id="shop-name" class="shop-title">Barbearia</h2>
                         <div class="muted" id="shop-address">Endereço</div>
-                        <div class="muted">Avaliação: <span class="rating" id="shop-rating">⭐ 4.8</span></div>
+                        <div class="muted">Avaliação: <span class="rating" id="shop-rating">—</span></div>
                     </div>
-                    <div style="margin-left:auto"><span id="shop-open" class="badge">Aberta agora</span></div>
+                    <div style="margin-left:auto"><span id="shop-open" class="badge">—</span></div>
                 </div>
                 <p class="muted" style="margin:10px 0 0">Escolha um serviço, um profissional, selecione a data e confirme seu horário.</p>
             </div>
@@ -357,35 +409,126 @@
 
                 <div id="erro" class="error">Selecione serviço, profissional, data e horário.</div>
 
-                <div style="margin-top:10px;display:flex;gap:10px;justify-content:flex-end">
+                <div style="margin-top:10px;display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap">
                     <button class="btn btn-ghost" onclick="limparSelecao()">Limpar</button>
-                    <button class="btn" onclick="confirmar()">Confirmar Agendamento</button>
+                    <button class="btn-danger btn" id="btn-cancelar">Cancelar agendamento</button>
+                    <button class="btn" id="btn-confirmar">Confirmar Agendamento</button>
                 </div>
             </div>
         </section>
     </main>
 
+    <!-- Modal Cliente -->
+    <div id="modalCliente" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="mc-title">
+        <div class="modal">
+            <h3 id="mc-title" style="color:var(--brand-navy)">Identifique-se</h3>
+            <p class="muted" style="margin:0 0 8px">Precisamos de seus dados para confirmar o agendamento.</p>
+            <label for="cliNome">Nome</label>
+            <input id="cliNome" placeholder="Seu nome completo" />
+            <label for="cliEmail">Email</label>
+            <input id="cliEmail" type="email" placeholder="voce@exemplo.com" />
+            <label for="cliTel">Telefone</label>
+            <input id="cliTel" placeholder="(11) 99999-9999" />
+            <div id="mc-err" class="error" style="display:none"></div>
+            <div class="modal-actions">
+                <button class="btn btn-ghost" id="mc-cancel">Cancelar</button>
+                <button class="btn" id="mc-save">Continuar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Cancelamento -->
+    <div id="modalCancel" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="cx-title">
+        <div class="modal">
+            <h3 id="cx-title" style="color:var(--brand-navy)">Cancelar agendamento</h3>
+            <p class="muted" style="margin:0 0 8px">Informe seus dados e o horário para localizar e cancelar.</p>
+
+            <div id="cx-fast" style="display:none" class="ok">Encontramos seu último agendamento. Você pode cancelar direto.</div>
+
+            <label for="cxEmail">Email</label>
+            <input id="cxEmail" type="email" placeholder="voce@exemplo.com" />
+
+            <label for="cxTel">Telefone</label>
+            <input id="cxTel" placeholder="(11) 99999-9999" />
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                <div>
+                    <label for="cxData">Data</label>
+                    <input id="cxData" type="date" />
+                </div>
+                <div>
+                    <label for="cxHora">Hora</label>
+                    <input id="cxHora" type="time" />
+                </div>
+            </div>
+
+            <div id="cx-err" class="error" style="display:none"></div>
+            <div class="modal-actions">
+                <button class="btn btn-ghost" id="cx-cancel">Fechar</button>
+                <button class="btn-danger btn" id="cx-delete-last" style="display:none">Cancelar último agendamento</button>
+                <button class="btn-danger btn" id="cx-send">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Sucesso -->
+    <div id="modalOk" class="modal-backdrop" role="alertdialog" aria-modal="true" aria-labelledby="ok-title">
+        <div class="modal">
+            <h3 id="ok-title" style="color:var(--brand-navy)">Tudo certo</h3>
+            <div class="ok" id="ok-msg">Operação concluída.</div>
+            <div class="modal-actions">
+                <button class="btn" id="ok-close">Fechar</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // ===== CONFIG =====
-        const API = 'http://localhost:7050/api';
+        const API = '/api';
         const estabelecimentoId = Number(new URLSearchParams(location.search).get('id') || 1);
-        const clienteId = 2; // ajuste após login
+        const LS_CLIENTE_KEY = `ah_cliente_${estabelecimentoId}`;
+        const LS_LAST_AG_KEY = `ah_last_ag_${estabelecimentoId}`;
 
         // ===== HELPERS =====
         const $ = s => document.querySelector(s);
         const $$ = s => document.querySelectorAll(s);
         const fmtBR = d => new Date(d).toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit' });
-        const toHM = d => `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+        const pad2 = v => String(v).padStart(2, '0');
+        const toHM = d => `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
         const overlapHM = (aI, aF, bI, bF) => aI < bF && bI < aF;
+        const getClienteLS = () => JSON.parse(localStorage.getItem(LS_CLIENTE_KEY) || 'null');
+        const setClienteLS = c => localStorage.setItem(LS_CLIENTE_KEY, JSON.stringify(c));
+        const getLastAg = () => JSON.parse(localStorage.getItem(LS_LAST_AG_KEY) || 'null');
+        const setLastAg = id => localStorage.setItem(LS_LAST_AG_KEY, JSON.stringify(id));
+
+        function normalizeImageUrl(u) {
+            const fallback = 'img/barbearia1.jpg';
+            try {
+                if (!u) return fallback;
+                u = String(u).trim();
+                if (u.startsWith('//')) return location.protocol + u;
+                if (/^https?:/i.test(u)) {
+                    const url = new URL(u);
+                    url.pathname = url.pathname.split('/').map(encodeURIComponent).join('/');
+                    return url.toString();
+                }
+                return u;
+            } catch { return fallback; }
+        }
 
         // ===== LOADERS =====
+        async function loadEstab() {
+            const r = await fetch(`${API}/estabelecimentos/${estabelecimentoId}`);
+            if (!r.ok) throw new Error('estab');
+            const j = await r.json(); return j.data ?? j;
+        }
         async function loadServicos() {
-            const r = await fetch(`${API}/servicos/${estabelecimentoId}`);
-            const j = await r.json(); return j.data ?? [];
+            const r = await fetch(`${API}/servicos/${estabelecimentoId}`); const j = await r.json();
+            return j.data ?? [];
         }
         async function loadProfissionais() {
-            const r = await fetch(`${API}/profissionais/${estabelecimentoId}`);
-            const j = await r.json(); return j.data ?? j;
+            const r = await fetch(`${API}/profissionais/${estabelecimentoId}`); const j = await r.json();
+            return j.data ?? j;
         }
         async function loadAgendamentosDia(profId, dataISO) {
             const ini = `${dataISO}T00:00:00`, fim = `${dataISO}T23:59:59`;
@@ -394,22 +537,18 @@
             return (j.data ?? []).map(a => ({ dtInicio: new Date(a.dtInicio), dtFim: new Date(a.dtFim), status: a.status }));
         }
 
-        // ===== HERO MOCK (opcional) =====
-        (function hero() {
-            $('#shop-name').textContent = `Estabelecimento #${estabelecimentoId}`;
-            $('#shop-address').textContent = '—';
-            $('#shop-open').textContent = 'Aberta agora';
-        })();
-
         // ===== UI STATE =====
         const listaServ = $('#lista-servicos');
         const selProf = $('#prof');
         const inputData = $('#data');
         const slotsEl = $('#slots');
+        const erroEl = $('#erro');
+        const btnConfirmar = $('#btn-confirmar');
 
         let servicos = [];
         let servicoSelecionado = null;
         let slotSelecionado = null;
+        let abreMin = 9 * 60, fechaMin = 18 * 60;
 
         function atualizarResumo(hora = '') {
             $('#sum-servico').textContent = `Serviço: ${servicoSelecionado ? servicoSelecionado.nome : '—'}`;
@@ -418,24 +557,30 @@
             $('#sum-data').textContent = `Data: ${fmtBR(inputData.value || new Date().toISOString().slice(0, 10))}`;
             $('#sum-hora').textContent = `Hora: ${hora || '—'}`;
         }
+        function isCancelado(st) {
+            if (typeof st === 'number') return st === 3;
+            if (typeof st === 'string') return st.toUpperCase() === 'CANCELADO';
+            return false;
+        }
 
+        // ===== SLOTS =====
         async function gerarSlots() {
             slotsEl.innerHTML = ''; slotSelecionado = null; atualizarResumo('');
-            if (!selProf.value) return;
-            const dur = servicoSelecionado?.duracao ?? 30;
+            if (!selProf.value) {
+                slotsEl.innerHTML = '<div class="muted">Escolha um profissional.</div>';
+                return;
+            }
+            const dur = servicoSelecionado?.duracao ?? 60;
             const profId = Number(selProf.value);
             const dataISO = inputData.value;
-
             const ags = await loadAgendamentosDia(profId, dataISO);
-            const busy = ags
-                .filter(a => a.status !== 'Cancelado')
-                .map(a => ({ ini: toHM(a.dtInicio), fim: toHM(a.dtFim) }));
+            const busy = ags.filter(a => !isCancelado(a.status)).map(a => ({ ini: toHM(a.dtInicio), fim: toHM(a.dtFim) }));
 
-            const start = new Date(`${dataISO}T09:00:00`);
-            const end = new Date(`${dataISO}T18:00:00`);
+            const start = new Date(`${dataISO}T${pad2(Math.floor(abreMin / 60))}:${pad2(abreMin % 60)}:00`);
+            const end = new Date(`${dataISO}T${pad2(Math.floor(fechaMin / 60))}:${pad2(fechaMin % 60)}:00`);
             const now = new Date();
 
-            for (let t = new Date(start); t < end; t = new Date(t.getTime() + 15 * 60000)) {
+            for (let t = new Date(start); t < end; t = new Date(t.getTime() + dur * 60000)) {
                 const iniHM = toHM(t);
                 const fimHM = toHM(new Date(t.getTime() + dur * 60000));
                 if (new Date(`${dataISO}T${fimHM}:00`) > end) break;
@@ -450,10 +595,11 @@
                 btn.onclick = () => {
                     $$('#slots .slot.selected').forEach(s => s.classList.remove('selected'));
                     btn.classList.add('selected'); slotSelecionado = iniHM;
-                    $('#erro').style.display = 'none'; atualizarResumo(iniHM);
+                    erroEl.style.display = 'none'; atualizarResumo(iniHM);
                 };
                 slotsEl.appendChild(btn);
             }
+            if (!slotsEl.children.length) slotsEl.innerHTML = '<div class="muted">Sem horários disponíveis.</div>';
         }
 
         function limparSelecao() {
@@ -463,14 +609,121 @@
         }
         window.limparSelecao = limparSelecao;
 
-        async function confirmar() {
-            const erro = $('#erro');
-            if (!servicoSelecionado || !selProf.value || !inputData.value || !slotSelecionado) {
-                erro.style.display = 'block'; return;
+        // ===== Modal Cliente =====
+        const modal = $('#modalCliente');
+        const mcErr = $('#mc-err');
+        const openModal = () => {
+            const c = getClienteLS();
+            if (c) { $('#cliNome').value = c.nome || ''; $('#cliEmail').value = c.email || ''; $('#cliTel').value = c.telefone || ''; }
+            mcErr.style.display = 'none'; modal.style.display = 'flex'; $('#cliNome').focus();
+        };
+        const closeModal = () => { modal.style.display = 'none'; };
+        $('#mc-cancel').onclick = closeModal;
+
+        $('#mc-save').onclick = async () => {
+            const nome = $('#cliNome').value.trim();
+            const email = $('#cliEmail').value.trim();
+            const telefone = $('#cliTel').value.replace(/\D+/g, '').trim();
+            if (!nome || (!email && !telefone)) { mcErr.textContent = 'Informe nome e email ou telefone.'; mcErr.style.display = 'block'; return; }
+            try {
+                const r = await fetch(`${API}/clientes/ensure`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ estabelecimentoId, nome, email, telefone })
+                });
+                const j = await r.json();
+                if (!r.ok) throw new Error(j.message || `HTTP ${r.status}`);
+                const cli = j.data || j;
+                setClienteLS({ id: cli.id, nome: cli.nome, email: cli.email, telefone: cli.telefone });
+                closeModal(); confirmarAgendamento();
+            } catch (e) { mcErr.textContent = `Erro: ${e.message}`; mcErr.style.display = 'block'; }
+        };
+
+        // ===== Modal Cancelamento =====
+        const cancelModal = $('#modalCancel');
+        const cxErr = $('#cx-err');
+        const cxFast = $('#cx-fast');
+        const btnCancel = $('#btn-cancelar');
+        const btnDeleteLast = $('#cx-delete-last');
+
+        function openCancelModal() {
+            cxErr.style.display = 'none';
+            $('#cxEmail').value = getClienteLS()?.email || '';
+            $('#cxTel').value = getClienteLS()?.telefone || '';
+            $('#cxData').value = inputData.value || new Date().toISOString().slice(0, 10);
+            $('#cxHora').value = slotSelecionado || '';
+            const last = getLastAg();
+            if (last) {
+                cxFast.style.display = 'block';
+                btnDeleteLast.style.display = 'inline-block';
+            } else {
+                cxFast.style.display = 'none';
+                btnDeleteLast.style.display = 'none';
             }
+            cancelModal.style.display = 'flex';
+        }
+        function closeCancelModal() { cancelModal.style.display = 'none'; }
+        $('#cx-cancel').onclick = closeCancelModal;
+
+        btnDeleteLast.onclick = async () => {
+            const id = getLastAg();
+            if (!id) return;
+            try {
+                const r = await fetch(`${API}/agendamentos/${id}`, { method: 'DELETE' });
+                const j = await r.json().catch(() => ({}));
+                if (!r.ok) throw new Error(j.message || `HTTP ${r.status}`);
+                localStorage.removeItem(LS_LAST_AG_KEY);
+                closeCancelModal();
+                $('#ok-msg').textContent = 'Agendamento cancelado.';
+                $('#ok-title').textContent = 'Cancelado';
+                $('#modalOk').style.display = 'flex';
+                gerarSlots();
+            } catch (e) {
+                cxErr.textContent = `Falha ao cancelar: ${e.message}`;
+                cxErr.style.display = 'block';
+            }
+        };
+
+        $('#cx-send').onclick = async () => {
+            const email = $('#cxEmail').value.trim();
+            const telefone = $('#cxTel').value.replace(/\D+/g, '').trim();
+            const data = $('#cxData').value;
+            const hora = $('#cxHora').value;
+            if ((!email && !telefone) || !data || !hora) {
+                cxErr.textContent = 'Preencha email ou telefone, data e hora.'; cxErr.style.display = 'block'; return;
+            }
+            try {
+                const r = await fetch(`${API}/agendamentos/cancelar-publico`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ estabelecimentoId, email, telefone, data, hora })
+                });
+                const j = await r.json().catch(() => ({}));
+                if (!r.ok) throw new Error(j.message || `HTTP ${r.status}`);
+                closeCancelModal();
+                $('#ok-msg').textContent = 'Agendamento cancelado e o salão foi avisado.';
+                $('#ok-title').textContent = 'Cancelado';
+                $('#modalOk').style.display = 'flex';
+                gerarSlots();
+            } catch (e) {
+                cxErr.textContent = `Falha ao cancelar: ${e.message}`;
+                cxErr.style.display = 'block';
+            }
+        };
+
+        btnCancel.onclick = openCancelModal;
+
+        // ===== Modal OK =====
+        const okModal = $('#modalOk');
+        const okMsg = $('#ok-msg');
+        const openOk = msg => { okMsg.textContent = msg; okModal.style.display = 'flex'; };
+        const closeOk = () => { okModal.style.display = 'none'; };
+        $('#ok-close').onclick = closeOk;
+
+        // ===== Confirmar =====
+        async function confirmarAgendamento() {
+            const c = getClienteLS();
             const payload = {
                 estabelecimentoId,
-                clienteId,
+                clienteId: c.id,
                 profissionalId: Number(selProf.value),
                 servicoId: servicoSelecionado.id,
                 dtInicio: `${inputData.value}T${slotSelecionado}:00`
@@ -482,31 +735,51 @@
                 });
                 const j = await r.json().catch(() => ({}));
                 if (!r.ok) throw new Error(j.message || `HTTP ${r.status}`);
-                alert('Agendamento criado com sucesso.');
+                const novoId = j.data?.id ?? j.id;
+                if (novoId) setLastAg(novoId);
+                openOk(`Horário reservado para ${fmtBR(inputData.value)} às ${slotSelecionado}.`);
                 gerarSlots();
             } catch (e) {
-                erro.textContent = `Falha ao agendar: ${e.message}`;
-                erro.style.display = 'block';
+                erroEl.textContent = `Falha ao agendar: ${e.message}`;
+                erroEl.style.display = 'block';
             }
         }
-        window.confirmar = confirmar;
+
+        $('#btn-confirmar').onclick = () => {
+            if (!servicoSelecionado || !selProf.value || !inputData.value || !slotSelecionado) {
+                erroEl.style.display = 'block'; return;
+            }
+            openModal();
+        };
 
         // ===== INIT =====
         (async function init() {
             const hojeISO = new Date().toISOString().slice(0, 10);
             inputData.value = hojeISO; inputData.min = hojeISO;
 
-            // serviços
+            try {
+                const e = await loadEstab();
+                $('#shop-name').textContent = e.nome || `Estabelecimento #${estabelecimentoId}`;
+                $('#shop-address').textContent = e.endereco || '—';
+                $('#shop-rating').textContent = e.avaliacao ? `⭐ ${Number(e.avaliacao).toFixed(1)}` : '—';
+                $('#shop-open').textContent = e.aberta ? 'Aberta agora' : 'Fechada';
+                $('#shop-open').className = 'badge' + (e.aberta ? '' : ' off');
+
+                const imgSrc = normalizeImageUrl(e.img || e.imagemUrl);
+                const cover = $('#cover');
+                cover.src = imgSrc;
+            } catch { }
+
             servicos = await loadServicos();
             listaServ.innerHTML = '';
             servicos.forEach(s => {
                 const el = document.createElement('div'); el.className = 'servico-item';
                 el.innerHTML = `
-            <div>
-              <div style="font-weight:800;color:#0f2b5c">${s.nome}</div>
-              <div class="srv-meta">R$ ${Number(s.preco).toFixed(2).replace('.', ',')} • ${s.duracao} min</div>
-            </div>
-            <button class="btn btn-ghost">Escolher</button>`;
+              <div>
+                <div style="font-weight:800;color:#0f2b5c">${s.nome}</div>
+                <div class="srv-meta">R$ ${Number(s.preco).toFixed(2).replace('.', ',')} • ${s.duracao} min</div>
+              </div>
+              <button class="btn btn-ghost">Escolher</button>`;
                 el.querySelector('button').onclick = () => {
                     servicoSelecionado = s;
                     $$('#lista-servicos .servico-item').forEach(i => i.style.borderColor = '#e9eef5');
@@ -515,12 +788,16 @@
                 listaServ.appendChild(el);
             });
 
-            // profissionais
             const profs = await loadProfissionais();
             selProf.innerHTML = '';
-            (profs || []).forEach(p => {
-                const o = document.createElement('option'); o.value = p.id; o.textContent = p.nome; selProf.appendChild(o);
-            });
+            if (!profs || !profs.length) {
+                const o = document.createElement('option'); o.value = ''; o.textContent = 'Nenhum profissional disponível'; selProf.appendChild(o);
+                selProf.disabled = true; btnConfirmar.disabled = true;
+                slotsEl.innerHTML = '<div class="muted">Nenhum profissional disponível.</div>';
+            } else {
+                selProf.disabled = false; btnConfirmar.disabled = false;
+                profs.forEach(p => { const o = document.createElement('option'); o.value = p.id; o.textContent = p.nome; selProf.appendChild(o); });
+            }
 
             selProf.addEventListener('change', gerarSlots);
             inputData.addEventListener('change', gerarSlots);

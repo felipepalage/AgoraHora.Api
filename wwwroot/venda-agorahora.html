@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>AgoraHora – Sistema de Agendamentos | TechSphere</title>
+<meta name="description" content="AgoraHora, da TechSphere: agendamentos online, lembretes automáticos e gestão completa em um único lugar.">
+<style>
+  :root{
+    --brand-navy:#0f2b5c;
+    --brand-teal:#19b7a6;
+    --brand-teal-2:#12aea0;
+    --brand-teal-hover:#139987;
+    --ink:#0e1726;
+    --bg:#f4f7fb;
+    --card:#ffffff;
+    --muted:#66748b;
+    --ring: rgba(25,183,166,.18);
+    --radius:16px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0; color:var(--ink); background:radial-gradient(1200px 600px at 90% -10%, rgba(25,183,166,.12), transparent 60%),
+                     radial-gradient(900px 500px at -10% 20%, rgba(15,43,92,.10), transparent 60%),
+                     linear-gradient(180deg, #fff, #f7fbfa);
+       font:500 15px/1.6 Inter, system-ui, Segoe UI, Roboto, Arial, sans-serif}
+  a{color:inherit; text-decoration:none}
+  .container{max-width:1180px; margin:0 auto; padding:0 20px}
+
+  /* Buttons */
+  .btn{padding:12px 16px; border:none; border-radius:12px; background:linear-gradient(90deg,var(--brand-teal),var(--brand-teal-2)); color:#fff; font-weight:800; cursor:pointer; display:inline-flex; align-items:center; gap:10px; transition:transform .08s ease, box-shadow .2s ease, filter .2s ease}
+  .btn:hover{filter:saturate(1.05) brightness(1.02); box-shadow:0 10px 28px rgba(25,183,166,.28)}
+  .btn-ghost{background:#e7f7f5; color:#0f6d64}
+  .chip{display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px; background:#e9fdf9; color:#0e7a70; font-weight:800; font-size:12px}
+
+  /* Header */
+  header{position:sticky; top:0; z-index:40; backdrop-filter:saturate(140%) blur(6px)}
+  .nav{border-bottom:1px solid #e8eef6; background:linear-gradient(90deg, rgba(25,183,166,.09), rgba(15,43,92,.06))}
+  .top{padding:14px 0; display:flex; align-items:center; justify-content:space-between; gap:12px}
+  .brand{display:flex; align-items:center; gap:10px}
+  .brand svg{width:34px; height:34px}
+  .brand .name{font-weight:900; font-size:20px; color:var(--brand-navy)}
+  nav a{margin-left:8px}
+
+  /* Hero */
+  .hero{position:relative; overflow:hidden}
+  .hero .wrap{padding:72px 0 46px; display:grid; gap:16px; text-align:center}
+  .kicker{display:inline-flex; gap:8px; align-items:center; justify-content:center}
+  .kicker .dot{width:8px; height:8px; background:var(--brand-teal); border-radius:50%}
+  h1{margin:0; font-size:clamp(30px, 4.8vw, 52px); color:var(--brand-navy); letter-spacing:.2px}
+  .sub{margin:0 auto; max-width:820px; color:#3b4761}
+  .hero-cta{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:12px}
+  .wave{display:block; width:100%; height:auto; transform:translateY(1px)}
+
+  /* Sections */
+  section{padding:40px 0}
+  .section-title{margin:0 0 8px; color:var(--brand-navy); font-size:26px; text-align:center}
+  .section-sub{margin:0 auto 16px; max-width:760px; color:var(--muted); text-align:center}
+
+  /* Grid + Cards */
+  .grid{display:grid; gap:16px}
+  @media(min-width:900px){ .grid-3{grid-template-columns:repeat(3,1fr)} .grid-2{grid-template-columns:repeat(2,1fr)} }
+  .card{background:var(--card); border-radius:20px; padding:20px; box-shadow:0 14px 36px rgba(15,43,92,.08), 0 4px 14px rgba(15,43,92,.06); transition:transform .12s ease, box-shadow .2s ease, border .2s ease; border:1px solid #eff4fb}
+  .card:hover{transform:translateY(-2px); box-shadow:0 20px 50px rgba(15,43,92,.12), 0 6px 16px rgba(15,43,92,.08)}
+  .card h3{margin:0 0 6px; color:var(--brand-navy)}
+  .muted{color:var(--muted)}
+
+  /* Benefits */
+  .benefit{display:flex; gap:14px; align-items:flex-start}
+  .benefit .icon{min-width:44px; height:44px; border-radius:14px; background:#e7f7f5; display:grid; place-items:center; box-shadow:inset 0 0 0 1px #c7efe9}
+  .benefit .icon svg{width:22px; height:22px; stroke:#0f6d64}
+
+  /* Pricing */
+  .pricing-toggle{display:flex; gap:8px; justify-content:center; align-items:center; margin-bottom:16px}
+  .toggle{position:relative; width:64px; height:34px; background:#e6eef5; border-radius:999px; cursor:pointer; transition:background .2s}
+  .toggle.active{background:#cfeee9}
+  .knob{position:absolute; top:3px; left:3px; width:28px; height:28px; background:#fff; border-radius:50%; box-shadow:0 4px 10px rgba(0,0,0,.12); transition:left .2s}
+  .toggle.active .knob{left:33px}
+  .price{font-size:36px; font-weight:900; color:var(--brand-navy)}
+  .price small{font-size:12px; color:var(--muted); font-weight:600}
+  .plan-feats{margin:10px 0 0; padding:0; list-style:none}
+  .plan-feats li{display:flex; gap:8px; align-items:flex-start; margin:6px 0; color:#334155}
+  .tag-pop{background:linear-gradient(90deg, #e6fffb, #f3fff5); padding:6px 10px; border-radius:999px; font-size:12px; font-weight:800; color:#0f6d64}
+  .off{display:inline-block; padding:4px 8px; border-radius:999px; background:#12b8861a; color:#0f6d64; font-weight:900; font-size:12px; animation:pulse 1.6s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 var(--ring)}70%{box-shadow:0 0 0 12px rgba(25,183,166,0)}100%{box-shadow:0 0 0 0 rgba(25,183,166,0)}}
+
+  /* FAQ */
+  .faq-item{background:#fff; border-radius:14px; padding:14px; box-shadow:0 10px 24px rgba(15,43,92,.05); cursor:pointer}
+  .faq-q{margin:0; font-weight:900; color:var(--brand-navy)}
+  .faq-a{margin:8px 0 0; color:#425168; display:none}
+  .faq-item.open .faq-a{display:block}
+
+  /* Sticky CTA */
+  .sticky-cta{position:sticky; bottom:0; z-index:30; background:rgba(255,255,255,.9); backdrop-filter:blur(6px); border-top:1px solid #e9eef5}
+  .sticky-cta .wrap{display:flex; gap:10px; padding:12px 20px; justify-content:center}
+
+  /* Footer */
+  footer{background:#fff; border-top:1px solid #e9eef5; margin-top:24px}
+  .foot{padding:18px 0; display:flex; gap:10px; justify-content:space-between; align-items:center; color:var(--muted)}
+
+  /* WhatsApp FAB */
+  .fab-whats{
+    position:fixed; right:18px; bottom:18px; z-index:50;
+    width:56px; height:56px; border-radius:999px; display:grid; place-items:center;
+    background:linear-gradient(135deg,#25d366,#19b7a6); box-shadow:0 12px 30px rgba(25,183,166,.45);
+  }
+  .fab-whats svg{width:26px; height:26px; fill:#fff}
+  .fab-whats:hover{transform:translateY(-2px)}
+</style>
+</head>
+<body>
+  <!-- NAV -->
+  <header class="nav">
+    <div class="container top">
+      <div class="brand" aria-label="TechSphere">
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+          <circle cx="32" cy="32" r="28" fill="none" stroke="#19b7a6" stroke-width="6"/>
+          <path d="M20 33.5l7 7 17-17" fill="none" stroke="#19b7a6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="name">AgoraHora <span style="color:#5d6a85;font-weight:700"></span></div>
+      </div>
+      <nav>
+        <a class="btn-ghost btn" href="#precos">Planos</a>
+        <a class="btn" id="nav-whats" href="#">WhatsApp</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container wrap">
+      <h1>Agende. Lembre. Cresça.<br>O sistema que seu salão precisa.</h1>
+      <p class="sub">Com o <strong>AgoraHora</strong> você recebe reservas 24/7, reduz faltas com lembretes automáticos e gerencia tudo em um painel simples e bonito.</p>
+      <div class="hero-cta">
+        <a class="btn" href="#precos">Ver planos</a>
+        <a class="btn btn-ghost" id="hero-whats" href="#">Falar no WhatsApp</a>
+      </div>
+    </div>
+    <svg class="wave" viewBox="0 0 1440 110" preserveAspectRatio="none" aria-hidden="true">
+      <path fill="#f4f7fb" d="M0,64L48,69.3C96,75,192,85,288,85.3C384,85,480,75,576,58.7C672,43,768,21,864,26.7C960,32,1056,64,1152,80C1248,96,1344,96,1392,96L1440,96L1440,110L1392,110C1344,110,1248,110,1152,110C1056,110,960,110,864,110C768,110,672,110,576,110C480,110,384,110,288,110C192,110,96,110,48,110L0,110Z"/>
+    </svg>
+  </section>
+
+  <!-- BENEFÍCIOS -->
+  <section id="recursos" class="container">
+    <h2 class="section-title">Por que escolher o AgoraHora?</h2>
+    <p class="section-sub">Construído pela <strong>TechSphere</strong> com foco em simplicidade e performance — do agendamento público ao backoffice.</p>
+    <div class="grid grid-3">
+      <div class="card benefit">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 5h18M8 3v4M16 3v4M3 9h18M5 12h14M7 15h10M9 18h6" stroke="currentColor"/></svg></div>
+        <div><h3>Agenda 24/7</h3><div class="muted">Página pública para reservas a qualquer hora com confirmação instantânea.</div></div>
+      </div>
+      <div class="card benefit">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 7a2 2 0 0 1 2-2h4m6 0h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7z" stroke="currentColor"/></svg></div>
+        <div><h3>Lembretes automáticos</h3><div class="muted">WhatsApp, SMS e e-mail para reduzir no-show e atrasos.</div></div>
+      </div>
+      <div class="card benefit">
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" stroke="currentColor"/></svg></div>
+        <div><h3>Relatórios & insights</h3><div class="muted">KPIs, exportações e visão por profissional.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PREÇOS -->
+  <section id="precos" class="container">
+    <h2 class="section-title">Planos e Preços</h2>
+    <p class="section-sub">Assine no mensal ou leve <span class="off">-20% no anual</span>. Mude de plano quando quiser.</p>
+
+    <div class="pricing-toggle">
+      <span class="muted">Mensal</span>
+      <div id="toggle" class="toggle" role="switch" aria-checked="false" tabindex="0"><div class="knob"></div></div>
+      <span><strong>Anual</strong></span>
+    </div>
+
+    <div class="grid grid-3">
+      <div class="card">
+        <h3>Starter</h3>
+        <div class="muted">Para começar com o essencial</div>
+        <div class="price" data-mensal="R$ 49/mês" data-anual="R$ 39/mês">R$ 49/mês <small>cobrança mensal</small></div>
+        <ul class="plan-feats">
+          <li>✔ 1 estabelecimento</li><li>✔ Agendamentos online</li><li>✔ Lembretes por e-mail</li><li class="muted">— Relatórios avançados</li>
+        </ul>
+        <div style="margin-top:12px"><a class="btn btn-ghost" id="cta-starter" href="#">Quero o Starter via WhatsApp</a></div>
+      </div>
+
+      <div class="card" style="border:2px solid #c7efe9">
+        <div class="tag-pop">Mais popular</div>
+        <h3>Pro</h3>
+        <div class="muted">Para negócios em crescimento</div>
+        <div class="price" data-mensal="R$ 99/mês" data-anual="R$ 79/mês">R$ 99/mês <small>cobrança mensal</small></div>
+        <ul class="plan-feats">
+          <li>✔ Até 3 estabelecimentos</li><li>✔ WhatsApp/SMS*</li><li>✔ Relatórios e exportações</li><li>✔ Suporte prioritário</li>
+        </ul>
+        <div style="margin-top:12px"><a class="btn" id="cta-pro" href="#">Quero o Pro via WhatsApp</a></div>
+      </div>
+
+      <div class="card">
+        <h3>Enterprise</h3>
+        <div class="muted">Para redes e alto volume</div>
+        <div class="price" data-mensal="R$ 199/mês" data-anual="R$ 159/mês">R$ 199/mês <small>cobrança mensal</small></div>
+        <ul class="plan-feats">
+          <li>✔ Estabelecimentos ilimitados</li><li>✔ SLA & onboarding dedicado</li><li>✔ API & integrações</li><li>✔ Relatórios custom</li>
+        </ul>
+        <div style="margin-top:12px"><a class="btn btn-ghost" id="cta-enterprise" href="#">Falar com vendas no WhatsApp</a></div>
+      </div>
+    </div>
+
+    <p class="muted" style="margin-top:8px">* Custos de envio podem ser cobrados à parte conforme provedor.</p>
+  </section>
+
+  <!-- FAQ -->
+  <section class="container">
+    <h2 class="section-title">Perguntas frequentes</h2>
+    <div class="grid">
+      <div class="faq-item">
+        <h3 class="faq-q">Posso migrar do Starter para o Pro depois?</h3>
+        <div class="faq-a">Sim, é possível mudar de plano a qualquer momento; a cobrança é ajustada proporcionalmente.</div>
+      </div>
+      <div class="faq-item">
+        <h3 class="faq-q">Funciona no celular?</h3>
+        <div class="faq-a">Totalmente responsivo — painel e página de agendamento funcionam em qualquer dispositivo.</div>
+      </div>
+      <div class="faq-item">
+        <h3 class="faq-q">Vocês ajudam a configurar?</h3>
+        <div class="faq-a">Nos planos Pro e Enterprise você conta com onboarding assistido e suporte prioritário da TechSphere.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTATO SIMPLIFICADO: APENAS WHATSAPP -->
+  <section id="contato" class="container">
+    <h2 class="section-title">Fale com a TechSphere</h2>
+    <p class="section-sub">Atendimento direto por WhatsApp.</p>
+    <div class="grid">
+      <div class="card" style="text-align:center">
+        <h3>Converse no WhatsApp</h3>
+        <p class="muted">Resposta rápida, horário comercial.</p>
+        <a class="btn" id="btn-whats" href="#" target="_blank" rel="noopener" style="justify-content:center">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="#fff" d="M20.52 3.48A11.87 11.87 0 0 0 12.05 0C5.45 0 .14 5.31.14 11.9c0 2.1.55 4.17 1.59 6L0 24l6.24-1.64a11.9 11.9 0 0 0 5.82 1.5h.01c6.59 0 11.9-5.31 11.9-11.9 0-3.18-1.24-6.17-3.45-8.48ZM12.07 21.2h-.01a9.9 9.9 0 0 1-5.03-1.38l-.36-.21-3.7.97.99-3.61-.23-.37a9.83 9.83 0 0 1-1.51-5.24c0-5.43 4.42-9.85 9.86-9.85 2.63 0 5.1 1.02 6.96 2.88a9.75 9.75 0 0 1 2.88 6.96c0 5.43-4.43 9.85-9.85 9.85Zm5.42-7.4c-.3-.15-1.77-.88-2.05-.98-.27-.1-.47-.15-.67.15s-.77.98-.95 1.19c-.17.2-.35.22-.65.07-.3-.15-1.25-.46-2.38-1.47-.88-.78-1.47-1.74-1.64-2.03-.17-.3-.02-.46.13-.61.13-.12.3-.32.45-.47.15-.16.2-.27.3-.45.1-.2.05-.37-.02-.52-.07-.15-.67-1.6-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.49 0 1.46 1.06 2.88 1.2 3.08.15.2 2.08 3.18 5.03 4.46.7.3 1.25.48 1.68.61.7.22 1.33.19 1.83.11.56-.08 1.77-.72 2.02-1.42.25-.7.25-1.3.17-1.42-.08-.12-.27-.2-.57-.35Z"/></svg>
+          Abrir WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sticky CTA (apenas WhatsApp) -->
+  <div class="sticky-cta">
+    <div class="container wrap">
+      <a class="btn" id="sticky-whats" href="#">Falar no WhatsApp</a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container foot">
+      <div>© <span id="ano"></span> TechSphere — AgoraHora</div>
+      <div class="muted">Termos • Privacidade</div>
+    </div>
+  </footer>
+
+  <!-- Floating WhatsApp button -->
+  <a class="fab-whats" id="fab-whats" href="#" target="_blank" aria-label="Abrir WhatsApp">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.52 3.48A11.87 11.87 0 0 0 12.05 0C5.45 0 .14 5.31.14 11.9c0 2.1.55 4.17 1.59 6L0 24l6.24-1.64a11.9 11.9 0 0 0 5.82 1.5h.01c6.59 0 11.9-5.31 11.9-11.9 0-3.18-1.24-6.17-3.45-8.48ZM12.07 21.2h-.01a9.9 9.9 0 0 1-5.03-1.38l-.36-.21-3.7.97.99-3.61-.23-.37a9.83 9.83 0 0 1-1.51-5.24c0-5.43 4.42-9.85 9.86-9.85 2.63 0 5.1 1.02 6.96 2.88a9.75 9.75 0 0 1 2.88 6.96c0 5.43-4.43 9.85-9.85 9.85Zm5.42-7.4c-.3-.15-1.77-.88-2.05-.98-.27-.1-.47-.15-.67.15s-.77.98-.95 1.19c-.17.2-.35.22-.65.07-.3-.15-1.25-.46-2.38-1.47-.88-.78-1.47-1.74-1.64-2.03-.17-.3-.02-.46.13-.61.13-.12.3-.32.45-.47.15-.16.2-.27.3-.45.1-.2.05-.37-.02-.52-.07-.15-.67-1.6-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.49 0 1.46 1.06 2.88 1.2 3.08.15.2 2.08 3.18 5.03 4.46.7.3 1.25.48 1.68.61.7.22 1.33.19 1.83.11.56-.08 1.77-.72 2.02-1.42.25-.7.25-1.3.17-1.42-.08-.12-.27-.2-.57-.35Z" fill="#fff"/></svg>
+  </a>
+
+<script>
+  // Ano
+  document.getElementById('ano').textContent = new Date().getFullYear();
+
+  // Toggle mensal/anual
+  const toggle = document.getElementById('toggle');
+  const prices = document.querySelectorAll('.price');
+  let anual = false;
+  function updatePrices(){
+    prices.forEach(p=>{
+      const m = p.getAttribute('data-mensal');
+      const a = p.getAttribute('data-anual');
+      p.innerHTML = (anual ? a : m) + (anual ? ' <small>cobrança anual</small>' : ' <small>cobrança mensal</small>');
+    });
+  }
+  if(toggle){
+    toggle.addEventListener('click', ()=>{
+      anual = !anual;
+      toggle.classList.toggle('active', anual);
+      toggle.setAttribute('aria-checked', anual ? 'true' : 'false');
+      updatePrices();
+    });
+    toggle.addEventListener('keydown', (e)=>{ if(e.key==='Enter'||e.key===' ') { e.preventDefault(); toggle.click(); } });
+  }
+
+  // WhatsApp: configure o seu número (DDI+DDD+número, somente dígitos)
+  const numeroWhats = '5511999999999'; // <-- AJUSTE AQUI
+  const msg = encodeURIComponent('Olá! Quero saber mais sobre o AgoraHora da TechSphere.');
+  const waLink = `https://wa.me/${numeroWhats}?text=${msg}`;
+
+  // Vínculos de todos os botões
+  const ids = ['btn-whats','hero-whats','nav-whats','sticky-whats','cta-starter','cta-pro','cta-enterprise','fab-whats'];
+  ids.forEach(id=>{ const el = document.getElementById(id); if(el) el.href = waLink; });
+
+  // FAQ abre/fecha
+  document.querySelectorAll('.faq-item').forEach(item=>{
+    item.addEventListener('click', ()=> item.classList.toggle('open'));
+  });
+</script>
+</body>
+</html>
