@@ -142,6 +142,41 @@ public class AgendamentosController : ControllerBase
         return Ok(new { message = "Agendamento encontrado.", data = ag });
     }
 
+
+
+    public record AtualizarStatusDto(string Status);
+
+// PATCH /api/agendamentos/{id}/status
+[HttpPatch("{id:int}/status")]
+public async Task<IActionResult> AtualizarStatus(int id, [FromBody] AtualizarStatusDto dto)
+{
+    var ag = await _db.Agendamentos.FirstOrDefaultAsync(a => a.Id == id);
+    if (ag is null) return NotFound(new { message = "Agendamento não encontrado." });
+
+    if (string.IsNullOrWhiteSpace(dto.Status))
+        return BadRequest(new { message = "Status é obrigatório." });
+
+    var s = dto.Status.Trim().ToUpperInvariant()
+        .Replace("CONCLUÍDO", "CONCLUIDO"); // normaliza acento
+
+    var map = new Dictionary<string, StatusAgendamento>(StringComparer.OrdinalIgnoreCase) {
+        ["PENDENTE"] = StatusAgendamento.Pendente,
+        ["CONFIRMADO"] = StatusAgendamento.Confirmado,
+        ["CONCLUIDO"] = StatusAgendamento.Concluido,
+        ["CANCELADO"] = StatusAgendamento.Cancelado
+    };
+    if (!map.TryGetValue(s, out var novo))
+        return BadRequest(new { message = "Status inválido." });
+
+    // regras simples
+    if (ag.Status == StatusAgendamento.Concluido && novo != StatusAgendamento.Concluido)
+        return BadRequest(new { message = "Agendamento concluído não pode voltar de status." });
+
+    ag.Status = novo;
+    await _db.SaveChangesAsync();
+    return NoContent();
+}
+
     // DELETE /api/agendamentos/{id}
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Cancelar(int id)

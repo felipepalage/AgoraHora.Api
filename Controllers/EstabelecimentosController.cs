@@ -1,6 +1,7 @@
 ﻿using AgoraHora.Api.Data;
 using AgoraHora.Api.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 
 namespace AgoraHora.Api.Controllers;
@@ -10,7 +11,13 @@ namespace AgoraHora.Api.Controllers;
 public class EstabelecimentosController : ControllerBase
 {
     private readonly AppDbContext _db;
-    public EstabelecimentosController(AppDbContext db) => _db = db;
+    private readonly IWebHostEnvironment _env;
+
+    public EstabelecimentosController(AppDbContext db, IWebHostEnvironment env)
+    {
+        _db = db;
+        _env = env;
+    }
 
     private static bool EstaAberta(int abreMin, int fechaMin, DateTime? agora = null)
     {
@@ -47,7 +54,7 @@ public class EstabelecimentosController : ControllerBase
             id = e.Id,
             nome = e.Nome,
             endereco = e.Endereco,
-            avaliacao = e.AvaliacaoMedia,                  // decimal(3,2)
+            avaliacao = e.AvaliacaoMedia,
             img = e.ImagemUrl,
             abreMin = e.AbreMin,
             fechaMin = e.FechaMin,
@@ -120,16 +127,32 @@ public class EstabelecimentosController : ControllerBase
         var dbE = await _db.Estabelecimentos.FindAsync(id);
         if (dbE is null) return NotFound(new { message = "Estabelecimento não encontrado." });
 
-        dbE.Nome = string.IsNullOrWhiteSpace(e.Nome) ? dbE.Nome : e.Nome.Trim();
-        dbE.Endereco = string.IsNullOrWhiteSpace(e.Endereco) ? dbE.Endereco : e.Endereco.Trim();
-        dbE.ImagemUrl = string.IsNullOrWhiteSpace(e.ImagemUrl) ? dbE.ImagemUrl : e.ImagemUrl.Trim();
+        if (ModelState.ContainsKey(nameof(Estabelecimento.Nome)) &&
+            !string.IsNullOrWhiteSpace(e.Nome))
+            dbE.Nome = e.Nome.Trim();
 
-        // Só altera avaliação quando o cliente enviar explicitamente no PUT
-        if (e.AvaliacaoMedia is >= 0 and <= 5) dbE.AvaliacaoMedia = e.AvaliacaoMedia;
+        if (ModelState.ContainsKey(nameof(Estabelecimento.Endereco)) &&
+            !string.IsNullOrWhiteSpace(e.Endereco))
+            dbE.Endereco = e.Endereco.Trim();
 
-        if (e.AbreMin is >= 0 and <= 1440) dbE.AbreMin = e.AbreMin;
-        if (e.FechaMin is >= 0 and <= 1440) dbE.FechaMin = e.FechaMin;
-        dbE.Ativo = e.Ativo;
+        if (ModelState.ContainsKey(nameof(Estabelecimento.ImagemUrl)) &&
+            !string.IsNullOrWhiteSpace(e.ImagemUrl))
+            dbE.ImagemUrl = e.ImagemUrl.Trim();
+
+        if (ModelState.ContainsKey(nameof(Estabelecimento.AvaliacaoMedia)) &&
+            e.AvaliacaoMedia is >= 0 and <= 5)
+            dbE.AvaliacaoMedia = e.AvaliacaoMedia;
+
+        if (ModelState.ContainsKey(nameof(Estabelecimento.AbreMin)) &&
+            e.AbreMin is >= 0 and <= 1440)
+            dbE.AbreMin = e.AbreMin;
+
+        if (ModelState.ContainsKey(nameof(Estabelecimento.FechaMin)) &&
+            e.FechaMin is >= 0 and <= 1440)
+            dbE.FechaMin = e.FechaMin;
+
+        if (ModelState.ContainsKey(nameof(Estabelecimento.Ativo)))
+            dbE.Ativo = e.Ativo;
 
         if (dbE.AbreMin == dbE.FechaMin)
             return BadRequest(new { message = "Horário inválido (AbreMin não pode ser igual a FechaMin)." });
@@ -137,6 +160,7 @@ public class EstabelecimentosController : ControllerBase
         await _db.SaveChangesAsync();
         return Ok(new { message = "Estabelecimento atualizado.", data = dbE });
     }
+
 
     [HttpPatch("{id:int}/avaliacao")]
     public async Task<IActionResult> AtualizarAvaliacao(int id, [FromBody] AvaliacaoDto dto)
@@ -152,10 +176,7 @@ public class EstabelecimentosController : ControllerBase
         return Ok(new { message = "Avaliação atualizada.", data = new { id = e.Id, avaliacao = e.AvaliacaoMedia } });
     }
 
-    public sealed class AvaliacaoDto
-    {
-        public double? Nota { get; set; }
-    }
+    public sealed class AvaliacaoDto { public double? Nota { get; set; } }
 
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Remover(int id)
@@ -166,5 +187,42 @@ public class EstabelecimentosController : ControllerBase
         _db.Estabelecimentos.Remove(dbE);
         await _db.SaveChangesAsync();
         return Ok(new { message = "Estabelecimento removido." });
+    }
+
+    // ===== Upload de logo (salva arquivo local e grava só a URL em ImagemUrl)
+    [HttpPost("{id:int}/logo")]
+    [RequestSizeLimit(5_000_000)] // 5 MB
+    public async Task<IActionResult> UploadLogo(int id, IFormFile? file)
+    {
+        var e = await _db.Estabelecimentos.FindAsync(id);
+        if (e is null) return NotFound(new { message = "Estabelecimento não encontrado." });
+        if (file is null || file.Length == 0) return BadRequest(new { message = "Arquivo obrigatório." });
+        if (file.Length > 5_000_000) return BadRequest(new { message = "Máx. 5MB." });
+
+        // valida tipo
+        var okTypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        { "image/png","image/jpeg","image/webp","image/svg+xml" };
+
+        var provider = new FileExtensionContentTypeProvider();
+        var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
+        if (!provider.TryGetContentType("x" + ext, out var guessed)) guessed = file.ContentType;
+        var contentType = string.IsNullOrWhiteSpace(file.ContentType) ? guessed : file.ContentType;
+        if (!okTypes.Contains(contentType)) return BadRequest(new { message = "Tipo inválido. Use PNG/JPG/WEBP/SVG." });
+
+        // diretório físico: wwwroot/uploads/estabelecimentos/{id}/
+        var baseDir = Path.Combine(_env.WebRootPath ?? "wwwroot", "uploads", "estabelecimentos", id.ToString());
+        Directory.CreateDirectory(baseDir);
+
+        // nome fixo + bust na querystring
+        var fileName = "logo" + ext;
+        var fullPath = Path.Combine(baseDir, fileName);
+        await using (var fs = System.IO.File.Create(fullPath))
+            await file.CopyToAsync(fs);
+
+        var url = $"/uploads/estabelecimentos/{id}/{fileName}?v={DateTime.UtcNow.Ticks}";
+        e.ImagemUrl = url;
+        await _db.SaveChangesAsync();
+
+        return Ok(new { message = "Logo atualizada.", url });
     }
 }

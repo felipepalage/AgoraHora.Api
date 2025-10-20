@@ -61,8 +61,8 @@
             }
 
         .hero {
-            background: radial-gradient(800px 300px at 90% -20%, rgba(25,183,166,.18), transparent 60%), radial-gradient(700px 280px at -10% 10%, rgba(15,43,92,.12), transparent 60%), linear-gradient(180deg,#fff,#f7fbfa);
-            border-bottom: 1px solid #e9eef5;
+            background: radial-gradient(800px 300px at 90% -20%, rgba(25,183,166,.18), transparent 60%),radial-gradient(700px 280px at -10% 10%, rgba(15,43,92,.12), transparent 60%),linear-gradient(180deg,#fff,#f7fbfa);
+            border-bottom: 1px solid #e9eef5
         }
 
         .hero-wrap {
@@ -147,7 +147,7 @@
             border: 1px solid #eff4fb;
             overflow: hidden;
             box-shadow: 0 10px 28px rgba(15,43,92,.07),0 4px 12px rgba(15,43,92,.05);
-            transition: transform .12s ease, box-shadow .2s ease
+            transition: transform .12s ease,box-shadow .2s ease
         }
 
             .card:hover {
@@ -155,14 +155,13 @@
                 box-shadow: 0 18px 48px rgba(15,43,92,.12),0 6px 16px rgba(15,43,92,.08)
             }
 
-        /* imagem estável e bonita */
         .thumb {
             width: 100%;
-            aspect-ratio: 16/9; /* mantém proporção */
+            aspect-ratio: 16/9;
             height: auto;
             object-fit: cover;
             background: #eef2f7;
-            display: block;
+            display: block
         }
 
         .card-body {
@@ -307,7 +306,7 @@
 
     <section class="hero">
         <div class="hero-wrap">
-            <h1>Encontre a barbearia perfeita</h1>
+            <h1>Encontre o salão perfeito</h1>
             <p>Busque, filtre e agende em poucos cliques — simples e rápido.</p>
         </div>
     </section>
@@ -345,50 +344,70 @@
         const favs = new Set(JSON.parse(localStorage.getItem(favKey) || '[]'));
         const saveFavs = () => localStorage.setItem(favKey, JSON.stringify([...favs]));
 
+        const LOGO_URL = 'https://i.ibb.co/qMsd2zN4/barbershop-logo-barber-pole-razor-600nw-2535695609.webp';
+        const FALLBACK_IMG = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+            `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360">
+          <rect width="100%" height="100%" fill="#eef2f7"/>
+          <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                font-family="Inter, Arial, sans-serif" font-size="24" fill="#0f2b5c">
+            AgoraHora • Barbearia
+          </text>
+        </svg>`
+        );
+
+        const logoKey = id => `logo_estab_${id}`;
+
         async function api(path) {
-            const r = await fetch('/api' + path);
+            const url = '/api' + path + (path.includes('?') ? '&' : '?') + '_ts=' + Date.now();
+            const r = await fetch(url, { cache: 'no-store' });
             if (!r.ok) throw new Error('HTTP ' + r.status);
             return r.json();
         }
 
-        // Normaliza e protege o URL da imagem
         function normalizeImageUrl(u) {
-            const fallback = 'img/barbearia1.jpg';
             try {
-                if (!u) return fallback;
+                if (!u) return LOGO_URL;
                 u = String(u).trim();
-                // suporte a URLs começando com //
                 if (u.startsWith('//')) return location.protocol + u;
-                // corrige espaços
                 if (/^https?:/i.test(u)) {
                     const url = new URL(u);
                     url.pathname = url.pathname.split('/').map(encodeURIComponent).join('/');
                     return url.toString();
                 }
-                // relativo ou data URL
-                return u;
-            } catch { return fallback; }
+                return LOGO_URL;
+            } catch { return LOGO_URL; }
+        }
+
+        // Aberta local: lida com faixa cruzando 00:00
+        function isOpenLocal(abreMin, fechaMin) {
+            if (typeof abreMin !== 'number' || typeof fechaMin !== 'number') return false;
+            const now = new Date();
+            const nowMin = now.getHours() * 60 + now.getMinutes();
+            return abreMin < fechaMin
+                ? nowMin >= abreMin && nowMin < fechaMin
+                : nowMin >= abreMin || nowMin < fechaMin;
         }
 
         function cardHTML(b) {
             const href = `barbearia.html?id=${b.id}`;
-            const imgUrl = normalizeImageUrl(b.img);
+            const customLogo = localStorage.getItem(logoKey(b.id));
+            const imgUrl = customLogo || normalizeImageUrl(b.img || LOGO_URL);
+
+            // usa cálculo local se possível; fallback no campo vindo do backend
+            const abertaLocal = isOpenLocal(b.abreMin, b.fechaMin);
+            const aberta = Number.isFinite(b.abreMin) && Number.isFinite(b.fechaMin) ? abertaLocal : !!b.aberta;
+
             return `
           <div class="card">
-            <img class="thumb"
-                 loading="lazy"
-                 src="${imgUrl}"
-                 alt="Foto da ${b.nome}"
-                 referrerpolicy="no-referrer"
-                 crossorigin="anonymous"
-                 onerror="this.onerror=null;this.src='img/barbearia1.jpg'">
+            <img class="thumb" loading="lazy" src="${imgUrl}" alt="Foto da ${b.nome}"
+                 onerror="this.onerror=null;this.src='${FALLBACK_IMG}'">
             <div class="card-body">
               <div>
                 <div class="barbearia-nome">${b.nome}</div>
                 <div class="barbearia-endereco">${b.endereco || ''}</div>
                 <div class="meta">
                   <div class="rating">⭐ ${Number(b.avaliacao ?? 0).toFixed(1)}</div>
-                  <span class="badge ${b.aberta ? '' : 'off'}">${b.aberta ? 'Aberta agora' : 'Fechada'}</span>
+                  <span class="badge ${aberta ? '' : 'off'}">${aberta ? 'Aberta agora' : 'Fechada'}</span>
                 </div>
               </div>
               <div class="card-footer">
@@ -417,11 +436,19 @@
 
         async function carregar() {
             const chip = chips.querySelector('.chip.active')?.dataset?.chip || 'todas';
-            const abertas = chip === 'abertas' ? 'true' : '';
+            const abertasParam = chip === 'abertas' ? 'true' : '';
             const order = filterOrder.value || (chip === 'top' ? 'avaliacao' : '');
             const q = encodeURIComponent(search.value.trim());
-            const resp = await api(`/estabelecimentos?q=${q}&order=${order}&abertas=${abertas}`);
-            return resp.data ?? [];
+            const resp = await api(`/estabelecimentos?q=${q}&order=${order}&abertas=${abertasParam}`);
+            let data = resp.data ?? [];
+
+            // Recalcula abertura local em todos os cards
+            data = data.map(d => ({ ...d, aberta: isOpenLocal(d.abreMin, d.fechaMin) }));
+
+            // Se chip “abertas” escolhido mas o backend filtrou errado por fuso, filtra no cliente
+            if (chip === 'abertas') data = data.filter(d => d.aberta === true);
+
+            return data;
         }
 
         function render(data) {
@@ -445,10 +472,19 @@
             applyFilters();
         });
 
-        let t; search.addEventListener('input', () => { clearTimeout(t); t = setTimeout(applyFilters, 160); });
+        let t;
+        search.addEventListener('input', () => {
+            clearTimeout(t); t = setTimeout(applyFilters, 160);
+        });
         filterOrder.addEventListener('change', applyFilters);
 
         applyFilters();
+
+        // Recarrega quando Configurações salva nome/endereço/logo
+        window.addEventListener('storage', ev => {
+            if (!ev.key) return;
+            if (ev.key.startsWith('logo_estab_') || ev.key.startsWith('estab_')) applyFilters();
+        });
     </script>
 </body>
 </html>

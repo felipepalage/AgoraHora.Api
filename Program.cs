@@ -1,6 +1,8 @@
 using System.Text;
 using AgoraHora.Api.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -59,10 +61,15 @@ builder.Services.AddSwaggerGen(c =>
         Description = "Bearer {token}"
     };
     c.AddSecurityDefinition("Bearer", scheme);
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        { scheme, Array.Empty<string>() }
-    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement { { scheme, Array.Empty<string>() } });
+});
+
+// ===== Upload: limites razoáveis
+builder.Services.Configure<FormOptions>(o =>
+{
+    o.MultipartBodyLengthLimit = 5_000_000;   // 5 MB
+    o.ValueLengthLimit = int.MaxValue;
+    o.MemoryBufferThreshold = 1024 * 64;
 });
 
 var app = builder.Build();
@@ -79,13 +86,25 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+// garante wwwroot/uploads/…
+var uploadsDir = Path.Combine(app.Environment.WebRootPath ?? "wwwroot", "uploads");
+Directory.CreateDirectory(uploadsDir);
+
+// Static files com cache leve
+app.UseStaticFiles(new StaticFileOptions
+{
+    OnPrepareResponse = ctx =>
+    {
+        ctx.Context.Response.Headers["Cache-Control"] = "public,max-age=604800"; // 7 dias
+    }
+});
+
 app.UseCors(Cors);
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseStaticFiles();
 app.MapControllers().RequireCors(Cors);
 
 // Health

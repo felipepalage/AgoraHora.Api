@@ -359,12 +359,8 @@
 
     <main class="container">
         <section class="hero-card">
-            <img id="cover" class="cover"
-                 src="img/barbearia1.jpg"
-                 alt="Foto da barbearia"
-                 referrerpolicy="no-referrer"
-                 crossorigin="anonymous"
-                 onerror="this.onerror=null;this.src='img/barbearia1.jpg'">
+            <!-- src inicial vazio; será preenchido pelo script com a logo configurada -->
+            <img id="cover" class="cover" alt="Logo/Foto da barbearia" referrerpolicy="no-referrer" crossorigin="anonymous">
             <div>
                 <div class="shop-head">
                     <div>
@@ -442,15 +438,11 @@
         <div class="modal">
             <h3 id="cx-title" style="color:var(--brand-navy)">Cancelar agendamento</h3>
             <p class="muted" style="margin:0 0 8px">Informe seus dados e o horário para localizar e cancelar.</p>
-
             <div id="cx-fast" style="display:none" class="ok">Encontramos seu último agendamento. Você pode cancelar direto.</div>
-
             <label for="cxEmail">Email</label>
             <input id="cxEmail" type="email" placeholder="voce@exemplo.com" />
-
             <label for="cxTel">Telefone</label>
             <input id="cxTel" placeholder="(11) 99999-9999" />
-
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
                 <div>
                     <label for="cxData">Data</label>
@@ -461,7 +453,6 @@
                     <input id="cxHora" type="time" />
                 </div>
             </div>
-
             <div id="cx-err" class="error" style="display:none"></div>
             <div class="modal-actions">
                 <button class="btn btn-ghost" id="cx-cancel">Fechar</button>
@@ -488,6 +479,7 @@
         const estabelecimentoId = Number(new URLSearchParams(location.search).get('id') || 1);
         const LS_CLIENTE_KEY = `ah_cliente_${estabelecimentoId}`;
         const LS_LAST_AG_KEY = `ah_last_ag_${estabelecimentoId}`;
+        const LS_LOGO_KEY = `logo_estab_${estabelecimentoId}`; // mesma chave da tela de Configurações
 
         // ===== HELPERS =====
         const $ = s => document.querySelector(s);
@@ -501,33 +493,42 @@
         const getLastAg = () => JSON.parse(localStorage.getItem(LS_LAST_AG_KEY) || 'null');
         const setLastAg = id => localStorage.setItem(LS_LAST_AG_KEY, JSON.stringify(id));
 
+        // normaliza URL e aceita dataURL do localStorage
         function normalizeImageUrl(u) {
-            const fallback = 'img/barbearia1.jpg';
             try {
-                if (!u) return fallback;
+                if (!u) return '';
                 u = String(u).trim();
+                if (/^data:image\//i.test(u)) return u;              // dataURL do localStorage
                 if (u.startsWith('//')) return location.protocol + u;
                 if (/^https?:/i.test(u)) {
                     const url = new URL(u);
                     url.pathname = url.pathname.split('/').map(encodeURIComponent).join('/');
                     return url.toString();
                 }
-                return u;
-            } catch { return fallback; }
+                return u; // relativo, se você servir arquivos estáticos
+            } catch { return ''; }
         }
 
         // ===== LOADERS =====
+        async function loadConfig() {
+            const r = await fetch(`${API}/configuracao/${estabelecimentoId}`);
+            if (!r.ok) return null;
+            const j = await r.json();
+            return j?.data || null; // pode conter logoUrl
+        }
         async function loadEstab() {
             const r = await fetch(`${API}/estabelecimentos/${estabelecimentoId}`);
             if (!r.ok) throw new Error('estab');
             const j = await r.json(); return j.data ?? j;
         }
         async function loadServicos() {
-            const r = await fetch(`${API}/servicos/${estabelecimentoId}`); const j = await r.json();
+            const r = await fetch(`${API}/servicos/${estabelecimentoId}`);
+            const j = await r.json();
             return j.data ?? [];
         }
         async function loadProfissionais() {
-            const r = await fetch(`${API}/profissionais/${estabelecimentoId}`); const j = await r.json();
+            const r = await fetch(`${API}/profissionais/${estabelecimentoId}`);
+            const j = await r.json();
             return j.data ?? j;
         }
         async function loadAgendamentosDia(profId, dataISO) {
@@ -566,10 +567,7 @@
         // ===== SLOTS =====
         async function gerarSlots() {
             slotsEl.innerHTML = ''; slotSelecionado = null; atualizarResumo('');
-            if (!selProf.value) {
-                slotsEl.innerHTML = '<div class="muted">Escolha um profissional.</div>';
-                return;
-            }
+            if (!selProf.value) { slotsEl.innerHTML = '<div class="muted">Escolha um profissional.</div>'; return; }
             const dur = servicoSelecionado?.duracao ?? 60;
             const profId = Number(selProf.value);
             const dataISO = inputData.value;
@@ -652,13 +650,8 @@
             $('#cxData').value = inputData.value || new Date().toISOString().slice(0, 10);
             $('#cxHora').value = slotSelecionado || '';
             const last = getLastAg();
-            if (last) {
-                cxFast.style.display = 'block';
-                btnDeleteLast.style.display = 'inline-block';
-            } else {
-                cxFast.style.display = 'none';
-                btnDeleteLast.style.display = 'none';
-            }
+            if (last) { cxFast.style.display = 'block'; btnDeleteLast.style.display = 'inline-block'; }
+            else { cxFast.style.display = 'none'; btnDeleteLast.style.display = 'none'; }
             cancelModal.style.display = 'flex';
         }
         function closeCancelModal() { cancelModal.style.display = 'none'; }
@@ -758,28 +751,50 @@
             inputData.value = hojeISO; inputData.min = hojeISO;
 
             try {
-                const e = await loadEstab();
+                const [cfg, e] = await Promise.all([loadConfig(), loadEstab()]);
+
+                // textos
                 $('#shop-name').textContent = e.nome || `Estabelecimento #${estabelecimentoId}`;
                 $('#shop-address').textContent = e.endereco || '—';
                 $('#shop-rating').textContent = e.avaliacao ? `⭐ ${Number(e.avaliacao).toFixed(1)}` : '—';
                 $('#shop-open').textContent = e.aberta ? 'Aberta agora' : 'Fechada';
                 $('#shop-open').className = 'badge' + (e.aberta ? '' : ' off');
 
-                const imgSrc = normalizeImageUrl(e.img || e.imagemUrl);
-                const cover = $('#cover');
-                cover.src = imgSrc;
-            } catch { }
+                // horários
+                if (typeof e.abreMin === 'number') abreMin = e.abreMin;
+                if (typeof e.fechaMin === 'number') fechaMin = e.fechaMin;
 
+                // LOGO: localStorage → cfg.logoUrl → e.imagemUrl
+                const localLogo = localStorage.getItem(LS_LOGO_KEY);
+                const logo = normalizeImageUrl(localLogo || cfg?.logoUrl || e.imagemUrl || '');
+                const cover = $('#cover');
+                if (logo) {
+                    cover.src = logo;
+                } else {
+                    // fallback visual leve sem arquivo local
+                    cover.src = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+                        `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360">
+                          <rect width="100%" height="100%" fill="#eef2f7"/>
+                          <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                                font-family="Inter, Arial, sans-serif" font-size="24" fill="#0f2b5c">
+                            AgoraHora • Barbearia
+                          </text>
+                        </svg>`
+                    );
+                }
+            } catch { /* silencioso */ }
+
+            // serviços
             servicos = await loadServicos();
             listaServ.innerHTML = '';
             servicos.forEach(s => {
                 const el = document.createElement('div'); el.className = 'servico-item';
                 el.innerHTML = `
-              <div>
-                <div style="font-weight:800;color:#0f2b5c">${s.nome}</div>
-                <div class="srv-meta">R$ ${Number(s.preco).toFixed(2).replace('.', ',')} • ${s.duracao} min</div>
-              </div>
-              <button class="btn btn-ghost">Escolher</button>`;
+                    <div>
+                      <div style="font-weight:800;color:#0f2b5c">${s.nome}</div>
+                      <div class="srv-meta">R$ ${Number(s.preco).toFixed(2).replace('.', ',')} • ${s.duracao} min</div>
+                    </div>
+                    <button class="btn btn-ghost">Escolher</button>`;
                 el.querySelector('button').onclick = () => {
                     servicoSelecionado = s;
                     $$('#lista-servicos .servico-item').forEach(i => i.style.borderColor = '#e9eef5');
@@ -788,6 +803,7 @@
                 listaServ.appendChild(el);
             });
 
+            // profissionais
             const profs = await loadProfissionais();
             selProf.innerHTML = '';
             if (!profs || !profs.length) {
@@ -801,6 +817,15 @@
 
             selProf.addEventListener('change', gerarSlots);
             inputData.addEventListener('change', gerarSlots);
+
+            // Atualiza a logo quando Configurações salvar uma nova na outra aba
+            window.addEventListener('storage', ev => {
+                if (ev.key === LS_LOGO_KEY) {
+                    const v = localStorage.getItem(LS_LOGO_KEY);
+                    const cover = $('#cover');
+                    cover.src = normalizeImageUrl(v) || cover.src;
+                }
+            });
 
             atualizarResumo(); gerarSlots();
         })();
