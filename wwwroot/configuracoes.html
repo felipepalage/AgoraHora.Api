@@ -4,14 +4,29 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Configurações - AgoraHora</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --brand-navy: #0f2b5c;
-            --brand-teal: #19b7a6;
-            --brand-teal-hover: #139987;
-            --bg: #f5f7fa;
-            --card: #fff;
-            --muted: #8a94a6
+            --brand-navy: #0a1933;
+            --brand-teal: #0da5a0;
+            --brand-teal-hover: #098581;
+            --brand-teal-soft: #e6f9f8;
+            --brand-purple: #6366f1;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --danger: #ef4444;
+            --danger-dark: #dc2626;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --radius-lg: 20px;
+            --radius-md: 14px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 4px 15px rgba(10,25,51,.05);
+            --shadow-medium: 0 10px 25px rgba(10,25,51,.08);
+            --shadow-strong: 0 20px 40px rgba(10,25,51,.12);
         }
 
         * {
@@ -20,17 +35,19 @@
 
         body {
             margin: 0;
-            background: var(--bg);
-            color: #1c2430;
-            font: 500 15px/1.45 Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: #334155;
+            font: 500 15px/1.45 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif
         }
 
         header {
-            background: #fff;
-            border-bottom: 1px solid #e9eef5;
+            background: rgba(255,255,255,.9);
+            border-bottom: 1px solid rgba(226,232,240,.6);
             position: sticky;
             top: 0;
-            z-index: 10
+            z-index: 10;
+            backdrop-filter: blur(16px);
+            box-shadow: var(--shadow-soft);
         }
 
         .top {
@@ -46,50 +63,97 @@
         .brand {
             display: flex;
             align-items: center;
-            gap: 10px
+            gap: 12px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
         }
 
-            .brand svg {
-                width: 34px;
-                height: 34px
+            .brand:hover {
+                transform: scale(1.02);
             }
 
-            .brand .name {
-                font-weight: 800;
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--brand-teal), var(--brand-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(13,165,160,.25);
+        }
+
+            .brand-icon i {
+                color: white;
                 font-size: 20px;
-                color: var(--brand-navy)
             }
+
+        .brand .name {
+            font-weight: 800;
+            font-size: 22px;
+            color: var(--brand-navy)
+        }
 
         .btn {
-            padding: 10px 14px;
+            padding: 10px 16px;
             border: none;
-            border-radius: 10px;
-            background: var(--brand-teal);
+            border-radius: var(--radius-sm);
+            background: linear-gradient(135deg, var(--brand-teal), var(--brand-teal-hover));
             color: #fff;
-            font-weight: 700;
-            cursor: pointer
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
         }
 
+            .btn::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: rgba(255,255,255,0.2);
+                transition: left 0.3s ease;
+            }
+
+            .btn:hover::before {
+                left: 100%;
+            }
+
             .btn:hover {
-                background: var(--brand-teal-hover)
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(13,165,160,.35);
             }
 
             .btn[disabled] {
                 opacity: .6;
-                cursor: not-allowed
+                cursor: not-allowed;
+                transform: none;
             }
 
         .btn-secondary {
-            background: #e9eef5;
-            color: #1c2430
+            background: rgba(10,25,51,.05);
+            color: var(--brand-navy);
         }
 
+            .btn-secondary:hover {
+                background: rgba(10,25,51,.1);
+                transform: translateY(-2px);
+            }
+
         .btn-danger {
-            background: #e35151
+            background: var(--danger);
+            box-shadow: 0 4px 15px rgba(239,68,68,.25);
         }
 
             .btn-danger:hover {
-                background: #c63838
+                background: var(--danger-dark);
+                transform: translateY(-2px);
             }
 
         .container {
@@ -100,39 +164,71 @@
 
         .card {
             background: var(--card);
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 16px 40px rgba(15,43,92,.06),0 4px 12px rgba(15,43,92,.05)
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-medium);
+            border: 1px solid rgba(226,232,240,.6);
+            transition: all 0.3s ease;
         }
+
+            .card:hover {
+                box-shadow: var(--shadow-strong);
+            }
+
+        h2 {
+            margin-top: 0;
+            color: var(--brand-navy);
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            h2 i {
+                color: var(--brand-teal);
+            }
 
         label {
             display: block;
-            margin: 8px 0 6px;
+            margin: 12px 0 6px;
             color: var(--brand-navy);
-            font-weight: 700
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        input, textarea {
+            label i {
+                color: var(--brand-teal);
+                font-size: 14px;
+            }
+
+        input, textarea, select {
             width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #e3e8ef;
-            border-radius: 10px;
-            outline: none
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            outline: none;
+            background: #f8fafc;
+            font-size: 14px;
+            transition: all 0.2s ease;
         }
+
+            input:focus, textarea:focus, select:focus {
+                background: #ffffff;
+                border-color: var(--brand-teal);
+                box-shadow: 0 0 0 3px rgba(13,165,160,.15);
+            }
 
         textarea {
-            min-height: 90px;
+            min-height: 100px;
             resize: vertical
         }
-
-            input:focus, textarea:focus {
-                box-shadow: 0 0 0 4px rgba(25,183,166,.12)
-            }
 
         .row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px
+            gap: 16px
         }
 
         @media(max-width:700px) {
@@ -145,120 +241,255 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            flex-wrap: wrap
+            flex-wrap: wrap;
+            margin-bottom: 16px;
         }
 
         .logo-img {
             max-width: 220px;
-            border-radius: 12px;
-            background: #eef2f7
+            max-height: 150px;
+            border-radius: var(--radius-md);
+            background: #f1f5f9;
+            object-fit: cover;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-soft);
+            transition: all 0.3s ease;
         }
+
+            .logo-img:hover {
+                transform: scale(1.02);
+                box-shadow: var(--shadow-medium);
+            }
 
         .ok {
-            margin-top: 8px;
-            padding: 10px;
-            border-radius: 10px;
-            background: #e7f7f5;
-            border: 1px solid #caefe8;
-            color: #0f6d64;
-            font-weight: 700;
-            display: none
+            margin-top: 12px;
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            background: var(--brand-teal-soft);
+            border: 1px solid var(--brand-teal);
+            color: var(--brand-navy);
+            font-weight: 600;
+            display: none;
+            animation: fadeIn 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
+            .ok i {
+                color: var(--success);
+            }
+
         .err {
-            margin-top: 8px;
-            padding: 10px;
-            border-radius: 10px;
-            background: #ffeaea;
-            border: 1px solid #ffcccc;
-            color: #b91c1c;
-            font-weight: 700;
-            display: none
+            margin-top: 12px;
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            background: #fee2e2;
+            border: 1px solid #fca5a5;
+            color: var(--danger);
+            font-weight: 600;
+            display: none;
+            animation: fadeIn 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .err i {
+                color: var(--danger);
+            }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .status-line {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             align-items: center;
             flex-wrap: wrap;
-            margin: 10px 0
+            margin: 16px 0;
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
         }
 
         .pill {
-            background: #e7f7f5;
-            color: #0f6d64;
-            padding: 8px 12px;
+            background: var(--brand-teal-soft);
+            color: var(--brand-navy);
+            padding: 8px 16px;
             border-radius: 999px;
-            font-weight: 800
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
+
+            .pill i {
+                color: var(--brand-teal);
+            }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+            .file-input-wrapper input[type=file] {
+                position: absolute;
+                left: -9999px;
+            }
+
+        .file-input-label {
+            padding: 10px 16px;
+            border-radius: var(--radius-sm);
+            background: rgba(10,25,51,.05);
+            color: var(--brand-navy);
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+            .file-input-label:hover {
+                background: rgba(10,25,51,.1);
+                transform: translateY(-2px);
+            }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--brand-navy);
+            margin: 24px 0 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .section-title i {
+                color: var(--brand-teal);
+            }
     </style>
 </head>
 <body>
     <header>
         <div class="top">
             <div class="brand" aria-label="AgoraHora">
-                <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="28" fill="none" stroke="#19b7a6" stroke-width="6" /><path d="M20 33.5l7 7 17-17" fill="none" stroke="#19b7a6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                <div class="brand-icon">
+                    <i class="fas fa-cog"></i>
+                </div>
                 <div class="name">AgoraHora</div>
             </div>
-            <button class="btn" id="logout">Voltar</button>
+            <button class="btn" id="logout">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </button>
         </div>
     </header>
 
     <main class="container">
         <div class="card">
-            <h2 style="margin-top:0;color:var(--brand-navy)">Dados do Estabelecimento</h2>
+            <h2><i class="fas fa-store"></i> Dados do Estabelecimento</h2>
 
             <!-- Logo salva no navegador -->
+            <div class="section-title"><i class="fas fa-image"></i> Identidade Visual</div>
             <label for="logo">Logo do estabelecimento</label>
             <div class="logo-wrap">
-                <input id="logo" type="file" accept="image/*">
-                <button type="button" id="removerLogo" class="btn btn-secondary">Remover logo</button>
+                <div class="file-input-wrapper">
+                    <input id="logo" type="file" accept="image/*">
+                    <label for="logo" class="file-input-label">
+                        <i class="fas fa-upload"></i> Escolher arquivo
+                    </label>
+                </div>
+                <button type="button" id="removerLogo" class="btn btn-secondary">
+                    <i class="fas fa-trash"></i> Remover logo
+                </button>
             </div>
             <img id="logoPreview" class="logo-img" alt="Pré-visualização da logo" />
 
-            <div class="row" style="margin-top:12px">
+            <div class="section-title"><i class="fas fa-info-circle"></i> Informações Básicas</div>
+            <div class="row">
                 <div>
-                    <label for="nome">Nome</label>
+                    <label for="nome"><i class="fas fa-tag"></i> Nome</label>
                     <input id="nome" placeholder="Ex.: Barbearia Estilo">
                 </div>
                 <div>
-                    <label for="telefone">Telefone/WhatsApp</label>
+                    <label for="telefone"><i class="fas fa-phone"></i> Telefone/WhatsApp</label>
                     <input id="telefone" placeholder="(11) 99999-9999">
                 </div>
             </div>
 
-            <label for="endereco">Endereço</label>
+            <label for="endereco"><i class="fas fa-map-marker-alt"></i> Endereço</label>
             <input id="endereco" placeholder="Rua, número, bairro, cidade">
 
-            <label for="horarios">Horários (descrição)</label>
+            <div class="section-title"><i class="fas fa-clock"></i> Horários de Funcionamento</div>
+            <label for="horarios"><i class="fas fa-calendar-alt"></i> Horários (descrição)</label>
             <textarea id="horarios" placeholder="Seg-Sex 09:00-19:00, Sáb 09:00-14:00"></textarea>
 
             <div class="row">
                 <div>
-                    <label for="abre">Abre às</label>
+                    <label for="abre"><i class="fas fa-door-open"></i> Abre às</label>
                     <input id="abre" type="time" step="60">
                 </div>
                 <div>
-                    <label for="fecha">Fecha às</label>
+                    <label for="fecha"><i class="fas fa-door-closed"></i> Fecha às</label>
                     <input id="fecha" type="time" step="60">
                 </div>
             </div>
 
-            <label for="descricao">Descrição</label>
+            <div class="section-title"><i class="fas fa-align-left"></i> Descrição</div>
+            <label for="descricao"><i class="fas fa-comment-alt"></i> Descrição</label>
             <textarea id="descricao" placeholder="Fale um pouco sobre a barbearia"></textarea>
 
             <div class="status-line">
-                <span class="pill" id="ativoLabel">Status: —</span>
-                <button class="btn" id="btn-toggle-ativo">Abrir/Fechar agora</button>
+                <span class="pill" id="ativoLabel">
+                    <i class="fas fa-info-circle"></i>
+                    Status: —
+                </span>
+                <button class="btn" id="btn-toggle-ativo">
+                    <i class="fas fa-power-off"></i>
+                    Abrir/Fechar agora
+                </button>
             </div>
 
-            <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
-                <button class="btn-secondary btn" id="btn-recarregar">Recarregar</button>
-                <button class="btn" id="btn-salvar">Salvar</button>
+            <div class="actions">
+                <button class="btn-secondary btn" id="btn-recarregar">
+                    <i class="fas fa-sync-alt"></i> Recarregar
+                </button>
+                <button class="btn" id="btn-salvar">
+                    <i class="fas fa-save"></i> Salvar
+                </button>
             </div>
 
-            <div id="ok" class="ok">Configurações salvas!</div>
-            <div id="err" class="err">Falha ao salvar.</div>
+            <div id="ok" class="ok">
+                <i class="fas fa-check-circle"></i>
+                <span>Configurações salvas!</span>
+            </div>
+            <div id="err" class="err">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>Falha ao salvar.</span>
+            </div>
         </div>
     </main>
 
@@ -301,14 +532,31 @@
             } catch { return fallback; }
         }
 
-        function showOk(msg) { okEl.textContent = msg; okEl.style.display = 'block'; setTimeout(() => okEl.style.display = 'none', 1800); }
-        function showErr(msg) { errEl.textContent = msg; errEl.style.display = 'block'; }
+        function showOk(msg) {
+            okEl.querySelector('span').textContent = msg;
+            okEl.style.display = 'flex';
+            setTimeout(() => okEl.style.display = 'none', 3000);
+        }
+
+        function showErr(msg) {
+            errEl.querySelector('span').textContent = msg;
+            errEl.style.display = 'flex';
+            setTimeout(() => errEl.style.display = 'none', 3000);
+        }
+
         function hideMsgs() { okEl.style.display = 'none'; errEl.style.display = 'none'; }
 
         function setAtivoLabel(ativo) {
-            $('ativoLabel').textContent = `Status: ${ativo ? 'Ativo (recebendo agendamentos)' : 'Inativo'}`;
-            btnToggle.textContent = ativo ? 'Fechar agora' : 'Abrir agora';
-            btnToggle.className = ativo ? 'btn btn-danger' : 'btn';
+            const labelEl = $('ativoLabel');
+            if (ativo) {
+                labelEl.innerHTML = '<i class="fas fa-check-circle"></i> Status: Ativo (recebendo agendamentos)';
+                btnToggle.innerHTML = '<i class="fas fa-times-circle"></i> Fechar agora';
+                btnToggle.className = 'btn btn-danger';
+            } else {
+                labelEl.innerHTML = '<i class="fas fa-times-circle"></i> Status: Inativo';
+                btnToggle.innerHTML = '<i class="fas fa-check-circle"></i> Abrir agora';
+                btnToggle.className = 'btn';
+            }
         }
 
         // ===== LOAD =====
@@ -388,13 +636,15 @@
                 localStorage.setItem(logoKey(estabId), dataURL);
                 $('logoPreview').src = dataURL;
                 localStorage.setItem(estabUpdatedKey(estabId), String(Date.now()));
+                showOk('Logo atualizada com sucesso!');
             } catch { showErr('Falha ao processar a imagem.'); }
         });
 
         $('removerLogo').onclick = () => {
             localStorage.removeItem(logoKey(estabId));
-            $('logoPreview').removeAttribute('src');
+            $('logoPreview').src = '';
             localStorage.setItem(estabUpdatedKey(estabId), String(Date.now()));
+            showOk('Logo removida com sucesso!');
         };
 
         // ===== TOGGLE ATIVO =====
@@ -463,7 +713,7 @@
                     const j = await r.json().catch(() => ({}));
                     throw new Error(j.message || `HTTP ${r.status}`);
                 }
-                showOk('Configurações salvas!');
+                showOk('Configurações salvas com sucesso!');
                 localStorage.setItem(estabUpdatedKey(estabId), String(Date.now()));
             } catch (e) {
                 showErr(e.message || 'Falha ao salvar.');
@@ -472,13 +722,16 @@
             }
         };
 
-        $('btn-recarregar').onclick = load;
+        $('btn-recarregar').onclick = () => {
+            load();
+            showOk('Dados recarregados!');
+        };
 
         // Auto-reload quando outra aba salvar algo
         window.addEventListener('storage', ev => {
             if (ev.key === logoKey(estabId)) {
                 const v = localStorage.getItem(logoKey(estabId));
-                if (v) $('logoPreview').src = v; else $('logoPreview').removeAttribute('src');
+                if (v) $('logoPreview').src = v; else $('logoPreview').src = '';
             }
             if (ev.key === estabUpdatedKey(estabId)) load();
         });

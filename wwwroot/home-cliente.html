@@ -4,14 +4,28 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Escolha sua Barbearia - AgoraHora</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --brand-navy: #0f2b5c;
-            --brand-teal: #19b7a6;
-            --brand-teal-hover: #139987;
-            --bg: #f5f7fa;
-            --card: #fff;
-            --muted: #8a94a6
+            --brand-navy: #0a1933;
+            --brand-teal: #0da5a0;
+            --brand-teal-hover: #098581;
+            --brand-teal-soft: #e6f9f8;
+            --brand-purple: #6366f1;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --danger: #ef4444;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --radius-lg: 20px;
+            --radius-md: 14px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 4px 15px rgba(10,25,51,.05);
+            --shadow-medium: 0 10px 25px rgba(10,25,51,.08);
+            --shadow-strong: 0 20px 40px rgba(10,25,51,.12);
         }
 
         * {
@@ -20,23 +34,25 @@
 
         body {
             margin: 0;
-            background: var(--bg);
-            color: #1c2430;
-            font: 500 15px/1.5 Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: #334155;
+            font: 500 15px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif
         }
 
         header {
-            background: #fff;
-            border-bottom: 1px solid #e9eef5;
+            background: rgba(255,255,255,.9);
+            border-bottom: 1px solid rgba(226,232,240,.6);
             position: sticky;
             top: 0;
-            z-index: 10
+            z-index: 10;
+            backdrop-filter: blur(16px);
+            box-shadow: var(--shadow-soft);
         }
 
         .top {
             max-width: 1200px;
             margin: auto;
-            padding: 12px 20px;
+            padding: 14px 20px;
             display: flex;
             align-items: center;
             gap: 14px;
@@ -46,23 +62,41 @@
         .brand {
             display: flex;
             align-items: center;
-            gap: 10px
+            gap: 12px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
         }
 
-            .brand svg {
-                width: 34px;
-                height: 34px
+            .brand:hover {
+                transform: scale(1.02);
             }
 
-            .brand .name {
-                font-weight: 800;
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--brand-teal), var(--brand-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(13,165,160,.25);
+        }
+
+            .brand-icon i {
+                color: white;
                 font-size: 20px;
-                color: var(--brand-navy)
             }
+
+        .brand .name {
+            font-weight: 800;
+            font-size: 22px;
+            color: var(--brand-navy)
+        }
 
         .hero {
-            background: radial-gradient(800px 300px at 90% -20%, rgba(25,183,166,.18), transparent 60%),radial-gradient(700px 280px at -10% 10%, rgba(15,43,92,.12), transparent 60%),linear-gradient(180deg,#fff,#f7fbfa);
-            border-bottom: 1px solid #e9eef5
+            background: linear-gradient(135deg, rgba(13,165,160,0.1) 0%, rgba(10,25,51,0.05) 100%), radial-gradient(circle at 90% -20%, rgba(13,165,160,.18), transparent 60%),radial-gradient(circle at -10% 10%, rgba(10,25,51,.12), transparent 60%),linear-gradient(180deg,#fff,#f7fbfa);
+            border-bottom: 1px solid var(--border);
+            padding: 20px 0;
         }
 
         .hero-wrap {
@@ -75,199 +109,338 @@
         .hero h1 {
             margin: 0;
             color: var(--brand-navy);
-            font-size: clamp(22px,4.2vw,30px)
+            font-size: clamp(24px,4.2vw,32px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
         }
 
+            .hero h1 i {
+                color: var(--brand-teal);
+            }
+
         .hero p {
-            margin: 6px 0 0;
-            color: #3b4761
+            margin: 10px 0 0;
+            color: var(--muted);
+            font-size: 16px;
         }
 
         .container {
             max-width: 1200px;
-            margin: 18px auto 26px;
+            margin: 24px auto 32px;
             padding: 0 20px
         }
 
         .filters {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             flex-wrap: wrap;
-            margin-bottom: 14px;
-            justify-content: center
+            margin-bottom: 20px;
+            justify-content: center;
+            padding: 20px;
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-soft);
         }
 
-            .filters input, .filters select {
-                padding: 12px 14px;
-                border: 1px solid #e3e8ef;
-                border-radius: 12px;
-                outline: none;
-                font-size: 14px;
-                min-width: 240px;
-                background: #fff
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1;
+            min-width: 240px;
+        }
+
+        .filter-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+            .filter-label i {
+                color: var(--brand-teal);
             }
 
-                .filters input:focus, .filters select:focus {
-                    box-shadow: 0 0 0 4px rgba(25,183,166,.12)
-                }
+        .filters input, .filters select {
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            outline: none;
+            font-size: 14px;
+            background: #f8fafc;
+            transition: all 0.2s ease;
+        }
+
+            .filters input:focus, .filters select:focus {
+                background: #ffffff;
+                border-color: var(--brand-teal);
+                box-shadow: 0 0 0 3px rgba(13,165,160,.15);
+            }
 
         .chips {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             flex-wrap: wrap;
             justify-content: center;
-            margin-bottom: 14px
+            margin-bottom: 20px;
         }
 
         .chip {
-            padding: 8px 12px;
+            padding: 10px 16px;
             border-radius: 999px;
-            background: #e7f7f5;
-            color: #0f6d64;
-            font-weight: 800;
+            background: var(--brand-teal-soft);
+            color: var(--brand-navy);
+            font-weight: 600;
             cursor: pointer;
-            border: 1px solid #c7efe9
+            border: 1px solid var(--brand-teal);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
-            .chip.active {
-                background: #19b7a6;
-                color: #fff;
-                border-color: #19b7a6
+            .chip i {
+                color: var(--brand-teal);
             }
+
+            .chip:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 10px rgba(13,165,160,.15);
+            }
+
+            .chip.active {
+                background: var(--brand-teal);
+                color: #fff;
+                border-color: var(--brand-teal);
+                box-shadow: 0 4px 15px rgba(13,165,160,.25);
+            }
+
+                .chip.active i {
+                    color: #fff;
+                }
 
         .grid {
             display: grid;
-            gap: 16px;
-            grid-template-columns: repeat(auto-fit,minmax(280px,1fr))
+            gap: 20px;
+            grid-template-columns: repeat(auto-fill,minmax(300px,1fr))
         }
 
         .card {
             background: var(--card);
-            border-radius: 20px;
-            border: 1px solid #eff4fb;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
             overflow: hidden;
-            box-shadow: 0 10px 28px rgba(15,43,92,.07),0 4px 12px rgba(15,43,92,.05);
-            transition: transform .12s ease,box-shadow .2s ease
+            box-shadow: var(--shadow-soft);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
         }
 
             .card:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 18px 48px rgba(15,43,92,.12),0 6px 16px rgba(15,43,92,.08)
+                transform: translateY(-4px);
+                box-shadow: var(--shadow-strong);
             }
+
+        .thumb-container {
+            position: relative;
+            overflow: hidden;
+            height: 180px;
+        }
 
         .thumb {
             width: 100%;
-            aspect-ratio: 16/9;
-            height: auto;
+            height: 100%;
             object-fit: cover;
-            background: #eef2f7;
-            display: block
+            background: #f1f5f9;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover .thumb {
+            transform: scale(1.05);
         }
 
         .card-body {
-            padding: 16px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            gap: 10px
+            gap: 12px;
+            flex: 1;
         }
 
         .barbearia-nome {
-            font-weight: 800;
-            font-size: 1.1rem;
-            color: var(--brand-navy)
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--brand-navy);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
+
+            .barbearia-nome i {
+                color: var(--brand-teal);
+                font-size: 16px;
+            }
 
         .barbearia-endereco {
             color: var(--muted);
-            font-size: .92rem
+            font-size: .95rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
+
+            .barbearia-endereco i {
+                color: var(--brand-teal);
+                font-size: 14px;
+            }
 
         .meta {
             display: flex;
-            gap: 8px;
+            gap: 12px;
             align-items: center;
-            flex-wrap: wrap
+            flex-wrap: wrap;
         }
 
         .rating {
-            font-size: .95rem;
-            color: #ffb400
+            font-size: 1rem;
+            color: #f59e0b;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
         .badge {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 10px;
+            border-radius: 999px;
             font-size: 12px;
-            background: #e0f8f5;
-            color: #0d6e64
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
-            .badge.off {
-                background: #ffeaea;
-                color: #c62828
+            .badge.open {
+                background: #d1fae5;
+                color: #065f46;
             }
+
+                .badge.open i {
+                    color: var(--success);
+                }
+
+            .badge.off {
+                background: #fee2e2;
+                color: #991b1b;
+            }
+
+                .badge.off i {
+                    color: var(--danger);
+                }
 
         .card-footer {
             display: flex;
             justify-content: space-between;
-            align-items: center
+            align-items: center;
+            margin-top: auto;
+            padding-top: 16px;
         }
 
         .btn {
-            padding: 10px 14px;
+            padding: 10px 16px;
             border: none;
-            border-radius: 12px;
-            background: var(--brand-teal);
+            border-radius: var(--radius-sm);
+            background: linear-gradient(135deg, var(--brand-teal), var(--brand-teal-hover));
             color: #fff;
-            font-weight: 800;
+            font-weight: 600;
             cursor: pointer;
-            text-decoration: none
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
         }
 
+            .btn::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: rgba(255,255,255,0.2);
+                transition: left 0.3s ease;
+            }
+
+            .btn:hover::before {
+                left: 100%;
+            }
+
             .btn:hover {
-                background: var(--brand-teal-hover)
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(13,165,160,.35);
             }
 
         .fav-btn {
             background: #fff;
-            border: 1px solid #e9eef5;
+            border: 1px solid var(--border);
             font-size: 18px;
             cursor: pointer;
-            color: #c8c8c8;
+            color: #cbd5e1;
             line-height: 1;
-            padding: 8px 10px;
-            border-radius: 12px
+            padding: 10px 12px;
+            border-radius: var(--radius-sm);
+            transition: all 0.2s ease;
         }
 
+            .fav-btn:hover {
+                transform: scale(1.1);
+                border-color: var(--danger);
+                color: var(--danger);
+            }
+
             .fav-btn.active {
-                color: #e11d48;
-                border-color: #ffd1dc;
-                background: #fff5f7
+                color: var(--danger);
+                border-color: var(--danger);
+                background: #fff5f5;
             }
 
         .skeleton {
-            background: #fff;
-            border-radius: 20px;
-            border: 1px solid #eff4fb;
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
             overflow: hidden;
-            animation: pulse 1.2s infinite
+            animation: pulse 1.2s infinite;
+            display: flex;
+            flex-direction: column;
         }
 
         .sk-img {
-            aspect-ratio: 16/9;
-            background: linear-gradient(90deg,#eef2f7 25%,#f5f7fa 37%,#eef2f7 63%)
+            height: 180px;
+            background: linear-gradient(90deg,#f1f5f9 25%,#e2e8f0 37%,#f1f5f9 63%)
         }
 
         .sk-lines {
-            padding: 16px
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
         .sk-line {
             height: 12px;
-            background: linear-gradient(90deg,#eef2f7 25%,#f5f7fa 37%,#eef2f7 63%);
-            border-radius: 8px;
-            margin: 8px 0
+            background: linear-gradient(90deg,#f1f5f9 25%,#e2e8f0 37%,#f1f5f9 63%);
+            border-radius: var(--radius-sm);
         }
 
         @keyframes pulse {
@@ -285,12 +458,34 @@
         }
 
         .empty-wrap {
-            background: #fff;
-            border: 1px dashed #d7e2f0;
-            border-radius: 16px;
-            padding: 22px;
+            background: var(--card);
+            border: 1px dashed var(--border);
+            border-radius: var(--radius-lg);
+            padding: 40px;
             text-align: center;
-            color: #6b778c
+            color: var(--muted);
+            grid-column: 1 / -1;
+        }
+
+            .empty-wrap i {
+                font-size: 48px;
+                color: var(--muted);
+                margin-bottom: 16px;
+            }
+
+            .empty-wrap h3 {
+                margin: 0 0 8px;
+                color: var(--brand-navy);
+            }
+
+        @media(max-width:768px) {
+            .filters {
+                flex-direction: column;
+            }
+
+            .filter-group {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -298,7 +493,9 @@
     <header>
         <div class="top">
             <div class="brand" aria-label="AgoraHora">
-                <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="28" fill="none" stroke="#19b7a6" stroke-width="6" /><path d="M20 33.5l7 7 17-17" fill="none" stroke="#19b7a6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                <div class="brand-icon">
+                    <i class="fas fa-cut"></i>
+                </div>
                 <div class="name">AgoraHora</div>
             </div>
         </div>
@@ -306,31 +503,58 @@
 
     <section class="hero">
         <div class="hero-wrap">
-            <h1>Encontre o salão perfeito</h1>
+            <h1><i class="fas fa-store"></i> Encontre o salão perfeito</h1>
             <p>Busque, filtre e agende em poucos cliques — simples e rápido.</p>
         </div>
     </section>
 
     <main class="container">
         <div class="filters">
-            <input type="text" id="search" placeholder="Buscar barbearia..." aria-label="Buscar barbearia" />
-            <select id="filterOrder" aria-label="Ordenar por">
-                <option value="">Ordenar por</option>
-                <option value="avaliacao">Melhor Avaliação</option>
-                <option value="abertas">Apenas Abertas</option>
-            </select>
+            <div class="filter-group">
+                <label class="filter-label" for="search"><i class="fas fa-search"></i> Buscar</label>
+                <input type="text" id="search" placeholder="Buscar barbearia..." aria-label="Buscar barbearia" />
+            </div>
+            <div class="filter-group">
+                <label class="filter-label" for="filterOrder"><i class="fas fa-sort"></i> Ordenar</label>
+                <select id="filterOrder" aria-label="Ordenar por">
+                    <option value="">Ordenar por</option>
+                    <option value="avaliacao">Melhor Avaliação</option>
+                    <option value="abertas">Apenas Abertas</option>
+                </select>
+            </div>
         </div>
 
         <div class="chips" id="chips">
-            <button class="chip active" data-chip="todas">Todas</button>
-            <button class="chip" data-chip="abertas">Aberta agora</button>
-            <button class="chip" data-chip="top">Top avaliadas</button>
+            <button class="chip active" data-chip="todas"><i class="fas fa-border-all"></i> Todas</button>
+            <button class="chip" data-chip="abertas"><i class="fas fa-door-open"></i> Aberta agora</button>
+            <button class="chip" data-chip="top"><i class="fas fa-star"></i> Top avaliadas</button>
         </div>
 
         <div class="grid" id="lista-barbearias">
-            <div class="skeleton"><div class="sk-img"></div><div class="sk-lines"><div class="sk-line" style="width:70%"></div><div class="sk-line" style="width:40%"></div><div class="sk-line" style="width:55%"></div></div></div>
-            <div class="skeleton"><div class="sk-img"></div><div class="sk-lines"><div class="sk-line" style="width:60%"></div><div class="sk-line" style="width:45%"></div><div class="sk-line" style="width:55%"></div></div></div>
-            <div class="skeleton"><div class="sk-img"></div><div class="sk-lines"><div class="sk-line" style="width:66%"></div><div class="sk-line" style="width:42%"></div><div class="sk-line" style="width:55%"></div></div></div>
+            <div class="skeleton">
+                <div class="sk-img"></div>
+                <div class="sk-lines">
+                    <div class="sk-line" style="width:70%"></div>
+                    <div class="sk-line" style="width:40%"></div>
+                    <div class="sk-line" style="width:55%"></div>
+                </div>
+            </div>
+            <div class="skeleton">
+                <div class="sk-img"></div>
+                <div class="sk-lines">
+                    <div class="sk-line" style="width:60%"></div>
+                    <div class="sk-line" style="width:45%"></div>
+                    <div class="sk-line" style="width:55%"></div>
+                </div>
+            </div>
+            <div class="skeleton">
+                <div class="sk-img"></div>
+                <div class="sk-lines">
+                    <div class="sk-line" style="width:66%"></div>
+                    <div class="sk-line" style="width:42%"></div>
+                    <div class="sk-line" style="width:55%"></div>
+                </div>
+            </div>
         </div>
     </main>
 
@@ -347,12 +571,13 @@
         const LOGO_URL = 'https://i.ibb.co/qMsd2zN4/barbershop-logo-barber-pole-razor-600nw-2535695609.webp';
         const FALLBACK_IMG = 'data:image/svg+xml;utf8,' + encodeURIComponent(
             `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360">
-          <rect width="100%" height="100%" fill="#eef2f7"/>
-          <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
-                font-family="Inter, Arial, sans-serif" font-size="24" fill="#0f2b5c">
-            AgoraHora • Barbearia
-          </text>
-        </svg>`
+              <rect width="100%" height="100%" fill="#f1f5f9"/>
+              <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                    font-family="Inter, Arial, sans-serif" font-size="24" fill="#0a1933">
+                <tspan x="50%" dy="-10">AgoraHora</tspan>
+                <tspan x="50%" dy="30">Barbearia</tspan>
+              </text>
+            </svg>`
         );
 
         const logoKey = id => `logo_estab_${id}`;
@@ -398,26 +623,31 @@
             const aberta = Number.isFinite(b.abreMin) && Number.isFinite(b.fechaMin) ? abertaLocal : !!b.aberta;
 
             return `
-          <div class="card">
-            <img class="thumb" loading="lazy" src="${imgUrl}" alt="Foto da ${b.nome}"
-                 onerror="this.onerror=null;this.src='${FALLBACK_IMG}'">
-            <div class="card-body">
-              <div>
-                <div class="barbearia-nome">${b.nome}</div>
-                <div class="barbearia-endereco">${b.endereco || ''}</div>
-                <div class="meta">
-                  <div class="rating">⭐ ${Number(b.avaliacao ?? 0).toFixed(1)}</div>
-                  <span class="badge ${aberta ? '' : 'off'}">${aberta ? 'Aberta agora' : 'Fechada'}</span>
+              <div class="card">
+                <div class="thumb-container">
+                  <img class="thumb" loading="lazy" src="${imgUrl}" alt="Foto da ${b.nome}"
+                       onerror="this.onerror=null;this.src='${FALLBACK_IMG}'">
                 </div>
-              </div>
-              <div class="card-footer">
-                <a class="btn" href="${href}">Ver detalhes</a>
-                <button class="fav-btn ${favs.has(b.id) ? 'active' : ''}" aria-pressed="${favs.has(b.id)}" title="Favoritar" data-id="${b.id}">
-                  ${favs.has(b.id) ? '❤️' : '🤍'}
-                </button>
-              </div>
-            </div>
-          </div>`;
+                <div class="card-body">
+                  <div>
+                    <div class="barbearia-nome"><i class="fas fa-store"></i> ${b.nome}</div>
+                    <div class="barbearia-endereco"><i class="fas fa-map-marker-alt"></i> ${b.endereco || ''}</div>
+                    <div class="meta">
+                      <div class="rating"><i class="fas fa-star"></i> ${Number(b.avaliacao ?? 0).toFixed(1)}</div>
+                      <span class="badge ${aberta ? 'open' : 'off'}">
+                        <i class="fas fa-${aberta ? 'check-circle' : 'times-circle'}"></i>
+                        ${aberta ? 'Aberta agora' : 'Fechada'}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="card-footer">
+                    <a class="btn" href="${href}"><i class="fas fa-eye"></i> Ver detalhes</a>
+                    <button class="fav-btn ${favs.has(b.id) ? 'active' : ''}" aria-pressed="${favs.has(b.id)}" title="Favoritar" data-id="${b.id}">
+                      ${favs.has(b.id) ? '❤️' : '🤍'}
+                    </button>
+                  </div>
+                </div>
+              </div>`;
         }
 
         function bindFavs() {
@@ -445,7 +675,7 @@
             // Recalcula abertura local em todos os cards
             data = data.map(d => ({ ...d, aberta: isOpenLocal(d.abreMin, d.fechaMin) }));
 
-            // Se chip “abertas” escolhido mas o backend filtrou errado por fuso, filtra no cliente
+            // Se chip "abertas" escolhido mas o backend filtrou errado por fuso, filtra no cliente
             if (chip === 'abertas') data = data.filter(d => d.aberta === true);
 
             return data;
@@ -453,7 +683,12 @@
 
         function render(data) {
             if (!data.length) {
-                lista.innerHTML = `<div class="empty-wrap">Nenhuma barbearia encontrada. Tente limpar os filtros.</div>`;
+                lista.innerHTML = `
+                    <div class="empty-wrap">
+                        <i class="fas fa-search"></i>
+                        <h3>Nenhuma barbearia encontrada</h3>
+                        <p>Tente limpar os filtros ou usar termos diferentes.</p>
+                    </div>`;
                 return;
             }
             lista.innerHTML = data.map(cardHTML).join('');
@@ -462,7 +697,14 @@
 
         async function applyFilters() {
             try { render(await carregar()); }
-            catch { lista.innerHTML = `<div class="empty-wrap">Erro ao carregar.</div>`; }
+            catch {
+                lista.innerHTML = `
+                    <div class="empty-wrap">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Erro ao carregar</h3>
+                        <p>Não foi possível carregar as barbearias no momento. Tente novamente mais tarde.</p>
+                    </div>`;
+            }
         }
 
         chips.addEventListener('click', e => {
