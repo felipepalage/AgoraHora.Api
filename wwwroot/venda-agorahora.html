@@ -1,305 +1,1236 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>AgoraHora – Sistema de Agendamentos | TechSphere</title>
-<meta name="description" content="AgoraHora, da TechSphere: agendamentos online, lembretes automáticos e gestão completa em um único lugar.">
-<style>
-  :root{
-    --brand-navy:#0f2b5c;
-    --brand-teal:#19b7a6;
-    --brand-teal-2:#12aea0;
-    --brand-teal-hover:#139987;
-    --ink:#0e1726;
-    --bg:#f4f7fb;
-    --card:#ffffff;
-    --muted:#66748b;
-    --ring: rgba(25,183,166,.18);
-    --radius:16px;
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{margin:0; color:var(--ink); background:radial-gradient(1200px 600px at 90% -10%, rgba(25,183,166,.12), transparent 60%),
-                     radial-gradient(900px 500px at -10% 20%, rgba(15,43,92,.10), transparent 60%),
-                     linear-gradient(180deg, #fff, #f7fbfa);
-       font:500 15px/1.6 Inter, system-ui, Segoe UI, Roboto, Arial, sans-serif}
-  a{color:inherit; text-decoration:none}
-  .container{max-width:1180px; margin:0 auto; padding:0 20px}
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AgoraHora – Sistema de Agendamentos | TechSphere</title>
+    <meta name="description" content="AgoraHora, da TechSphere: agendamentos online, lembretes automáticos e gestão completa em um único lugar.">
 
-  /* Buttons */
-  .btn{padding:12px 16px; border:none; border-radius:12px; background:linear-gradient(90deg,var(--brand-teal),var(--brand-teal-2)); color:#fff; font-weight:800; cursor:pointer; display:inline-flex; align-items:center; gap:10px; transition:transform .08s ease, box-shadow .2s ease, filter .2s ease}
-  .btn:hover{filter:saturate(1.05) brightness(1.02); box-shadow:0 10px 28px rgba(25,183,166,.28)}
-  .btn-ghost{background:#e7f7f5; color:#0f6d64}
-  .chip{display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px; background:#e9fdf9; color:#0e7a70; font-weight:800; font-size:12px}
+    <style>
+        :root {
+            --navy: #050816;
+            --navy-soft: #0b1220;
+            --navy-soft-2: #111827;
+            --teal: #14b8a6;
+            --teal-soft: #22c9b5;
+            --bg: #020617;
+            --muted: #9ca3af;
+            --glass: rgba(15,23,42,.9);
+            --border: #1f2937;
+            --radius-lg: 22px;
+            --radius-md: 16px;
+        }
 
-  /* Header */
-  header{position:sticky; top:0; z-index:40; backdrop-filter:saturate(140%) blur(6px)}
-  .nav{border-bottom:1px solid #e8eef6; background:linear-gradient(90deg, rgba(25,183,166,.09), rgba(15,43,92,.06))}
-  .top{padding:14px 0; display:flex; align-items:center; justify-content:space-between; gap:12px}
-  .brand{display:flex; align-items:center; gap:10px}
-  .brand svg{width:34px; height:34px}
-  .brand .name{font-weight:900; font-size:20px; color:var(--brand-navy)}
-  nav a{margin-left:8px}
+        /* RESET */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
 
-  /* Hero */
-  .hero{position:relative; overflow:hidden}
-  .hero .wrap{padding:72px 0 46px; display:grid; gap:16px; text-align:center}
-  .kicker{display:inline-flex; gap:8px; align-items:center; justify-content:center}
-  .kicker .dot{width:8px; height:8px; background:var(--brand-teal); border-radius:50%}
-  h1{margin:0; font-size:clamp(30px, 4.8vw, 52px); color:var(--brand-navy); letter-spacing:.2px}
-  .sub{margin:0 auto; max-width:820px; color:#3b4761}
-  .hero-cta{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:12px}
-  .wave{display:block; width:100%; height:auto; transform:translateY(1px)}
+        html, body {
+            height: 100%
+        }
 
-  /* Sections */
-  section{padding:40px 0}
-  .section-title{margin:0 0 8px; color:var(--brand-navy); font-size:26px; text-align:center}
-  .section-sub{margin:0 auto 16px; max-width:760px; color:var(--muted); text-align:center}
+        body {
+            font: 500 15px/1.6 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+            color: #e5e7eb;
+            background: radial-gradient(circle at top left,rgba(56,189,248,.18),transparent 60%), radial-gradient(circle at 10% 80%,rgba(56,189,248,.12),transparent 55%), radial-gradient(circle at 80% 20%,rgba(45,212,191,.28),transparent 60%), radial-gradient(circle at bottom,rgba(15,23,42,1),rgba(2,6,23,1));
+        }
 
-  /* Grid + Cards */
-  .grid{display:grid; gap:16px}
-  @media(min-width:900px){ .grid-3{grid-template-columns:repeat(3,1fr)} .grid-2{grid-template-columns:repeat(2,1fr)} }
-  .card{background:var(--card); border-radius:20px; padding:20px; box-shadow:0 14px 36px rgba(15,43,92,.08), 0 4px 14px rgba(15,43,92,.06); transition:transform .12s ease, box-shadow .2s ease, border .2s ease; border:1px solid #eff4fb}
-  .card:hover{transform:translateY(-2px); box-shadow:0 20px 50px rgba(15,43,92,.12), 0 6px 16px rgba(15,43,92,.08)}
-  .card h3{margin:0 0 6px; color:var(--brand-navy)}
-  .muted{color:var(--muted)}
+        a {
+            text-decoration: none;
+            color: inherit
+        }
 
-  /* Benefits */
-  .benefit{display:flex; gap:14px; align-items:flex-start}
-  .benefit .icon{min-width:44px; height:44px; border-radius:14px; background:#e7f7f5; display:grid; place-items:center; box-shadow:inset 0 0 0 1px #c7efe9}
-  .benefit .icon svg{width:22px; height:22px; stroke:#0f6d64}
+        .container {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 0 20px
+        }
 
-  /* Pricing */
-  .pricing-toggle{display:flex; gap:8px; justify-content:center; align-items:center; margin-bottom:16px}
-  .toggle{position:relative; width:64px; height:34px; background:#e6eef5; border-radius:999px; cursor:pointer; transition:background .2s}
-  .toggle.active{background:#cfeee9}
-  .knob{position:absolute; top:3px; left:3px; width:28px; height:28px; background:#fff; border-radius:50%; box-shadow:0 4px 10px rgba(0,0,0,.12); transition:left .2s}
-  .toggle.active .knob{left:33px}
-  .price{font-size:36px; font-weight:900; color:var(--brand-navy)}
-  .price small{font-size:12px; color:var(--muted); font-weight:600}
-  .plan-feats{margin:10px 0 0; padding:0; list-style:none}
-  .plan-feats li{display:flex; gap:8px; align-items:flex-start; margin:6px 0; color:#334155}
-  .tag-pop{background:linear-gradient(90deg, #e6fffb, #f3fff5); padding:6px 10px; border-radius:999px; font-size:12px; font-weight:800; color:#0f6d64}
-  .off{display:inline-block; padding:4px 8px; border-radius:999px; background:#12b8861a; color:#0f6d64; font-weight:900; font-size:12px; animation:pulse 1.6s infinite}
-  @keyframes pulse{0%{box-shadow:0 0 0 0 var(--ring)}70%{box-shadow:0 0 0 12px rgba(25,183,166,0)}100%{box-shadow:0 0 0 0 rgba(25,183,166,0)}}
+        /* BUTTONS */
+        .btn {
+            padding: 11px 20px;
+            border: none;
+            border-radius: 999px;
+            background: radial-gradient(circle at 0 0,#a5f3fc,#22c55e);
+            color: #020617;
+            font-weight: 800;
+            font-size: 14px;
+            letter-spacing: .03em;
+            text-transform: uppercase;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+            box-shadow: 0 16px 40px rgba(15,23,42,.65);
+            transition: transform .12s ease,box-shadow .15s ease,filter .15s ease;
+        }
 
-  /* FAQ */
-  .faq-item{background:#fff; border-radius:14px; padding:14px; box-shadow:0 10px 24px rgba(15,43,92,.05); cursor:pointer}
-  .faq-q{margin:0; font-weight:900; color:var(--brand-navy)}
-  .faq-a{margin:8px 0 0; color:#425168; display:none}
-  .faq-item.open .faq-a{display:block}
+            .btn:hover {
+                transform: translateY(-1.5px) scale(1.01);
+                filter: brightness(1.03);
+                box-shadow: 0 22px 60px rgba(15,23,42,.9);
+            }
 
-  /* Sticky CTA */
-  .sticky-cta{position:sticky; bottom:0; z-index:30; background:rgba(255,255,255,.9); backdrop-filter:blur(6px); border-top:1px solid #e9eef5}
-  .sticky-cta .wrap{display:flex; gap:10px; padding:12px 20px; justify-content:center}
+        .btn-ghost {
+            background: rgba(15,23,42,.8);
+            color: #e5e7eb;
+            box-shadow: 0 10px 30px rgba(15,23,42,.7);
+        }
 
-  /* Footer */
-  footer{background:#fff; border-top:1px solid #e9eef5; margin-top:24px}
-  .foot{padding:18px 0; display:flex; gap:10px; justify-content:space-between; align-items:center; color:var(--muted)}
+            .btn-ghost:hover {
+                background: rgba(15,23,42,.95)
+            }
 
-  /* WhatsApp FAB */
-  .fab-whats{
-    position:fixed; right:18px; bottom:18px; z-index:50;
-    width:56px; height:56px; border-radius:999px; display:grid; place-items:center;
-    background:linear-gradient(135deg,#25d366,#19b7a6); box-shadow:0 12px 30px rgba(25,183,166,.45);
-  }
-  .fab-whats svg{width:26px; height:26px; fill:#fff}
-  .fab-whats:hover{transform:translateY(-2px)}
-</style>
+        /* HEADER */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+        }
+
+        .nav {
+            background: linear-gradient(90deg,rgba(15,23,42,.96),rgba(15,23,42,.9),rgba(37,99,235,.45));
+            backdrop-filter: blur(18px);
+            border-bottom: 1px solid rgba(148,163,184,.2);
+        }
+
+        .top {
+            padding: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+        }
+
+        /* BRAND */
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 18px;
+            background: conic-gradient(from 140deg,#22c55e,#06b6d4,#818cf8,#22c55e);
+            padding: 2px;
+        }
+
+        .brand-logo-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 16px;
+            background: radial-gradient(circle at 20% 0,#0f172a,#020617);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .brand-logo-inner svg {
+                width: 22px;
+                height: 22px;
+                stroke: #e5e7eb
+            }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column
+        }
+
+        .brand-name {
+            font-weight: 900;
+            font-size: 18px;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+        }
+
+        .brand-sub {
+            font-size: 11px;
+            color: #9ca3af;
+        }
+
+        /* NAV LINKS + HAMBURGER */
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* mobile menu button */
+        .menu-toggle {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 999px;
+            border: 1px solid rgba(148,163,184,.6);
+            background: rgba(15,23,42,.8);
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .menu-toggle-line {
+            width: 18px;
+            height: 2px;
+            border-radius: 999px;
+            background: #e5e7eb;
+            position: relative;
+        }
+
+            .menu-toggle-line::before,
+            .menu-toggle-line::after {
+                content: "";
+                position: absolute;
+                left: 0;
+                width: 18px;
+                height: 2px;
+                border-radius: 999px;
+                background: #e5e7eb;
+            }
+
+            .menu-toggle-line::before {
+                top: -5px
+            }
+
+            .menu-toggle-line::after {
+                top: 5px
+            }
+
+        .menu-open .menu-toggle-line {
+            background: transparent;
+        }
+
+            .menu-open .menu-toggle-line::before {
+                top: 0;
+                transform: rotate(45deg);
+            }
+
+            .menu-open .menu-toggle-line::after {
+                top: 0;
+                transform: rotate(-45deg);
+            }
+
+        /* mobile dropdown */
+        .nav-mobile {
+            display: none;
+            border-top: 1px solid rgba(148,163,184,.25);
+            background: rgba(15,23,42,.98);
+        }
+
+        .nav-mobile-inner {
+            padding: 10px 20px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+            .nav-mobile-inner a {
+                width: 100%;
+                justify-content: center;
+            }
+
+        /* HERO */
+        .hero {
+            padding: 52px 0 32px;
+        }
+
+        .hero-grid {
+            display: grid;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .hero-left {
+            max-width: 640px
+        }
+
+        .hero-kicker {
+            display: inline-flex;
+            gap: 8px;
+            align-items: center;
+            padding: 4px 11px;
+            border-radius: 999px;
+            background: rgba(15,23,42,.8);
+            box-shadow: 0 10px 30px rgba(15,23,42,.8);
+            font-size: 11px;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: #a5f3fc;
+        }
+
+            .hero-kicker .dot {
+                width: 8px;
+                height: 8px;
+                border-radius: 999px;
+                background: #22c55e
+            }
+
+        .hero-title {
+            margin: 12px 0 4px;
+            font-size: clamp(30px,4.1vw,46px);
+            font-weight: 900;
+            letter-spacing: .03em;
+        }
+
+            .hero-title span {
+                background: linear-gradient(90deg,#22c55e,#2dd4bf,#38bdf8);
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+            }
+
+        .hero-sub {
+            margin-top: 8px;
+            color: #9ca3af;
+            max-width: 480px;
+        }
+
+        .hero-cta {
+            margin-top: 18px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .hero-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 18px;
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .hero-meta-item {
+            display: flex;
+            flex-direction: column
+        }
+
+        .hero-meta-number {
+            font-weight: 800;
+            font-size: 18px;
+            color: #e5e7eb
+        }
+
+        /* HERO RIGHT MOCK */
+        .hero-right {
+            justify-self: stretch
+        }
+
+        .mock-shell {
+            border-radius: var(--radius-lg);
+            border: 1px solid rgba(148,163,184,.35);
+            background: linear-gradient(145deg,rgba(15,23,42,.97),rgba(15,23,42,.98));
+            box-shadow: 0 22px 60px rgba(0,0,0,.85);
+            padding: 16px 16px 14px;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .mock-shell::before {
+                content: "";
+                position: absolute;
+                inset: -80%;
+                background: conic-gradient(from 120deg,rgba(34,197,94,.18),transparent,rgba(56,189,248,.2),transparent);
+                opacity: .45;
+                filter: blur(32px);
+            }
+
+        .mock-inner {
+            position: relative;
+            border-radius: 18px;
+            border: 1px solid rgba(148,163,184,.35);
+            background: radial-gradient(circle at 0 0,rgba(34,197,94,.14),transparent 60%), radial-gradient(circle at 100% 100%,rgba(56,189,248,.18),transparent 55%), rgba(15,23,42,.96);
+            padding: 12px 14px;
+        }
+
+        .mock-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .mock-title {
+            font-size: 13px;
+            font-weight: 700
+        }
+
+        .mock-badges {
+            display: flex;
+            gap: 6px
+        }
+
+        .mock-pill {
+            padding: 4px 7px;
+            border-radius: 999px;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .12em;
+            background: rgba(15,23,42,.9);
+            color: #bae6fd;
+        }
+
+        .mock-list {
+            margin-top: 4px;
+            border-radius: 14px;
+            border: 1px solid rgba(148,163,184,.35);
+            background: rgba(15,23,42,.96);
+            padding: 10px 10px 8px;
+        }
+
+        .mock-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(55,65,81,.7);
+            font-size: 12px;
+        }
+
+            .mock-row:last-child {
+                border-bottom: none
+            }
+
+            .mock-row main {
+                display: flex;
+                flex-direction: column;
+                gap: 2px
+            }
+
+            .mock-row strong {
+                color: #e5e7eb
+            }
+
+            .mock-row span {
+                color: #9ca3af;
+                font-size: 11px
+            }
+
+        .mock-status {
+            padding: 4px 8px;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+            .mock-status.ok {
+                background: rgba(34,197,94,.15);
+                color: #bbf7d0
+            }
+
+            .mock-status.warn {
+                background: rgba(250,204,21,.08);
+                color: #facc15
+            }
+
+            .mock-status.new {
+                background: rgba(56,189,248,.12);
+                color: #bae6fd
+            }
+
+        .mock-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+            font-size: 11px;
+            color: #9ca3af;
+        }
+
+        /* SECTIONS */
+        section {
+            padding: 40px 0
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        .section-sub {
+            text-align: center;
+            font-size: 14px;
+            color: var(--muted);
+            max-width: 640px;
+            margin: 4px auto 16px;
+        }
+
+        /* GRID + CARDS */
+        .grid {
+            display: grid;
+            gap: 18px
+        }
+
+        .grid-3 {
+            grid-template-columns: 1fr
+        }
+
+        .grid-2 {
+            grid-template-columns: 1fr
+        }
+
+        .card {
+            border-radius: var(--radius-lg);
+            border: 1px solid rgba(148,163,184,.25);
+            background: var(--glass);
+            box-shadow: 0 18px 50px rgba(0,0,0,.7);
+            padding: 18px 18px 20px;
+            transition: transform .16s ease,box-shadow .2s ease,border .2s ease;
+        }
+
+            .card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 26px 70px rgba(0,0,0,.9);
+                border-color: rgba(94,234,212,.85);
+            }
+
+            .card h3 {
+                margin-bottom: 6px;
+                font-size: 17px
+            }
+
+        .muted {
+            color: var(--muted)
+        }
+
+        /* BENEFITS */
+        .benefit {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start
+        }
+
+        .benefit-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 16px;
+            display: grid;
+            place-items: center;
+            background: radial-gradient(circle at 0 0,#22c55e33,#0b1120);
+            border: 1px solid rgba(148,163,184,.5);
+        }
+
+            .benefit-icon svg {
+                width: 22px;
+                height: 22px;
+                stroke: #e5e7eb
+            }
+
+        /* STEPS */
+        .step {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start
+        }
+
+        .step-num {
+            width: 26px;
+            height: 26px;
+            border-radius: 999px;
+            border: 1px solid rgba(148,163,184,.6);
+            display: grid;
+            place-items: center;
+            font-size: 13px;
+            font-weight: 700;
+            background: rgba(15,23,42,.9);
+        }
+
+        /* PRICING */
+        .pricing-toggle {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 18px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .toggle {
+            position: relative;
+            width: 68px;
+            height: 34px;
+            background: rgba(15,23,42,.9);
+            border-radius: 999px;
+            cursor: pointer;
+            border: 1px solid rgba(148,163,184,.6);
+            transition: background .2s ease,border .2s ease;
+        }
+
+            .toggle.active {
+                background: linear-gradient(90deg,#22c55e,#22c9b5);
+                border-color: transparent;
+            }
+
+        .knob {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 28px;
+            height: 28px;
+            background: #020617;
+            border-radius: 50%;
+            box-shadow: 0 8px 18px rgba(0,0,0,.9);
+            transition: left .2s ease;
+        }
+
+        .toggle.active .knob {
+            left: 37px
+        }
+
+        .price {
+            margin-top: 10px;
+            font-size: 30px;
+            font-weight: 900;
+        }
+
+            .price small {
+                font-size: 11px;
+                color: var(--muted);
+                font-weight: 500;
+            }
+
+        .plan-feats {
+            margin: 12px 0 0;
+            list-style: none;
+            font-size: 13px;
+        }
+
+            .plan-feats li {
+                display: flex;
+                gap: 8px;
+                align-items: flex-start;
+                margin: 5px 0;
+            }
+
+        .tag-pop {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 999px;
+            background: rgba(34,197,94,.12);
+            color: #bbf7d0;
+            font-size: 11px;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+        }
+
+        .off {
+            display: inline-block;
+            padding: 4px 9px;
+            border-radius: 999px;
+            background: rgba(34,197,94,.15);
+            color: #bbf7d0;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+
+        /* FAQ */
+        .faq-item {
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(148,163,184,.35);
+            background: var(--glass);
+            padding: 14px 14px 10px;
+            cursor: pointer;
+            transition: border .15s,background .15s,box-shadow .15s;
+        }
+
+            .faq-item:hover {
+                border-color: rgba(94,234,212,.75);
+                box-shadow: 0 20px 50px rgba(0,0,0,.9);
+            }
+
+        .faq-q {
+            font-weight: 700;
+            font-size: 15px
+        }
+
+        .faq-a {
+            margin-top: 7px;
+            display: none;
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        .faq-item.open .faq-a {
+            display: block
+        }
+
+        /* STICKY CTA + FOOTER */
+        .sticky-cta {
+            position: sticky;
+            bottom: 0;
+            z-index: 30;
+            background: linear-gradient(180deg,rgba(15,23,42,.5),rgba(15,23,42,.96));
+            backdrop-filter: blur(14px);
+            border-top: 1px solid rgba(148,163,184,.3);
+        }
+
+            .sticky-cta .wrap {
+                display: flex;
+                justify-content: center;
+                padding: 10px 20px;
+            }
+
+        footer {
+            border-top: 1px solid rgba(148,163,184,.3);
+            background: #020617;
+        }
+
+        .foot {
+            padding: 15px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        /* FAB WHATS */
+        .fab-whats {
+            position: fixed;
+            right: 18px;
+            bottom: 18px;
+            width: 56px;
+            height: 56px;
+            border-radius: 999px;
+            display: grid;
+            place-items: center;
+            background: conic-gradient(from 160deg,#22c55e,#22c55e,#22c9b5,#22c55e);
+            box-shadow: 0 18px 44px rgba(0,0,0,.95);
+            z-index: 50;
+            transition: transform .12s ease,box-shadow .12s ease;
+        }
+
+            .fab-whats svg {
+                width: 26px;
+                height: 26px;
+                fill: #020617
+            }
+
+            .fab-whats:hover {
+                transform: translateY(-1.5px);
+                box-shadow: 0 26px 60px rgba(0,0,0,1);
+            }
+
+        /* RESPONSIVO */
+        @media(min-width:860px) {
+            .hero-grid {
+                grid-template-columns: minmax(0,1.25fr) minmax(0,1fr)
+            }
+
+            .grid-3 {
+                grid-template-columns: repeat(3,1fr)
+            }
+
+            .grid-2 {
+                grid-template-columns: repeat(2,1fr)
+            }
+        }
+
+        @media(max-width:959px) {
+            .hero {
+                padding-top: 40px
+            }
+
+            .hero-grid {
+                gap: 26px
+            }
+
+            .hero-left {
+                max-width: 100%
+            }
+
+            .hero-right {
+                max-width: 460px;
+                margin: 0 auto
+            }
+        }
+
+        @media(max-width:768px) {
+            .top {
+                padding: 10px 0;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .hero {
+                padding-top: 32px;
+            }
+
+            .hero-title {
+                font-size: 26px;
+                line-height: 1.25;
+            }
+
+            .hero-sub {
+                font-size: 14px;
+            }
+
+            .hero-meta {
+                gap: 12px;
+            }
+
+            .hero-meta-number {
+                font-size: 16px;
+            }
+
+            .card {
+                border-radius: 18px;
+                padding: 16px 16px 18px;
+            }
+
+            .section-title {
+                font-size: 18px;
+            }
+
+            .fab-whats {
+                bottom: 76px;
+            }
+        }
+
+        @media(max-width:480px) {
+            .hero-cta {
+                flex-direction: column;
+            }
+
+            .hero-meta {
+                flex-direction: column;
+            }
+
+            .sticky-cta .wrap {
+                padding-inline: 16px;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .foot {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
 </head>
 <body>
-  <!-- NAV -->
-  <header class="nav">
-    <div class="container top">
-      <div class="brand" aria-label="TechSphere">
-        <svg viewBox="0 0 64 64" aria-hidden="true">
-          <circle cx="32" cy="32" r="28" fill="none" stroke="#19b7a6" stroke-width="6"/>
-          <path d="M20 33.5l7 7 17-17" fill="none" stroke="#19b7a6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <header class="nav">
+        <div class="container top">
+            <div class="brand" aria-label="TechSphere">
+                <div class="brand-logo">
+                    <div class="brand-logo-inner">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <circle cx="12" cy="12" r="8" stroke-width="2" />
+                            <path d="M8.5 12.5l2.5 2.5 4.5-5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="brand-text">
+                    <div class="brand-name">AGORAHORA</div>
+                    <div class="brand-sub">Sistema de agendamentos • TechSphere</div>
+                </div>
+            </div>
+
+            <div class="nav-actions">
+                <div class="nav-links">
+                    <a class="btn-ghost btn" href="#precos">Planos</a>
+                    <a class="btn" id="nav-whats" href="#">WhatsApp</a>
+                </div>
+                <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false">
+                    <span class="menu-toggle-line"></span>
+                </button>
+            </div>
+        </div>
+
+        <div class="nav-mobile" id="navMobile">
+            <div class="container nav-mobile-inner">
+                <a class="btn-ghost btn" href="#precos">Ver planos</a>
+                <a class="btn" id="nav-whats-mobile" href="#">Falar no WhatsApp</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container hero-grid">
+            <div class="hero-left">
+                <div class="hero-kicker">
+                    <span class="dot"></span>
+                    <span>Agenda online • Lembretes • Painel para sua equipe</span>
+                </div>
+                <h1 class="hero-title">
+                    Transforme sua agenda em uma <span>máquina de horários cheios</span>.
+                </h1>
+                <p class="hero-sub">
+                    O <strong>AgoraHora</strong> abre a agenda 24/7, envia lembretes automáticos
+                    e entrega uma visão clara de tudo o que entra no seu salão ou clínica.
+                </p>
+                <div class="hero-cta">
+                    <a class="btn" href="#precos">Ver planos e valores</a>
+                    <a class="btn-ghost" id="hero-whats" href="#">Falar com especialista</a>
+                </div>
+                <div class="hero-meta">
+                    <div class="hero-meta-item">
+                        <span class="hero-meta-number">-40%</span>
+                        <span>menos faltas com lembretes automáticos</span>
+                    </div>
+                    <div class="hero-meta-item">
+                        <span class="hero-meta-number">+3h</span>
+                        <span>por semana liberadas da agenda manual</span>
+                    </div>
+                    <div class="hero-meta-item">
+                        <span class="hero-meta-number">24/7</span>
+                        <span>reservas online, até dormindo</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-right" aria-hidden="true">
+                <div class="mock-shell">
+                    <div class="mock-inner">
+                        <div class="mock-header">
+                            <div>
+                                <div class="mock-title">Hoje na Barbearia AgoraHora</div>
+                                <div style="font-size:11px;color:#9ca3af">Resumo em tempo real</div>
+                            </div>
+                            <div class="mock-badges">
+                                <span class="mock-pill">4 Profissionais</span>
+                                <span class="mock-pill">Agenda cheia</span>
+                            </div>
+                        </div>
+                        <div class="mock-list">
+                            <div class="mock-row">
+                                <main>
+                                    <strong>09:00 • Corte + Barba</strong>
+                                    <span>João • Lucas</span>
+                                </main>
+                                <div class="mock-status ok">Confirmado</div>
+                            </div>
+                            <div class="mock-row">
+                                <main>
+                                    <strong>10:30 • Corte masculino</strong>
+                                    <span>Maria • Ana</span>
+                                </main>
+                                <div class="mock-status warn">Lembrete enviado</div>
+                            </div>
+                            <div class="mock-row">
+                                <main>
+                                    <strong>14:00 • Pacote Premium</strong>
+                                    <span>Carlos • Pedro</span>
+                                </main>
+                                <div class="mock-status new">Novo agendamento</div>
+                            </div>
+                        </div>
+                        <div class="mock-footer">
+                            <span>Próxima vaga: 16:30 • Corte rápido</span>
+                            <span style="font-size:11px;color:#a5f3fc">Visão do dono • AgoraHora</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="recursos" class="container">
+        <h2 class="section-title">Por que donos escolhem o AgoraHora</h2>
+        <p class="section-sub">
+            Feito para barbearias, salões e clínicas que querem parar de viver no WhatsApp e assumir o controle dos horários.
+        </p>
+        <div class="grid grid-3">
+            <article class="card benefit">
+                <div class="benefit-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                        <path d="M3 5h18M8 3v4M16 3v4M3 9h18M5 12h14M7 15h10M9 18h6" stroke="currentColor" />
+                    </svg>
+                </div>
+                <div>
+                    <h3>Agenda 100% online</h3>
+                    <p class="muted">
+                        Página pública com horários em tempo real. Cliente escolhe, confirma e já recebe o lembrete — sem você digitar nada.
+                    </p>
+                </div>
+            </article>
+
+            <article class="card benefit">
+                <div class="benefit-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                        <path d="M4 4h6l2 3h8v13H4z" stroke="currentColor" />
+                        <path d="M9 14h6M9 17h3" stroke="currentColor" stroke-linecap="round" />
+                    </svg>
+                </div>
+                <div>
+                    <h3>Lembretes que evitam “furo”</h3>
+                    <p class="muted">
+                        WhatsApp, SMS ou e-mail configurados para sair na hora certa, com texto pensado para reduzir faltas.
+                    </p>
+                </div>
+            </article>
+
+            <article class="card benefit">
+                <div class="benefit-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                        <path d="M4 19h16M4 5h16M8 5v14M16 5v14" stroke="currentColor" />
+                    </svg>
+                </div>
+                <div>
+                    <h3>Visão por profissional</h3>
+                    <p class="muted">
+                        Veja quem está enchendo a agenda, quais serviços mais vendem e quais horários ficam vazios.
+                    </p>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section class="container">
+        <h2 class="section-title">Como funciona na prática</h2>
+        <p class="section-sub">
+            Em poucos dias o AgoraHora já pode estar rodando no seu salão. O fluxo é simples:
+        </p>
+        <div class="grid grid-3">
+            <article class="card step">
+                <div class="step-num">1</div>
+                <div>
+                    <h3>Configuramos seu espaço</h3>
+                    <p class="muted">
+                        Você envia logo, serviços, profissionais e horários. Ajustamos tudo para ficar com a cara do seu negócio.
+                    </p>
+                </div>
+            </article>
+            <article class="card step">
+                <div class="step-num">2</div>
+                <div>
+                    <h3>Ligamos a agenda online</h3>
+                    <p class="muted">
+                        Criamos sua página de agendamento e já conectamos os lembretes automáticos nos canais combinados.
+                    </p>
+                </div>
+            </article>
+            <article class="card step">
+                <div class="step-num">3</div>
+                <div>
+                    <h3>Equipe usando, você acompanhando</h3>
+                    <p class="muted">
+                        Sua equipe agenda em segundos pelo painel, enquanto você acompanha tudo em tempo real.
+                    </p>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section id="precos" class="container">
+        <h2 class="section-title">Planos e preços</h2>
+        <p class="section-sub">
+            Comece no mensal e, quando estiver confortável, ative o desconto do anual
+            <span class="off">-20% no plano escolhido</span>.
+        </p>
+
+        <div class="pricing-toggle">
+            <span>Mensal</span>
+            <div id="toggle" class="toggle" role="switch" aria-checked="false" tabindex="0">
+                <div class="knob"></div>
+            </div>
+            <span><strong>Anual</strong></span>
+        </div>
+
+        <div class="grid grid-3">
+            <article class="card">
+                <h3>Starter</h3>
+                <p class="muted">Para quem quer sair do caderninho com segurança.</p>
+                <p class="price" data-mensal="R$ 49/mês" data-anual="R$ 39/mês">
+                    R$ 49/mês <small>cobrança mensal</small>
+                </p>
+                <ul class="plan-feats">
+                    <li>✔ 1 estabelecimento</li>
+                    <li>✔ Página de agendamentos online</li>
+                    <li>✔ Lembretes por e-mail</li>
+                    <li class="muted">— Relatórios avançados</li>
+                </ul>
+                <div style="margin-top:12px">
+                    <a class="btn-ghost btn" id="cta-starter" href="#">Quero o Starter via WhatsApp</a>
+                </div>
+            </article>
+
+            <article class="card" style="border-color:rgba(94,234,212,.85)">
+                <div class="tag-pop">Mais escolhido</div>
+                <h3>Pro</h3>
+                <p class="muted">Perfeito para barbearias e salões em crescimento.</p>
+                <p class="price" data-mensal="R$ 99/mês" data-anual="R$ 79/mês">
+                    R$ 99/mês <small>cobrança mensal</small>
+                </p>
+                <ul class="plan-feats">
+                    <li>✔ Até 3 estabelecimentos</li>
+                    <li>✔ Lembretes por WhatsApp/SMS*</li>
+                    <li>✔ Relatórios e exportações</li>
+                    <li>✔ Suporte prioritário TechSphere</li>
+                </ul>
+                <div style="margin-top:12px">
+                    <a class="btn" id="cta-pro" href="#">Quero o Pro via WhatsApp</a>
+                </div>
+            </article>
+
+            <article class="card">
+                <h3>Enterprise</h3>
+                <p class="muted">Para redes e operações com alto volume.</p>
+                <p class="price" data-mensal="R$ 199/mês" data-anual="R$ 159/mês">
+                    R$ 199/mês <small>cobrança mensal</small>
+                </p>
+                <ul class="plan-feats">
+                    <li>✔ Estabelecimentos ilimitados</li>
+                    <li>✔ SLA & onboarding dedicado</li>
+                    <li>✔ API e integrações</li>
+                    <li>✔ Relatórios sob medida</li>
+                </ul>
+                <div style="margin-top:12px">
+                    <a class="btn-ghost btn" id="cta-enterprise" href="#">Falar com vendas no WhatsApp</a>
+                </div>
+            </article>
+        </div>
+
+        <p class="muted" style="margin-top:8px;font-size:12px">
+            * Custos de envio de WhatsApp/SMS podem ser cobrados à parte conforme o provedor contratado.
+        </p>
+    </section>
+
+    <section class="container">
+        <h2 class="section-title">Perguntas frequentes</h2>
+        <p class="section-sub">Algumas dúvidas comuns de donos que estão migrando para o AgoraHora.</p>
+        <div class="grid">
+            <article class="faq-item">
+                <h3 class="faq-q">Posso migrar do Starter para o Pro depois?</h3>
+                <p class="faq-a">
+                    Sim. Você pode subir ou descer de plano a qualquer momento. A cobrança é ajustada de forma proporcional no ciclo seguinte.
+                </p>
+            </article>
+            <article class="faq-item">
+                <h3 class="faq-q">Funciona bem no celular?</h3>
+                <p class="faq-a">
+                    Sim. Tanto o painel quanto a página pública de agendamentos foram pensados primeiro para telas menores, sem travar.
+                </p>
+            </article>
+            <article class="faq-item">
+                <h3 class="faq-q">Vocês ajudam na configuração inicial?</h3>
+                <p class="faq-a">
+                    Nos planos Pro e Enterprise você conta com onboarding assistido, migração dos dados principais e suporte prioritário da TechSphere.
+                </p>
+            </article>
+        </div>
+    </section>
+
+    <section id="contato" class="container">
+        <h2 class="section-title">Fale com a TechSphere</h2>
+        <p class="section-sub">Tire dúvidas, veja uma demo rápida e entenda qual plano faz sentido para o seu espaço.</p>
+        <div class="grid grid-2">
+            <article class="card" style="text-align:center">
+                <h3>Converse no WhatsApp</h3>
+                <p class="muted">Atendimento humano, horário comercial.</p>
+                <a class="btn" id="btn-whats" href="#" target="_blank" rel="noopener" style="margin-top:10px;justify-content:center">
+                    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                        <path d="M20.52 3.48A11.87 11.87 0 0 0 12.05 0C5.45 0 .14 5.31.14 11.9c0 2.1.55 4.17 1.59 6L0 24l6.24-1.64a11.9 11.9 0 0 0 5.82 1.5h.01c6.59 0 11.9-5.31 11.9-11.9 0-3.18-1.24-6.17-3.45-8.48ZM12.07 21.2h-.01a9.9 9.9 0 0 1-5.03-1.38l-.36-.21-3.7.97.99-3.61-.23-.37a9.83 9.83 0 0 1-1.51-5.24c0-5.43 4.42-9.85 9.86-9.85 2.63 0 5.1 1.02 6.96 2.88a9.75 9.75 0 0 1 2.88 6.96c0 5.43-4.43 9.85-9.85 9.85Zm5.42-7.4c-.3-.15-1.77-.88-2.05-.98-.27-.1-.47-.15-.67.15s-.77.98-.95 1.19c-.17.2-.35.22-.65.07-.3-.15-1.25-.46-2.38-1.47-.88-.78-1.47-1.74-1.64-2.03-.17-.3-.02-.46.13-.61.13-.12.3-.32.45-.47.15-.16.2-.27.3-.45.1-.2.05-.37-.02-.52-.07-.15-.67-1.6-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.49 0 1.46 1.06 2.88 1.2 3.08.15.2 2.08 3.18 5.03 4.46.7.3 1.25.48 1.68.61.7.22 1.33.19 1.83.11.56-.08 1.77-.72 2.02-1.42.25-.7.25-1.3.17-1.42-.08-.12-.27-.2-.57-.35Z" fill="#020617" />
+                    </svg>
+                    Abrir WhatsApp
+                </a>
+            </article>
+        </div>
+    </section>
+
+    <div class="sticky-cta">
+        <div class="container wrap">
+            <a class="btn" id="sticky-whats" href="#">Quero ver o AgoraHora na prática</a>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container foot">
+            <span>© <span id="ano"></span> TechSphere — AgoraHora</span>
+            <span>Termos • Privacidade</span>
+        </div>
+    </footer>
+
+    <a class="fab-whats" id="fab-whats" href="#" target="_blank" aria-label="Abrir WhatsApp">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20.52 3.48A11.87 11.87 0 0 0 12.05 0C5.45 0 .14 5.31.14 11.9c0 2.1.55 4.17 1.59 6L0 24l6.24-1.64a11.9 11.9 0 0 0 5.82 1.5h.01c6.59 0 11.9-5.31 11.9-11.9 0-3.18-1.24-6.17-3.45-8.48ZM12.07 21.2h-.01a9.9 9.9 0 0 1-5.03-1.38l-.36-.21-3.7.97.99-3.61-.23-.37a9.83 9.83 0 0 1-1.51-5.24c0-5.43 4.42-9.85 9.86-9.85 2.63 0 5.1 1.02 6.96 2.88a9.75 9.75 0 0 1 2.88 6.96c0 5.43-4.43 9.85-9.85 9.85Zm5.42-7.4c-.3-.15-1.77-.88-2.05-.98-.27-.1-.47-.15-.67.15s-.77.98-.95 1.19c-.17.2-.35.22-.65.07-.3-.15-1.25-.46-2.38-1.47-.88-.78-1.47-1.74-1.64-2.03-.17-.3-.02-.46.13-.61.13-.12.3-.32.45-.47.15-.16.2-.27.3-.45.1-.2.05-.37-.02-.52-.07-.15-.67-1.6-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.49 0 1.46 1.06 2.88 1.2 3.08.15.2 2.08 3.18 5.03 4.46.7.3 1.25.48 1.68.61.7.22 1.33.19 1.83.11.56-.08 1.77-.72 2.02-1.42.25-.7.25-1.3.17-1.42-.08-.12-.27-.2-.57-.35Z" fill="#020617" />
         </svg>
-        <div class="name">AgoraHora <span style="color:#5d6a85;font-weight:700"></span></div>
-      </div>
-      <nav>
-        <a class="btn-ghost btn" href="#precos">Planos</a>
-        <a class="btn" id="nav-whats" href="#">WhatsApp</a>
-      </nav>
-    </div>
-  </header>
+    </a>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="container wrap">
-      <h1>Agende. Lembre. Cresça.<br>O sistema que seu salão precisa.</h1>
-      <p class="sub">Com o <strong>AgoraHora</strong> você recebe reservas 24/7, reduz faltas com lembretes automáticos e gerencia tudo em um painel simples e bonito.</p>
-      <div class="hero-cta">
-        <a class="btn" href="#precos">Ver planos</a>
-        <a class="btn btn-ghost" id="hero-whats" href="#">Falar no WhatsApp</a>
-      </div>
-    </div>
-    <svg class="wave" viewBox="0 0 1440 110" preserveAspectRatio="none" aria-hidden="true">
-      <path fill="#f4f7fb" d="M0,64L48,69.3C96,75,192,85,288,85.3C384,85,480,75,576,58.7C672,43,768,21,864,26.7C960,32,1056,64,1152,80C1248,96,1344,96,1392,96L1440,96L1440,110L1392,110C1344,110,1248,110,1152,110C1056,110,960,110,864,110C768,110,672,110,576,110C480,110,384,110,288,110C192,110,96,110,48,110L0,110Z"/>
-    </svg>
-  </section>
+    <script>
+        document.getElementById('ano').textContent = new Date().getFullYear();
 
-  <!-- BENEFÍCIOS -->
-  <section id="recursos" class="container">
-    <h2 class="section-title">Por que escolher o AgoraHora?</h2>
-    <p class="section-sub">Construído pela <strong>TechSphere</strong> com foco em simplicidade e performance — do agendamento público ao backoffice.</p>
-    <div class="grid grid-3">
-      <div class="card benefit">
-        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 5h18M8 3v4M16 3v4M3 9h18M5 12h14M7 15h10M9 18h6" stroke="currentColor"/></svg></div>
-        <div><h3>Agenda 24/7</h3><div class="muted">Página pública para reservas a qualquer hora com confirmação instantânea.</div></div>
-      </div>
-      <div class="card benefit">
-        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 7a2 2 0 0 1 2-2h4m6 0h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7z" stroke="currentColor"/></svg></div>
-        <div><h3>Lembretes automáticos</h3><div class="muted">WhatsApp, SMS e e-mail para reduzir no-show e atrasos.</div></div>
-      </div>
-      <div class="card benefit">
-        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" stroke="currentColor"/></svg></div>
-        <div><h3>Relatórios & insights</h3><div class="muted">KPIs, exportações e visão por profissional.</div></div>
-      </div>
-    </div>
-  </section>
+        const toggle = document.getElementById('toggle');
+        const prices = document.querySelectorAll('.price');
+        let anual = false;
 
-  <!-- PREÇOS -->
-  <section id="precos" class="container">
-    <h2 class="section-title">Planos e Preços</h2>
-    <p class="section-sub">Assine no mensal ou leve <span class="off">-20% no anual</span>. Mude de plano quando quiser.</p>
+        function updatePrices() {
+            prices.forEach(p => {
+                const m = p.getAttribute('data-mensal');
+                const a = p.getAttribute('data-anual');
+                p.innerHTML = (anual ? a : m) +
+                    (anual ? ' <small>cobrança anual</small>' : ' <small>cobrança mensal</small>');
+            });
+        }
 
-    <div class="pricing-toggle">
-      <span class="muted">Mensal</span>
-      <div id="toggle" class="toggle" role="switch" aria-checked="false" tabindex="0"><div class="knob"></div></div>
-      <span><strong>Anual</strong></span>
-    </div>
+        if (toggle) {
+            toggle.addEventListener('click', () => {
+                anual = !anual;
+                toggle.classList.toggle('active', anual);
+                toggle.setAttribute('aria-checked', anual ? 'true' : 'false');
+                updatePrices();
+            });
+            toggle.addEventListener('keydown', e => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggle.click();
+                }
+            });
+        }
 
-    <div class="grid grid-3">
-      <div class="card">
-        <h3>Starter</h3>
-        <div class="muted">Para começar com o essencial</div>
-        <div class="price" data-mensal="R$ 49/mês" data-anual="R$ 39/mês">R$ 49/mês <small>cobrança mensal</small></div>
-        <ul class="plan-feats">
-          <li>✔ 1 estabelecimento</li><li>✔ Agendamentos online</li><li>✔ Lembretes por e-mail</li><li class="muted">— Relatórios avançados</li>
-        </ul>
-        <div style="margin-top:12px"><a class="btn btn-ghost" id="cta-starter" href="#">Quero o Starter via WhatsApp</a></div>
-      </div>
+        const numeroWhats = '5511980843514';
+        const msg = encodeURIComponent('Olá! Quero saber mais sobre o AgoraHora da TechSphere.');
+        const waLink = `https://wa.me/${numeroWhats}?text=${msg}`;
 
-      <div class="card" style="border:2px solid #c7efe9">
-        <div class="tag-pop">Mais popular</div>
-        <h3>Pro</h3>
-        <div class="muted">Para negócios em crescimento</div>
-        <div class="price" data-mensal="R$ 99/mês" data-anual="R$ 79/mês">R$ 99/mês <small>cobrança mensal</small></div>
-        <ul class="plan-feats">
-          <li>✔ Até 3 estabelecimentos</li><li>✔ WhatsApp/SMS*</li><li>✔ Relatórios e exportações</li><li>✔ Suporte prioritário</li>
-        </ul>
-        <div style="margin-top:12px"><a class="btn" id="cta-pro" href="#">Quero o Pro via WhatsApp</a></div>
-      </div>
+        const ids = [
+            'btn-whats', 'hero-whats', 'nav-whats',
+            'nav-whats-mobile', 'sticky-whats', 'cta-starter',
+            'cta-pro', 'cta-enterprise', 'fab-whats'
+        ];
+        ids.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.href = waLink;
+        });
 
-      <div class="card">
-        <h3>Enterprise</h3>
-        <div class="muted">Para redes e alto volume</div>
-        <div class="price" data-mensal="R$ 199/mês" data-anual="R$ 159/mês">R$ 199/mês <small>cobrança mensal</small></div>
-        <ul class="plan-feats">
-          <li>✔ Estabelecimentos ilimitados</li><li>✔ SLA & onboarding dedicado</li><li>✔ API & integrações</li><li>✔ Relatórios custom</li>
-        </ul>
-        <div style="margin-top:12px"><a class="btn btn-ghost" id="cta-enterprise" href="#">Falar com vendas no WhatsApp</a></div>
-      </div>
-    </div>
+        document.querySelectorAll('.faq-item').forEach(item => {
+            item.addEventListener('click', () => item.classList.toggle('open'));
+        });
 
-    <p class="muted" style="margin-top:8px">* Custos de envio podem ser cobrados à parte conforme provedor.</p>
-  </section>
-
-  <!-- FAQ -->
-  <section class="container">
-    <h2 class="section-title">Perguntas frequentes</h2>
-    <div class="grid">
-      <div class="faq-item">
-        <h3 class="faq-q">Posso migrar do Starter para o Pro depois?</h3>
-        <div class="faq-a">Sim, é possível mudar de plano a qualquer momento; a cobrança é ajustada proporcionalmente.</div>
-      </div>
-      <div class="faq-item">
-        <h3 class="faq-q">Funciona no celular?</h3>
-        <div class="faq-a">Totalmente responsivo — painel e página de agendamento funcionam em qualquer dispositivo.</div>
-      </div>
-      <div class="faq-item">
-        <h3 class="faq-q">Vocês ajudam a configurar?</h3>
-        <div class="faq-a">Nos planos Pro e Enterprise você conta com onboarding assistido e suporte prioritário da TechSphere.</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CONTATO SIMPLIFICADO: APENAS WHATSAPP -->
-  <section id="contato" class="container">
-    <h2 class="section-title">Fale com a TechSphere</h2>
-    <p class="section-sub">Atendimento direto por WhatsApp.</p>
-    <div class="grid">
-      <div class="card" style="text-align:center">
-        <h3>Converse no WhatsApp</h3>
-        <p class="muted">Resposta rápida, horário comercial.</p>
-        <a class="btn" id="btn-whats" href="#" target="_blank" rel="noopener" style="justify-content:center">
-          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="#fff" d="M20.52 3.48A11.87 11.87 0 0 0 12.05 0C5.45 0 .14 5.31.14 11.9c0 2.1.55 4.17 1.59 6L0 24l6.24-1.64a11.9 11.9 0 0 0 5.82 1.5h.01c6.59 0 11.9-5.31 11.9-11.9 0-3.18-1.24-6.17-3.45-8.48ZM12.07 21.2h-.01a9.9 9.9 0 0 1-5.03-1.38l-.36-.21-3.7.97.99-3.61-.23-.37a9.83 9.83 0 0 1-1.51-5.24c0-5.43 4.42-9.85 9.86-9.85 2.63 0 5.1 1.02 6.96 2.88a9.75 9.75 0 0 1 2.88 6.96c0 5.43-4.43 9.85-9.85 9.85Zm5.42-7.4c-.3-.15-1.77-.88-2.05-.98-.27-.1-.47-.15-.67.15s-.77.98-.95 1.19c-.17.2-.35.22-.65.07-.3-.15-1.25-.46-2.38-1.47-.88-.78-1.47-1.74-1.64-2.03-.17-.3-.02-.46.13-.61.13-.12.3-.32.45-.47.15-.16.2-.27.3-.45.1-.2.05-.37-.02-.52-.07-.15-.67-1.6-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.49 0 1.46 1.06 2.88 1.2 3.08.15.2 2.08 3.18 5.03 4.46.7.3 1.25.48 1.68.61.7.22 1.33.19 1.83.11.56-.08 1.77-.72 2.02-1.42.25-.7.25-1.3.17-1.42-.08-.12-.27-.2-.57-.35Z"/></svg>
-          Abrir WhatsApp
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Sticky CTA (apenas WhatsApp) -->
-  <div class="sticky-cta">
-    <div class="container wrap">
-      <a class="btn" id="sticky-whats" href="#">Falar no WhatsApp</a>
-    </div>
-  </div>
-
-  <!-- FOOTER -->
-  <footer>
-    <div class="container foot">
-      <div>© <span id="ano"></span> TechSphere — AgoraHora</div>
-      <div class="muted">Termos • Privacidade</div>
-    </div>
-  </footer>
-
-  <!-- Floating WhatsApp button -->
-  <a class="fab-whats" id="fab-whats" href="#" target="_blank" aria-label="Abrir WhatsApp">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.52 3.48A11.87 11.87 0 0 0 12.05 0C5.45 0 .14 5.31.14 11.9c0 2.1.55 4.17 1.59 6L0 24l6.24-1.64a11.9 11.9 0 0 0 5.82 1.5h.01c6.59 0 11.9-5.31 11.9-11.9 0-3.18-1.24-6.17-3.45-8.48ZM12.07 21.2h-.01a9.9 9.9 0 0 1-5.03-1.38l-.36-.21-3.7.97.99-3.61-.23-.37a9.83 9.83 0 0 1-1.51-5.24c0-5.43 4.42-9.85 9.86-9.85 2.63 0 5.1 1.02 6.96 2.88a9.75 9.75 0 0 1 2.88 6.96c0 5.43-4.43 9.85-9.85 9.85Zm5.42-7.4c-.3-.15-1.77-.88-2.05-.98-.27-.1-.47-.15-.67.15s-.77.98-.95 1.19c-.17.2-.35.22-.65.07-.3-.15-1.25-.46-2.38-1.47-.88-.78-1.47-1.74-1.64-2.03-.17-.3-.02-.46.13-.61.13-.12.3-.32.45-.47.15-.16.2-.27.3-.45.1-.2.05-.37-.02-.52-.07-.15-.67-1.6-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.49 0 1.46 1.06 2.88 1.2 3.08.15.2 2.08 3.18 5.03 4.46.7.3 1.25.48 1.68.61.7.22 1.33.19 1.83.11.56-.08 1.77-.72 2.02-1.42.25-.7.25-1.3.17-1.42-.08-.12-.27-.2-.57-.35Z" fill="#fff"/></svg>
-  </a>
-
-<script>
-  // Ano
-  document.getElementById('ano').textContent = new Date().getFullYear();
-
-  // Toggle mensal/anual
-  const toggle = document.getElementById('toggle');
-  const prices = document.querySelectorAll('.price');
-  let anual = false;
-  function updatePrices(){
-    prices.forEach(p=>{
-      const m = p.getAttribute('data-mensal');
-      const a = p.getAttribute('data-anual');
-      p.innerHTML = (anual ? a : m) + (anual ? ' <small>cobrança anual</small>' : ' <small>cobrança mensal</small>');
-    });
-  }
-  if(toggle){
-    toggle.addEventListener('click', ()=>{
-      anual = !anual;
-      toggle.classList.toggle('active', anual);
-      toggle.setAttribute('aria-checked', anual ? 'true' : 'false');
-      updatePrices();
-    });
-    toggle.addEventListener('keydown', (e)=>{ if(e.key==='Enter'||e.key===' ') { e.preventDefault(); toggle.click(); } });
-  }
-
-  const numeroWhats = '5511980843514'; 
-  const msg = encodeURIComponent('Olá! Quero saber mais sobre o AgoraHora da TechSphere.');
-  const waLink = `https://wa.me/${numeroWhats}?text=${msg}`;
-
-  // Vínculos de todos os botões
-  const ids = ['btn-whats','hero-whats','nav-whats','sticky-whats','cta-starter','cta-pro','cta-enterprise','fab-whats'];
-  ids.forEach(id=>{ const el = document.getElementById(id); if(el) el.href = waLink; });
-
-  // FAQ abre/fecha
-  document.querySelectorAll('.faq-item').forEach(item=>{
-    item.addEventListener('click', ()=> item.classList.toggle('open'));
-  });
-</script>
+        const menuToggle = document.getElementById('menuToggle');
+        const navMobile = document.getElementById('navMobile');
+        menuToggle.addEventListener('click', () => {
+            const isOpen = document.body.classList.toggle('menu-open');
+            navMobile.style.display = isOpen ? 'block' : 'none';
+            menuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+    </script>
 </body>
 </html>

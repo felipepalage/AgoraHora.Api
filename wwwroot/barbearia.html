@@ -1,834 +1,999 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Detalhes da Barbearia - AgoraHora</title>
-    <style>
-        :root {
-            --brand-navy: #0f2b5c;
-            --brand-teal: #19b7a6;
-            --brand-teal-hover: #139987;
-            --bg: #f5f7fa;
-            --card: #fff;
-            --muted: #8a94a6
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Detalhes da Barbearia - AgoraHora</title>
+  <style>
+    :root{
+      --brand-navy:#0f2b5c;
+      --brand-teal:#19b7a6;
+      --brand-teal-soft:#d6f4f1;
+      --brand-teal-hover:#139987;
+      --bg:#edf1f7;
+      --card:#ffffff;
+      --muted:#8a94a6;
+      --danger:#e35151;
+      --danger-dark:#c63838;
+      --border:#e3e8ef;
+      --radius-lg:20px;
+      --radius-md:14px;
+      --shadow-soft:0 12px 30px rgba(15,43,92,.08),0 4px 12px rgba(15,43,92,.05);
+      --shadow-strong:0 20px 60px rgba(15,43,92,.24);
+    }
 
-        * {
-            box-sizing: border-box
-        }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      min-height:100vh;
+      background:radial-gradient(circle at top left,#f7fbff 0,#edf1f7 40%,#e2e7f4 100%);
+      color:#111827;
+      font:500 15px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    }
 
-        body {
-            margin: 0;
-            background: var(--bg);
-            color: #1c2430;
-            font: 500 15px/1.5 Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif
-        }
+    header{
+      position:sticky;
+      top:0;
+      z-index:20;
+      backdrop-filter:blur(14px);
+      background:linear-gradient(to right,rgba(255,255,255,.96),rgba(255,255,255,.98));
+      border-bottom:1px solid rgba(225,231,240,.85);
+    }
 
-        header {
-            background: #fff;
-            border-bottom: 1px solid #e9eef5;
-            position: sticky;
-            top: 0;
-            z-index: 10
-        }
+    .top{
+      max-width:1200px;
+      margin:0 auto;
+      padding:12px 20px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+    }
 
-        .top {
-            max-width: 1200px;
-            margin: auto;
-            padding: 12px 20px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            justify-content: space-between
-        }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
 
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 10px
-        }
+    .brand-icon{
+      width:36px;
+      height:36px;
+      border-radius:16px;
+      background:radial-gradient(circle at 15% 0,#22e0c8,#0f2b5c);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
 
-            .brand svg {
-                width: 34px;
-                height: 34px
-            }
+    .brand-icon svg{
+      width:22px;
+      height:22px;
+    }
 
-            .brand .name {
-                font-weight: 800;
-                font-size: 20px;
-                color: var(--brand-navy)
-            }
+    .brand-title{
+      display:flex;
+      flex-direction:column;
+    }
 
-        .btn {
-            padding: 10px 14px;
-            border: none;
-            border-radius: 12px;
-            background: var(--brand-teal);
-            color: #fff;
-            font-weight: 800;
-            cursor: pointer;
-            text-decoration: none
-        }
+    .brand-name{
+      font-weight:800;
+      font-size:19px;
+      letter-spacing:.03em;
+      color:var(--brand-navy);
+    }
 
-            .btn:hover {
-                background: var(--brand-teal-hover)
-            }
+    .brand-sub{
+      font-size:12px;
+      color:var(--muted);
+    }
 
-        .btn-ghost {
-            background: #e7f7f5;
-            color: #0f6d64
-        }
+    .btn{
+      border:none;
+      border-radius:999px;
+      padding:9px 18px;
+      font-weight:700;
+      font-size:14px;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      text-decoration:none;
+      transition:background .12s ease,transform .12s ease,box-shadow .12s ease;
+    }
 
-        .btn-danger {
-            background: #e35151
-        }
+    .btn-primary{
+      background:var(--brand-teal);
+      color:#fff;
+      box-shadow:0 10px 26px rgba(25,183,166,.3);
+    }
 
-            .btn-danger:hover {
-                background: #c63838
-            }
+    .btn-primary:hover{
+      background:var(--brand-teal-hover);
+      transform:translateY(-1px);
+      box-shadow:0 16px 38px rgba(25,183,166,.4);
+    }
 
-        .container {
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 0 20px
-        }
+    .btn-ghost{
+      background:rgba(15,43,92,.04);
+      color:var(--brand-navy);
+    }
 
-        .hero-card {
-            display: grid;
-            gap: 16px;
-            grid-template-columns: 1fr;
-            background: var(--card);
-            border-radius: 20px;
-            padding: 16px;
-            border: 1px solid #eff4fb;
-            box-shadow: 0 12px 30px rgba(15,43,92,.07),0 4px 12px rgba(15,43,92,.05)
-        }
+    .btn-ghost:hover{
+      background:rgba(15,43,92,.08);
+      transform:translateY(-1px);
+    }
 
-        .cover {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 14px;
-            background: #eef2f7
-        }
+    .btn-danger{
+      background:var(--danger);
+      color:#fff;
+      box-shadow:0 8px 20px rgba(227,81,81,.3);
+    }
 
-        .shop-head {
-            display: flex;
-            gap: 14px;
-            align-items: flex-start;
-            flex-wrap: wrap
-        }
+    .btn-danger:hover{
+      background:var(--danger-dark);
+      transform:translateY(-1px);
+    }
 
-        .shop-title {
-            margin: 0;
-            color: var(--brand-navy)
-        }
+    .page{
+      max-width:1200px;
+      margin:20px auto 32px;
+      padding:0 20px 32px;
+    }
 
-        .muted {
-            color: var(--muted)
-        }
+    .hero-card{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:16px;
+      background:var(--card);
+      border-radius:var(--radius-lg);
+      padding:16px;
+      border:1px solid rgba(233,238,245,.9);
+      box-shadow:var(--shadow-soft);
+    }
 
-        .badge {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 10px;
-            font-size: 12px;
-            background: #e0f8f5;
-            color: #0d6e64
-        }
+    .cover{
+      width:100%;
+      height:220px;
+      border-radius:16px;
+      object-fit:cover;
+      background:#eef2f7;
+    }
 
-            .badge.off {
-                background: #ffeaea;
-                color: #c62828
-            }
+    .shop-head{
+      display:flex;
+      flex-wrap:wrap;
+      align-items:flex-start;
+      gap:14px;
+      margin-bottom:6px;
+    }
 
-        .rating {
-            color: #ffb400;
-            font-weight: 800
-        }
+    .shop-title{
+      margin:0;
+      font-size:22px;
+      font-weight:800;
+      color:var(--brand-navy);
+    }
 
-        @media(min-width:900px) {
-            .hero-card {
-                grid-template-columns: 320px 1fr
-            }
+    .muted{
+      color:var(--muted);
+    }
 
-            .cover {
-                height: 100%
-            }
-        }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:4px 10px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:700;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+      background:#e0f8f5;
+      color:#0d6e64;
+    }
 
-        .grid {
-            display: grid;
-            gap: 16px
-        }
+    .badge.off{
+      background:#ffe9ea;
+      color:#c62828;
+    }
 
-        @media(min-width:900px) {
-            .grid-2 {
-                grid-template-columns: 2fr 3fr
-            }
-        }
+    .rating{
+      color:#ffb400;
+      font-weight:800;
+    }
 
-        .card {
-            background: var(--card);
-            border-radius: 20px;
-            padding: 16px;
-            border: 1px solid #eff4fb;
-            box-shadow: 0 12px 30px rgba(15,43,92,.07),0 4px 12px rgba(15,43,92,.05)
-        }
+    .grid{
+      display:grid;
+      gap:16px;
+      margin-top:18px;
+    }
 
-        h3 {
-            margin: 0 0 10px;
-            color: var(--brand-navy)
-        }
+    .grid-2{
+      grid-template-columns:1fr;
+    }
 
-        label {
-            display: block;
-            margin: 10px 0 6px;
-            font-weight: 800;
-            color: var(--brand-navy)
-        }
+    .card{
+      background:var(--card);
+      border-radius:var(--radius-lg);
+      padding:16px;
+      border:1px solid rgba(233,238,245,.9);
+      box-shadow:var(--shadow-soft);
+    }
 
-        input, select {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #e3e8ef;
-            border-radius: 12px;
-            outline: none
-        }
+    h3{
+      margin:0 0 10px;
+      font-size:17px;
+      color:var(--brand-navy);
+    }
 
-            input:focus, select:focus {
-                box-shadow: 0 0 0 4px rgba(25,183,166,.12)
-            }
+    .section-sub{
+      font-size:12px;
+      color:var(--muted);
+      margin-bottom:10px;
+    }
 
-        .servico-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px;
-            border: 1px solid #e9eef5;
-            border-radius: 12px;
-            margin: 8px 0
-        }
+    label{
+      display:block;
+      margin:10px 0 6px;
+      font-weight:700;
+      color:var(--brand-navy);
+      font-size:13px;
+    }
 
-        .srv-meta {
-            color: #425168;
-            font-size: 13px
-        }
+    input,select{
+      width:100%;
+      padding:9px 12px;
+      border-radius:var(--radius-md);
+      border:1px solid var(--border);
+      background:#f9fbff;
+      font-size:14px;
+      outline:none;
+      transition:border .12s ease,box-shadow .12s ease,background .12s ease;
+    }
 
-        .legend {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            font-size: 13px;
-            color: #425168
-        }
+    input:focus,select:focus{
+      background:#ffffff;
+      border-color:var(--brand-teal);
+      box-shadow:0 0 0 3px rgba(25,183,166,.22);
+    }
 
-        .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%
-        }
+    .servico-item{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid #e3e8ef;
+      margin:8px 0;
+      background:linear-gradient(to right,#ffffff,#f7fbff);
+      transition:border .12s ease,box-shadow .12s ease,transform .08s ease;
+    }
 
-            .dot.free {
-                background: #19b7a6
-            }
+    .servico-item:hover{
+      border-color:#c9e7e2;
+      box-shadow:0 10px 26px rgba(10,28,69,.06);
+      transform:translateY(-1px);
+    }
 
-            .dot.busy {
-                background: #e35151
-            }
+    .srv-title{
+      font-weight:800;
+      color:#0f2b5c;
+      font-size:14px;
+    }
 
-            .dot.past {
-                background: #c7cedb
-            }
+    .srv-meta{
+      color:#425168;
+      font-size:12px;
+      margin-top:2px;
+    }
 
-        .slots {
-            display: grid;
-            gap: 8px;
-            grid-template-columns: repeat(auto-fit,minmax(90px,1fr));
-            margin-top: 12px
-        }
+    .legend-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+      font-size:12px;
+      color:#425168;
+      margin-top:6px;
+    }
 
-        .slot {
-            padding: 10px 8px;
-            border: 1px solid #e3e8ef;
-            border-radius: 10px;
-            text-align: center;
-            cursor: pointer;
-            background: #fff;
-            font-weight: 800;
-            transition: transform .06s ease,background .15s ease,border .15s ease
-        }
+    .legend{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+    }
 
-            .slot:hover {
-                border-color: #cfe3df
-            }
+    .dot{
+      width:10px;
+      height:10px;
+      border-radius:50%;
+    }
 
-            .slot.selected {
-                background: #19b7a6;
-                color: #fff;
-                border-color: #19b7a6
-            }
+    .dot.free{background:#19b7a6;}
+    .dot.busy{background:#e35151;}
+    .dot.past{background:#c7cedb;}
 
-            .slot.busy {
-                background: #ffecec;
-                color: #c62828;
-                border-color: #ffd4d4;
-                cursor: not-allowed
-            }
+    .slots{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(88px,1fr));
+      gap:8px;
+      margin-top:12px;
+    }
 
-            .slot.past {
-                background: #f3f6fb;
-                color: #9aa6b2;
-                cursor: not-allowed
-            }
+    .slot{
+      padding:9px 6px;
+      border-radius:12px;
+      border:1px solid #e3e8ef;
+      text-align:center;
+      cursor:pointer;
+      background:#ffffff;
+      font-weight:700;
+      font-size:13px;
+      transition:background .12s ease,border .12s ease,transform .06s ease,color .12s ease;
+    }
 
-        .summary {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 12px
-        }
+    .slot:hover{
+      border-color:#c9e7e2;
+    }
 
-        .pill {
-            background: #e7f7f5;
-            color: #0f6d64;
-            padding: 8px 12px;
-            border-radius: 999px;
-            font-weight: 800
-        }
+    .slot.selected{
+      background:var(--brand-teal);
+      color:#ffffff;
+      border-color:var(--brand-teal);
+      box-shadow:0 10px 24px rgba(25,183,166,.4);
+      transform:translateY(-1px);
+    }
 
-        .error {
-            margin-top: 8px;
-            color: #c62828;
-            font-weight: 800;
-            display: none
-        }
+    .slot.busy{
+      background:#ffecec;
+      color:#c62828;
+      border-color:#ffd4d4;
+      cursor:not-allowed;
+    }
 
-        .modal-backdrop {
-            position: fixed;
-            inset: 0;
-            background: rgba(11,19,36,.45);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            z-index: 50
-        }
+    .slot.past{
+      background:#f3f6fb;
+      color:#9aa6b2;
+      cursor:not-allowed;
+    }
 
-        .modal {
-            width: min(520px,100%);
-            background: #fff;
-            border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(15,43,92,.25);
-            padding: 18px
-        }
+    .summary{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      align-items:center;
+      margin-top:12px;
+    }
 
-            .modal h3 {
-                margin: 0 0 8px
-            }
+    .pill{
+      border-radius:999px;
+      padding:7px 12px;
+      background:#e7f7f5;
+      color:#0f6d64;
+      font-size:12px;
+      font-weight:700;
+      white-space:nowrap;
+    }
 
-        .modal-actions {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-            margin-top: 12px
-        }
+    .actions-row{
+      margin-top:12px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      justify-content:flex-end;
+    }
 
-        .ok {
-            background: #e7f7f5;
-            border: 1px solid #caefe8;
-            border-radius: 14px;
-            padding: 12px;
-            margin-top: 8px
-        }
-    </style>
+    .error{
+      margin-top:8px;
+      color:#c62828;
+      font-weight:700;
+      font-size:13px;
+      display:none;
+    }
+
+    .modal-backdrop{
+      position:fixed;
+      inset:0;
+      background:rgba(11,19,36,.5);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+      z-index:50;
+    }
+
+    .modal{
+      width:min(520px,100%);
+      background:#ffffff;
+      border-radius:18px;
+      padding:18px;
+      box-shadow:var(--shadow-strong);
+    }
+
+    .modal h3{
+      margin:0 0 8px;
+      font-size:18px;
+      color:var(--brand-navy);
+    }
+
+    .modal-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      justify-content:flex-end;
+      margin-top:14px;
+    }
+
+    .ok{
+      background:#e7f7f5;
+      border-radius:14px;
+      border:1px solid #caefe8;
+      padding:10px 12px;
+      margin-top:8px;
+      font-size:13px;
+      color:#0f6d64;
+    }
+
+    @media(min-width:900px){
+      .hero-card{
+        grid-template-columns:320px 1fr;
+      }
+      .cover{
+        height:100%;
+      }
+      .grid-2{
+        grid-template-columns:2fr 3fr;
+      }
+    }
+
+    @media(max-width:520px){
+      .top{padding-inline:14px;}
+      .page{padding-inline:14px;}
+      .hero-card,.card{padding-inline:14px;}
+      .summary{flex-direction:column;align-items:flex-start;}
+      .pill{width:100%;}
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <div class="top">
-            <div class="brand" aria-label="AgoraHora">
-                <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="28" fill="none" stroke="#19b7a6" stroke-width="6" /><path d="M20 33.5l7 7 17-17" fill="none" stroke="#19b7a6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                <div class="name">AgoraHora</div>
-            </div>
-            <a class="btn btn-ghost" href="home-cliente.html">Voltar</a>
+<header>
+  <div class="top">
+    <div class="brand" aria-label="AgoraHora">
+      <div class="brand-icon">
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+          <circle cx="32" cy="32" r="24" fill="none" stroke="#ffffff" stroke-width="4" />
+          <path d="M22 33.5l6 6 14-14" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </div>
+      <div class="brand-title">
+        <span class="brand-name">AgoraHora</span>
+        <span class="brand-sub">Sua agenda premium de barbearia</span>
+      </div>
+    </div>
+    <a class="btn btn-ghost" href="home-cliente.html">‹ Voltar</a>
+  </div>
+</header>
+
+<main class="page">
+  <section class="hero-card">
+    <img id="cover" class="cover" alt="Logo/Foto da barbearia" referrerpolicy="no-referrer" crossorigin="anonymous">
+    <div>
+      <div class="shop-head">
+        <div>
+          <h2 id="shop-name" class="shop-title">Barbearia</h2>
+          <div id="shop-address" class="muted">Endereço</div>
+          <div class="muted">Avaliação: <span id="shop-rating" class="rating">—</span></div>
         </div>
-    </header>
-
-    <main class="container">
-        <section class="hero-card">
-            <!-- src inicial vazio; será preenchido pelo script com a logo configurada -->
-            <img id="cover" class="cover" alt="Logo/Foto da barbearia" referrerpolicy="no-referrer" crossorigin="anonymous">
-            <div>
-                <div class="shop-head">
-                    <div>
-                        <h2 id="shop-name" class="shop-title">Barbearia</h2>
-                        <div class="muted" id="shop-address">Endereço</div>
-                        <div class="muted">Avaliação: <span class="rating" id="shop-rating">—</span></div>
-                    </div>
-                    <div style="margin-left:auto"><span id="shop-open" class="badge">—</span></div>
-                </div>
-                <p class="muted" style="margin:10px 0 0">Escolha um serviço, um profissional, selecione a data e confirme seu horário.</p>
-            </div>
-        </section>
-
-        <section class="grid grid-2" style="margin-top:16px">
-            <div class="card">
-                <h3>Serviços</h3>
-                <div id="lista-servicos"></div>
-            </div>
-
-            <div class="card">
-                <h3>Agendar</h3>
-                <label for="prof">Profissional</label>
-                <select id="prof"></select>
-
-                <label for="data">Data</label>
-                <input type="date" id="data" />
-
-                <div class="legend" style="margin-top:6px">
-                    <span class="legend"><span class="dot free"></span>Disponível</span>
-                    <span class="legend"><span class="dot busy"></span>Indisponível</span>
-                    <span class="legend"><span class="dot past"></span>Passado</span>
-                </div>
-
-                <div id="slots" class="slots" style="margin-top:10px"></div>
-
-                <div class="summary">
-                    <span id="sum-servico" class="pill">Serviço: —</span>
-                    <span id="sum-prof" class="pill">Prof.: —</span>
-                    <span id="sum-data" class="pill">Data: —</span>
-                    <span id="sum-hora" class="pill">Hora: —</span>
-                </div>
-
-                <div id="erro" class="error">Selecione serviço, profissional, data e horário.</div>
-
-                <div style="margin-top:10px;display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap">
-                    <button class="btn btn-ghost" onclick="limparSelecao()">Limpar</button>
-                    <button class="btn-danger btn" id="btn-cancelar">Cancelar agendamento</button>
-                    <button class="btn" id="btn-confirmar">Confirmar Agendamento</button>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Modal Cliente -->
-    <div id="modalCliente" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="mc-title">
-        <div class="modal">
-            <h3 id="mc-title" style="color:var(--brand-navy)">Identifique-se</h3>
-            <p class="muted" style="margin:0 0 8px">Precisamos de seus dados para confirmar o agendamento.</p>
-            <label for="cliNome">Nome</label>
-            <input id="cliNome" placeholder="Seu nome completo" />
-            <label for="cliEmail">Email</label>
-            <input id="cliEmail" type="email" placeholder="voce@exemplo.com" />
-            <label for="cliTel">Telefone</label>
-            <input id="cliTel" placeholder="(11) 99999-9999" />
-            <div id="mc-err" class="error" style="display:none"></div>
-            <div class="modal-actions">
-                <button class="btn btn-ghost" id="mc-cancel">Cancelar</button>
-                <button class="btn" id="mc-save">Continuar</button>
-            </div>
+        <div style="margin-left:auto">
+          <span id="shop-open" class="badge">—</span>
         </div>
+      </div>
+      <p class="muted" style="margin-top:10px">
+        Escolha um serviço, o profissional, selecione a data e confirme seu horário em poucos cliques.
+      </p>
+    </div>
+  </section>
+
+  <section class="grid grid-2">
+    <div class="card">
+      <h3>Serviços</h3>
+      <p class="section-sub">Toque em um serviço para ver os horários disponíveis.</p>
+      <div id="lista-servicos"></div>
     </div>
 
-    <!-- Modal Cancelamento -->
-    <div id="modalCancel" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="cx-title">
-        <div class="modal">
-            <h3 id="cx-title" style="color:var(--brand-navy)">Cancelar agendamento</h3>
-            <p class="muted" style="margin:0 0 8px">Informe seus dados e o horário para localizar e cancelar.</p>
-            <div id="cx-fast" style="display:none" class="ok">Encontramos seu último agendamento. Você pode cancelar direto.</div>
-            <label for="cxEmail">Email</label>
-            <input id="cxEmail" type="email" placeholder="voce@exemplo.com" />
-            <label for="cxTel">Telefone</label>
-            <input id="cxTel" placeholder="(11) 99999-9999" />
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-                <div>
-                    <label for="cxData">Data</label>
-                    <input id="cxData" type="date" />
-                </div>
-                <div>
-                    <label for="cxHora">Hora</label>
-                    <input id="cxHora" type="time" />
-                </div>
-            </div>
-            <div id="cx-err" class="error" style="display:none"></div>
-            <div class="modal-actions">
-                <button class="btn btn-ghost" id="cx-cancel">Fechar</button>
-                <button class="btn-danger btn" id="cx-delete-last" style="display:none">Cancelar último agendamento</button>
-                <button class="btn-danger btn" id="cx-send">Cancelar</button>
-            </div>
-        </div>
+    <div class="card">
+      <h3>Agendar</h3>
+      <p class="section-sub">Preencha os campos abaixo e selecione um horário disponível.</p>
+
+      <label for="prof">Profissional</label>
+      <select id="prof"></select>
+
+      <label for="data">Data</label>
+      <input type="date" id="data" />
+
+      <div class="legend-row">
+        <span class="legend"><span class="dot free"></span>Disponível</span>
+        <span class="legend"><span class="dot busy"></span>Indisponível</span>
+        <span class="legend"><span class="dot past"></span>Passado</span>
+      </div>
+
+      <div id="slots" class="slots"></div>
+
+      <div class="summary">
+        <span id="sum-servico" class="pill">Serviço: —</span>
+        <span id="sum-prof" class="pill">Prof.: —</span>
+        <span id="sum-data" class="pill">Data: —</span>
+        <span id="sum-hora" class="pill">Hora: —</span>
+      </div>
+
+      <div id="erro" class="error">Selecione serviço, profissional, data e horário.</div>
+
+      <div class="actions-row">
+        <button class="btn btn-ghost" onclick="limparSelecao()">Limpar</button>
+        <button class="btn btn-danger" id="btn-cancelar">Cancelar agendamento</button>
+        <button class="btn btn-primary" id="btn-confirmar">Confirmar agendamento</button>
+      </div>
     </div>
+  </section>
+</main>
 
-    <!-- Modal Sucesso -->
-    <div id="modalOk" class="modal-backdrop" role="alertdialog" aria-modal="true" aria-labelledby="ok-title">
-        <div class="modal">
-            <h3 id="ok-title" style="color:var(--brand-navy)">Tudo certo</h3>
-            <div class="ok" id="ok-msg">Operação concluída.</div>
-            <div class="modal-actions">
-                <button class="btn" id="ok-close">Fechar</button>
-            </div>
-        </div>
+<div id="modalCliente" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="mc-title">
+  <div class="modal">
+    <h3 id="mc-title">Identifique-se</h3>
+    <p class="muted" style="margin:0 0 8px">Precisamos de seus dados para confirmar o agendamento.</p>
+    <label for="cliNome">Nome</label>
+    <input id="cliNome" placeholder="Seu nome completo" />
+    <label for="cliEmail">Email</label>
+    <input id="cliEmail" type="email" placeholder="voce@exemplo.com" />
+    <label for="cliTel">Telefone</label>
+    <input id="cliTel" placeholder="(11) 99999-9999" />
+    <div id="mc-err" class="error" style="display:none"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="mc-cancel">Cancelar</button>
+      <button class="btn btn-primary" id="mc-save">Continuar</button>
     </div>
+  </div>
+</div>
 
-    <script>
-        // ===== CONFIG =====
-        const API = '/api';
-        const estabelecimentoId = Number(new URLSearchParams(location.search).get('id') || 1);
-        const LS_CLIENTE_KEY = `ah_cliente_${estabelecimentoId}`;
-        const LS_LAST_AG_KEY = `ah_last_ag_${estabelecimentoId}`;
-        const LS_LOGO_KEY = `logo_estab_${estabelecimentoId}`; // mesma chave da tela de Configurações
+<div id="modalCancel" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="cx-title">
+  <div class="modal">
+    <h3 id="cx-title">Cancelar agendamento</h3>
+    <p class="muted" style="margin:0 0 8px">Informe seus dados e o horário para localizar e cancelar.</p>
+    <div id="cx-fast" class="ok" style="display:none">Encontramos seu último agendamento. Você pode cancelar direto.</div>
+    <label for="cxEmail">Email</label>
+    <input id="cxEmail" type="email" placeholder="voce@exemplo.com" />
+    <label for="cxTel">Telefone</label>
+    <input id="cxTel" placeholder="(11) 99999-9999" />
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div>
+        <label for="cxData">Data</label>
+        <input id="cxData" type="date" />
+      </div>
+      <div>
+        <label for="cxHora">Hora</label>
+        <input id="cxHora" type="time" />
+      </div>
+    </div>
+    <div id="cx-err" class="error" style="display:none"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="cx-cancel">Fechar</button>
+      <button class="btn btn-danger" id="cx-delete-last" style="display:none">Cancelar último agendamento</button>
+      <button class="btn btn-danger" id="cx-send">Cancelar</button>
+    </div>
+  </div>
+</div>
 
-        // ===== HELPERS =====
-        const $ = s => document.querySelector(s);
-        const $$ = s => document.querySelectorAll(s);
-        const fmtBR = d => new Date(d).toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit' });
-        const pad2 = v => String(v).padStart(2, '0');
-        const toHM = d => `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
-        const overlapHM = (aI, aF, bI, bF) => aI < bF && bI < aF;
-        const getClienteLS = () => JSON.parse(localStorage.getItem(LS_CLIENTE_KEY) || 'null');
-        const setClienteLS = c => localStorage.setItem(LS_CLIENTE_KEY, JSON.stringify(c));
-        const getLastAg = () => JSON.parse(localStorage.getItem(LS_LAST_AG_KEY) || 'null');
-        const setLastAg = id => localStorage.setItem(LS_LAST_AG_KEY, JSON.stringify(id));
+<div id="modalOk" class="modal-backdrop" role="alertdialog" aria-modal="true" aria-labelledby="ok-title">
+  <div class="modal">
+    <h3 id="ok-title">Tudo certo</h3>
+    <div id="ok-msg" class="ok">Operação concluída.</div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" id="ok-close">Fechar</button>
+    </div>
+  </div>
+</div>
 
-        // normaliza URL e aceita dataURL do localStorage
-        function normalizeImageUrl(u) {
-            try {
-                if (!u) return '';
-                u = String(u).trim();
-                if (/^data:image\//i.test(u)) return u;              // dataURL do localStorage
-                if (u.startsWith('//')) return location.protocol + u;
-                if (/^https?:/i.test(u)) {
-                    const url = new URL(u);
-                    url.pathname = url.pathname.split('/').map(encodeURIComponent).join('/');
-                    return url.toString();
-                }
-                return u; // relativo, se você servir arquivos estáticos
-            } catch { return ''; }
-        }
+<script>
+  const API = "/api";
+  const estabelecimentoId = Number(new URLSearchParams(location.search).get("id") || 1);
+  const LS_CLIENTE_KEY = `ah_cliente_${estabelecimentoId}`;
+  const LS_LAST_AG_KEY = `ah_last_ag_${estabelecimentoId}`;
+  const LS_LOGO_KEY = `logo_estab_${estabelecimentoId}`;
 
-        // ===== LOADERS =====
-        async function loadConfig() {
-            const r = await fetch(`${API}/configuracao/${estabelecimentoId}`);
-            if (!r.ok) return null;
-            const j = await r.json();
-            return j?.data || null; // pode conter logoUrl
-        }
-        async function loadEstab() {
-            const r = await fetch(`${API}/estabelecimentos/${estabelecimentoId}`);
-            if (!r.ok) throw new Error('estab');
-            const j = await r.json(); return j.data ?? j;
-        }
-        async function loadServicos() {
-            const r = await fetch(`${API}/servicos/${estabelecimentoId}`);
-            const j = await r.json();
-            return j.data ?? [];
-        }
-        async function loadProfissionais() {
-            const r = await fetch(`${API}/profissionais/${estabelecimentoId}`);
-            const j = await r.json();
-            return j.data ?? j;
-        }
-        async function loadAgendamentosDia(profId, dataISO) {
-            const ini = `${dataISO}T00:00:00`, fim = `${dataISO}T23:59:59`;
-            const r = await fetch(`${API}/agendamentos/profissional?profissionalId=${profId}&ini=${encodeURIComponent(ini)}&fim=${encodeURIComponent(fim)}`);
-            const j = await r.json();
-            return (j.data ?? []).map(a => ({ dtInicio: new Date(a.dtInicio), dtFim: new Date(a.dtFim), status: a.status }));
-        }
+  const $ = s => document.querySelector(s);
+  const $$ = s => document.querySelectorAll(s);
 
-        // ===== UI STATE =====
-        const listaServ = $('#lista-servicos');
-        const selProf = $('#prof');
-        const inputData = $('#data');
-        const slotsEl = $('#slots');
-        const erroEl = $('#erro');
-        const btnConfirmar = $('#btn-confirmar');
+  const fmtBR = d => new Date(d).toLocaleDateString("pt-BR",{weekday:"short",day:"2-digit",month:"2-digit"});
+  const pad2 = v => String(v).padStart(2,"0");
+  const toHM = d => `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+  const overlapHM = (aI,aF,bI,bF) => aI<bF && bI<aF;
+  const getClienteLS = () => JSON.parse(localStorage.getItem(LS_CLIENTE_KEY) || "null");
+  const setClienteLS = c => localStorage.setItem(LS_CLIENTE_KEY,JSON.stringify(c));
+  const getLastAg = () => JSON.parse(localStorage.getItem(LS_LAST_AG_KEY) || "null");
+  const setLastAg = id => localStorage.setItem(LS_LAST_AG_KEY,JSON.stringify(id));
 
-        let servicos = [];
-        let servicoSelecionado = null;
-        let slotSelecionado = null;
-        let abreMin = 9 * 60, fechaMin = 18 * 60;
+  function normalizeImageUrl(u){
+    try{
+      if(!u) return "";
+      u=String(u).trim();
+      if(/^data:image\//i.test(u)) return u;
+      if(u.startsWith("//")) return location.protocol+u;
+      if(/^https?:/i.test(u)){
+        const url=new URL(u);
+        url.pathname=url.pathname.split("/").map(encodeURIComponent).join("/");
+        return url.toString();
+      }
+      return u;
+    }catch{return "";}
+  }
 
-        function atualizarResumo(hora = '') {
-            $('#sum-servico').textContent = `Serviço: ${servicoSelecionado ? servicoSelecionado.nome : '—'}`;
-            const profNome = selProf.options[selProf.selectedIndex]?.textContent || '—';
-            $('#sum-prof').textContent = `Prof.: ${profNome}`;
-            $('#sum-data').textContent = `Data: ${fmtBR(inputData.value || new Date().toISOString().slice(0, 10))}`;
-            $('#sum-hora').textContent = `Hora: ${hora || '—'}`;
-        }
-        function isCancelado(st) {
-            if (typeof st === 'number') return st === 3;
-            if (typeof st === 'string') return st.toUpperCase() === 'CANCELADO';
-            return false;
-        }
+  async function loadConfig(){
+    const r=await fetch(`${API}/configuracao/${estabelecimentoId}`);
+    if(!r.ok) return null;
+    const j=await r.json();
+    return j?.data||null;
+  }
 
-        // ===== SLOTS =====
-        async function gerarSlots() {
-            slotsEl.innerHTML = ''; slotSelecionado = null; atualizarResumo('');
-            if (!selProf.value) { slotsEl.innerHTML = '<div class="muted">Escolha um profissional.</div>'; return; }
-            const dur = servicoSelecionado?.duracao ?? 60;
-            const profId = Number(selProf.value);
-            const dataISO = inputData.value;
-            const ags = await loadAgendamentosDia(profId, dataISO);
-            const busy = ags.filter(a => !isCancelado(a.status)).map(a => ({ ini: toHM(a.dtInicio), fim: toHM(a.dtFim) }));
+  async function loadEstab(){
+    const r=await fetch(`${API}/estabelecimentos/${estabelecimentoId}`);
+    if(!r.ok) throw new Error("estab");
+    const j=await r.json();
+    return j.data ?? j;
+  }
 
-            const start = new Date(`${dataISO}T${pad2(Math.floor(abreMin / 60))}:${pad2(abreMin % 60)}:00`);
-            const end = new Date(`${dataISO}T${pad2(Math.floor(fechaMin / 60))}:${pad2(fechaMin % 60)}:00`);
-            const now = new Date();
+  async function loadServicos(){
+    const r=await fetch(`${API}/servicos/${estabelecimentoId}`);
+    const j=await r.json();
+    return j.data ?? [];
+  }
 
-            for (let t = new Date(start); t < end; t = new Date(t.getTime() + dur * 60000)) {
-                const iniHM = toHM(t);
-                const fimHM = toHM(new Date(t.getTime() + dur * 60000));
-                if (new Date(`${dataISO}T${fimHM}:00`) > end) break;
+  async function loadProfissionais(){
+    const r=await fetch(`${API}/profissionais/${estabelecimentoId}`);
+    const j=await r.json();
+    return j.data ?? j;
+  }
 
-                const isPast = new Date(`${dataISO}T${iniHM}:00`) < now;
-                const isBusy = busy.some(b => overlapHM(iniHM, fimHM, b.ini, b.fim));
+  async function loadAgendamentosDia(profId,dataISO){
+    const ini=`${dataISO}T00:00:00`,fim=`${dataISO}T23:59:59`;
+    const r=await fetch(`${API}/agendamentos/profissional?profissionalId=${profId}&ini=${encodeURIComponent(ini)}&fim=${encodeURIComponent(fim)}`);
+    const j=await r.json();
+    return (j.data ?? []).map(a=>({dtInicio:new Date(a.dtInicio),dtFim:new Date(a.dtFim),status:a.status}));
+  }
 
-                const btn = document.createElement('button');
-                btn.className = 'slot' + (isBusy ? ' busy' : isPast ? ' past' : '');
-                btn.textContent = iniHM;
-                btn.disabled = isBusy || isPast;
-                btn.onclick = () => {
-                    $$('#slots .slot.selected').forEach(s => s.classList.remove('selected'));
-                    btn.classList.add('selected'); slotSelecionado = iniHM;
-                    erroEl.style.display = 'none'; atualizarResumo(iniHM);
-                };
-                slotsEl.appendChild(btn);
-            }
-            if (!slotsEl.children.length) slotsEl.innerHTML = '<div class="muted">Sem horários disponíveis.</div>';
-        }
+  const listaServ=$("#lista-servicos");
+  const selProf=$("#prof");
+  const inputData=$("#data");
+  const slotsEl=$("#slots");
+  const erroEl=$("#erro");
+  const btnConfirmar=$("#btn-confirmar");
 
-        function limparSelecao() {
-            servicoSelecionado = null; slotSelecionado = null;
-            $$('#lista-servicos .servico-item').forEach(i => i.style.borderColor = '#e9eef5');
-            atualizarResumo(''); gerarSlots();
-        }
-        window.limparSelecao = limparSelecao;
+  let servicos=[];
+  let servicoSelecionado=null;
+  let slotSelecionado=null;
+  let abreMin=9*60,fechaMin=18*60;
 
-        // ===== Modal Cliente =====
-        const modal = $('#modalCliente');
-        const mcErr = $('#mc-err');
-        const openModal = () => {
-            const c = getClienteLS();
-            if (c) { $('#cliNome').value = c.nome || ''; $('#cliEmail').value = c.email || ''; $('#cliTel').value = c.telefone || ''; }
-            mcErr.style.display = 'none'; modal.style.display = 'flex'; $('#cliNome').focus();
-        };
-        const closeModal = () => { modal.style.display = 'none'; };
-        $('#mc-cancel').onclick = closeModal;
+  function atualizarResumo(hora=""){
+    $("#sum-servico").textContent=`Serviço: ${servicoSelecionado ? servicoSelecionado.nome : "—"}`;
+    const profNome=selProf.options[selProf.selectedIndex]?.textContent || "—";
+    $("#sum-prof").textContent=`Prof.: ${profNome}`;
+    $("#sum-data").textContent=`Data: ${fmtBR(inputData.value || new Date().toISOString().slice(0,10))}`;
+    $("#sum-hora").textContent=`Hora: ${hora || "—"}`;
+  }
 
-        $('#mc-save').onclick = async () => {
-            const nome = $('#cliNome').value.trim();
-            const email = $('#cliEmail').value.trim();
-            const telefone = $('#cliTel').value.replace(/\D+/g, '').trim();
-            if (!nome || (!email && !telefone)) { mcErr.textContent = 'Informe nome e email ou telefone.'; mcErr.style.display = 'block'; return; }
-            try {
-                const r = await fetch(`${API}/clientes/ensure`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ estabelecimentoId, nome, email, telefone })
-                });
-                const j = await r.json();
-                if (!r.ok) throw new Error(j.message || `HTTP ${r.status}`);
-                const cli = j.data || j;
-                setClienteLS({ id: cli.id, nome: cli.nome, email: cli.email, telefone: cli.telefone });
-                closeModal(); confirmarAgendamento();
-            } catch (e) { mcErr.textContent = `Erro: ${e.message}`; mcErr.style.display = 'block'; }
-        };
+  function isCancelado(st){
+    if(typeof st==="number") return st===3;
+    if(typeof st==="string") return st.toUpperCase()==="CANCELADO";
+    return false;
+  }
 
-        // ===== Modal Cancelamento =====
-        const cancelModal = $('#modalCancel');
-        const cxErr = $('#cx-err');
-        const cxFast = $('#cx-fast');
-        const btnCancel = $('#btn-cancelar');
-        const btnDeleteLast = $('#cx-delete-last');
+  async function gerarSlots(){
+    slotsEl.innerHTML="";
+    slotSelecionado=null;
+    atualizarResumo("");
+    if(!selProf.value){
+      slotsEl.innerHTML='<div class="muted">Escolha um profissional.</div>';
+      return;
+    }
 
-        function openCancelModal() {
-            cxErr.style.display = 'none';
-            $('#cxEmail').value = getClienteLS()?.email || '';
-            $('#cxTel').value = getClienteLS()?.telefone || '';
-            $('#cxData').value = inputData.value || new Date().toISOString().slice(0, 10);
-            $('#cxHora').value = slotSelecionado || '';
-            const last = getLastAg();
-            if (last) { cxFast.style.display = 'block'; btnDeleteLast.style.display = 'inline-block'; }
-            else { cxFast.style.display = 'none'; btnDeleteLast.style.display = 'none'; }
-            cancelModal.style.display = 'flex';
-        }
-        function closeCancelModal() { cancelModal.style.display = 'none'; }
-        $('#cx-cancel').onclick = closeCancelModal;
+    const dur=servicoSelecionado?.duracao ?? 60;
+    const profId=Number(selProf.value);
+    const dataISO=inputData.value;
+    const ags=await loadAgendamentosDia(profId,dataISO);
+    const busy=ags.filter(a=>!isCancelado(a.status)).map(a=>({ini:toHM(a.dtInicio),fim:toHM(a.dtFim)}));
 
-        btnDeleteLast.onclick = async () => {
-            const id = getLastAg();
-            if (!id) return;
-            try {
-                const r = await fetch(`${API}/agendamentos/${id}`, { method: 'DELETE' });
-                const j = await r.json().catch(() => ({}));
-                if (!r.ok) throw new Error(j.message || `HTTP ${r.status}`);
-                localStorage.removeItem(LS_LAST_AG_KEY);
-                closeCancelModal();
-                $('#ok-msg').textContent = 'Agendamento cancelado.';
-                $('#ok-title').textContent = 'Cancelado';
-                $('#modalOk').style.display = 'flex';
-                gerarSlots();
-            } catch (e) {
-                cxErr.textContent = `Falha ao cancelar: ${e.message}`;
-                cxErr.style.display = 'block';
-            }
-        };
+    const start=new Date(`${dataISO}T${pad2(Math.floor(abreMin/60))}:${pad2(abreMin%60)}:00`);
+    const end=new Date(`${dataISO}T${pad2(Math.floor(fechaMin/60))}:${pad2(fechaMin%60)}:00`);
+    const now=new Date();
 
-        $('#cx-send').onclick = async () => {
-            const email = $('#cxEmail').value.trim();
-            const telefone = $('#cxTel').value.replace(/\D+/g, '').trim();
-            const data = $('#cxData').value;
-            const hora = $('#cxHora').value;
-            if ((!email && !telefone) || !data || !hora) {
-                cxErr.textContent = 'Preencha email ou telefone, data e hora.'; cxErr.style.display = 'block'; return;
-            }
-            try {
-                const r = await fetch(`${API}/agendamentos/cancelar-publico`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ estabelecimentoId, email, telefone, data, hora })
-                });
-                const j = await r.json().catch(() => ({}));
-                if (!r.ok) throw new Error(j.message || `HTTP ${r.status}`);
-                closeCancelModal();
-                $('#ok-msg').textContent = 'Agendamento cancelado e o salão foi avisado.';
-                $('#ok-title').textContent = 'Cancelado';
-                $('#modalOk').style.display = 'flex';
-                gerarSlots();
-            } catch (e) {
-                cxErr.textContent = `Falha ao cancelar: ${e.message}`;
-                cxErr.style.display = 'block';
-            }
-        };
+    for(let t=new Date(start); t<end; t=new Date(t.getTime()+dur*60000)){
+      const iniHM=toHM(t);
+      const fimHM=toHM(new Date(t.getTime()+dur*60000));
+      if(new Date(`${dataISO}T${fimHM}:00`)>end) break;
 
-        btnCancel.onclick = openCancelModal;
+      const isPast=new Date(`${dataISO}T${iniHM}:00`)<now;
+      const isBusy=busy.some(b=>overlapHM(iniHM,fimHM,b.ini,b.fim));
 
-        // ===== Modal OK =====
-        const okModal = $('#modalOk');
-        const okMsg = $('#ok-msg');
-        const openOk = msg => { okMsg.textContent = msg; okModal.style.display = 'flex'; };
-        const closeOk = () => { okModal.style.display = 'none'; };
-        $('#ok-close').onclick = closeOk;
+      const btn=document.createElement("button");
+      btn.className="slot"+(isBusy ? " busy" : isPast ? " past" : "");
+      btn.textContent=iniHM;
+      btn.disabled=isBusy || isPast;
+      btn.onclick=()=>{
+        $$("#slots .slot.selected").forEach(s=>s.classList.remove("selected"));
+        btn.classList.add("selected");
+        slotSelecionado=iniHM;
+        erroEl.style.display="none";
+        atualizarResumo(iniHM);
+      };
+      slotsEl.appendChild(btn);
+    }
 
-        // ===== Confirmar =====
-        async function confirmarAgendamento() {
-            const c = getClienteLS();
-            const payload = {
-                estabelecimentoId,
-                clienteId: c.id,
-                profissionalId: Number(selProf.value),
-                servicoId: servicoSelecionado.id,
-                dtInicio: `${inputData.value}T${slotSelecionado}:00`
-            };
-            try {
-                const r = await fetch(`${API}/agendamentos`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const j = await r.json().catch(() => ({}));
-                if (!r.ok) throw new Error(j.message || `HTTP ${r.status}`);
-                const novoId = j.data?.id ?? j.id;
-                if (novoId) setLastAg(novoId);
-                openOk(`Horário reservado para ${fmtBR(inputData.value)} às ${slotSelecionado}.`);
-                gerarSlots();
-            } catch (e) {
-                erroEl.textContent = `Falha ao agendar: ${e.message}`;
-                erroEl.style.display = 'block';
-            }
-        }
+    if(!slotsEl.children.length){
+      slotsEl.innerHTML='<div class="muted">Sem horários disponíveis.</div>';
+    }
+  }
 
-        $('#btn-confirmar').onclick = () => {
-            if (!servicoSelecionado || !selProf.value || !inputData.value || !slotSelecionado) {
-                erroEl.style.display = 'block'; return;
-            }
-            openModal();
-        };
+  function limparSelecao(){
+    servicoSelecionado=null;
+    slotSelecionado=null;
+    $$("#lista-servicos .servico-item").forEach(i=>i.style.borderColor="#e3e8ef");
+    atualizarResumo("");
+    gerarSlots();
+  }
+  window.limparSelecao=limparSelecao;
 
-        // ===== INIT =====
-        (async function init() {
-            const hojeISO = new Date().toISOString().slice(0, 10);
-            inputData.value = hojeISO; inputData.min = hojeISO;
+  const modal=$("#modalCliente");
+  const mcErr=$("#mc-err");
 
-            try {
-                const [cfg, e] = await Promise.all([loadConfig(), loadEstab()]);
+  const openModal=()=>{
+    const c=getClienteLS();
+    if(c){
+      $("#cliNome").value=c.nome || "";
+      $("#cliEmail").value=c.email || "";
+      $("#cliTel").value=c.telefone || "";
+    }
+    mcErr.style.display="none";
+    modal.style.display="flex";
+    $("#cliNome").focus();
+  };
 
-                // textos
-                $('#shop-name').textContent = e.nome || `Estabelecimento #${estabelecimentoId}`;
-                $('#shop-address').textContent = e.endereco || '—';
-                $('#shop-rating').textContent = e.avaliacao ? `⭐ ${Number(e.avaliacao).toFixed(1)}` : '—';
-                $('#shop-open').textContent = e.aberta ? 'Aberta agora' : 'Fechada';
-                $('#shop-open').className = 'badge' + (e.aberta ? '' : ' off');
+  const closeModal=()=>{modal.style.display="none";};
+  $("#mc-cancel").onclick=closeModal;
 
-                // horários
-                if (typeof e.abreMin === 'number') abreMin = e.abreMin;
-                if (typeof e.fechaMin === 'number') fechaMin = e.fechaMin;
+  $("#mc-save").onclick=async()=>{
+    const nome=$("#cliNome").value.trim();
+    const email=$("#cliEmail").value.trim();
+    const telefone=$("#cliTel").value.replace(/\D+/g,"").trim();
+    if(!nome || (!email && !telefone)){
+      mcErr.textContent="Informe nome e email ou telefone.";
+      mcErr.style.display="block";
+      return;
+    }
+    try{
+      const r=await fetch(`${API}/clientes/ensure`,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({estabelecimentoId,nome,email,telefone})
+      });
+      const j=await r.json();
+      if(!r.ok) throw new Error(j.message || `HTTP ${r.status}`);
+      const cli=j.data || j;
+      setClienteLS({id:cli.id,nome:cli.nome,email:cli.email,telefone:cli.telefone});
+      closeModal();
+      confirmarAgendamento();
+    }catch(e){
+      mcErr.textContent=`Erro: ${e.message}`;
+      mcErr.style.display="block";
+    }
+  };
 
-                // LOGO: localStorage → cfg.logoUrl → e.imagemUrl
-                const localLogo = localStorage.getItem(LS_LOGO_KEY);
-                const logo = normalizeImageUrl(localLogo || cfg?.logoUrl || e.imagemUrl || '');
-                const cover = $('#cover');
-                if (logo) {
-                    cover.src = logo;
-                } else {
-                    // fallback visual leve sem arquivo local
-                    cover.src = 'data:image/svg+xml;utf8,' + encodeURIComponent(
-                        `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360">
-                          <rect width="100%" height="100%" fill="#eef2f7"/>
-                          <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
-                                font-family="Inter, Arial, sans-serif" font-size="24" fill="#0f2b5c">
-                            AgoraHora • Barbearia
-                          </text>
-                        </svg>`
-                    );
-                }
-            } catch { /* silencioso */ }
+  const cancelModal=$("#modalCancel");
+  const cxErr=$("#cx-err");
+  const cxFast=$("#cx-fast");
+  const btnCancel=$("#btn-cancelar");
+  const btnDeleteLast=$("#cx-delete-last");
 
-            // serviços
-            servicos = await loadServicos();
-            listaServ.innerHTML = '';
-            servicos.forEach(s => {
-                const el = document.createElement('div'); el.className = 'servico-item';
-                el.innerHTML = `
-                    <div>
-                      <div style="font-weight:800;color:#0f2b5c">${s.nome}</div>
-                      <div class="srv-meta">R$ ${Number(s.preco).toFixed(2).replace('.', ',')} • ${s.duracao} min</div>
-                    </div>
-                    <button class="btn btn-ghost">Escolher</button>`;
-                el.querySelector('button').onclick = () => {
-                    servicoSelecionado = s;
-                    $$('#lista-servicos .servico-item').forEach(i => i.style.borderColor = '#e9eef5');
-                    el.style.borderColor = '#19b7a6'; atualizarResumo(); gerarSlots();
-                };
-                listaServ.appendChild(el);
-            });
+  function openCancelModal(){
+    cxErr.style.display="none";
+    $("#cxEmail").value=getClienteLS()?.email || "";
+    $("#cxTel").value=getClienteLS()?.telefone || "";
+    $("#cxData").value=inputData.value || new Date().toISOString().slice(0,10);
+    $("#cxHora").value=slotSelecionado || "";
+    const last=getLastAg();
+    if(last){
+      cxFast.style.display="block";
+      btnDeleteLast.style.display="inline-block";
+    }else{
+      cxFast.style.display="none";
+      btnDeleteLast.style.display="none";
+    }
+    cancelModal.style.display="flex";
+  }
 
-            // profissionais
-            const profs = await loadProfissionais();
-            selProf.innerHTML = '';
-            if (!profs || !profs.length) {
-                const o = document.createElement('option'); o.value = ''; o.textContent = 'Nenhum profissional disponível'; selProf.appendChild(o);
-                selProf.disabled = true; btnConfirmar.disabled = true;
-                slotsEl.innerHTML = '<div class="muted">Nenhum profissional disponível.</div>';
-            } else {
-                selProf.disabled = false; btnConfirmar.disabled = false;
-                profs.forEach(p => { const o = document.createElement('option'); o.value = p.id; o.textContent = p.nome; selProf.appendChild(o); });
-            }
+  function closeCancelModal(){cancelModal.style.display="none";}
+  $("#cx-cancel").onclick=closeCancelModal;
 
-            selProf.addEventListener('change', gerarSlots);
-            inputData.addEventListener('change', gerarSlots);
+  btnDeleteLast.onclick=async()=>{
+    const id=getLastAg();
+    if(!id) return;
+    try{
+      const r=await fetch(`${API}/agendamentos/${id}`,{method:"DELETE"});
+      const j=await r.json().catch(()=>({}));
+      if(!r.ok) throw new Error(j.message || `HTTP ${r.status}`);
+      localStorage.removeItem(LS_LAST_AG_KEY);
+      closeCancelModal();
+      $("#ok-msg").textContent="Agendamento cancelado.";
+      $("#ok-title").textContent="Cancelado";
+      $("#modalOk").style.display="flex";
+      gerarSlots();
+    }catch(e){
+      cxErr.textContent=`Falha ao cancelar: ${e.message}`;
+      cxErr.style.display="block";
+    }
+  };
 
-            // Atualiza a logo quando Configurações salvar uma nova na outra aba
-            window.addEventListener('storage', ev => {
-                if (ev.key === LS_LOGO_KEY) {
-                    const v = localStorage.getItem(LS_LOGO_KEY);
-                    const cover = $('#cover');
-                    cover.src = normalizeImageUrl(v) || cover.src;
-                }
-            });
+  $("#cx-send").onclick=async()=>{
+    const email=$("#cxEmail").value.trim();
+    const telefone=$("#cxTel").value.replace(/\D+/g,"").trim();
+    const data=$("#cxData").value;
+    const hora=$("#cxHora").value;
+    if((!email && !telefone) || !data || !hora){
+      cxErr.textContent="Preencha email ou telefone, data e hora.";
+      cxErr.style.display="block";
+      return;
+    }
+    try{
+      const r=await fetch(`${API}/agendamentos/cancelar-publico`,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({estabelecimentoId,email,telefone,data,hora})
+      });
+      const j=await r.json().catch(()=>({}));
+      if(!r.ok) throw new Error(j.message || `HTTP ${r.status}`);
+      closeCancelModal();
+      $("#ok-msg").textContent="Agendamento cancelado e o salão foi avisado.";
+      $("#ok-title").textContent="Cancelado";
+      $("#modalOk").style.display="flex";
+      gerarSlots();
+    }catch(e){
+      cxErr.textContent=`Falha ao cancelar: ${e.message}`;
+      cxErr.style.display="block";
+    }
+  };
 
-            atualizarResumo(); gerarSlots();
-        })();
-    </script>
+  btnCancel.onclick=openCancelModal;
+
+  const okModal=$("#modalOk");
+  const okMsg=$("#ok-msg");
+  const openOk=msg=>{okMsg.textContent=msg;okModal.style.display="flex";};
+  const closeOk=()=>{okModal.style.display="none";};
+  $("#ok-close").onclick=closeOk;
+
+  async function confirmarAgendamento(){
+    const c=getClienteLS();
+    const payload={
+      estabelecimentoId,
+      clienteId:c.id,
+      profissionalId:Number(selProf.value),
+      servicoId:servicoSelecionado.id,
+      dtInicio:`${inputData.value}T${slotSelecionado}:00`
+    };
+    try{
+      const r=await fetch(`${API}/agendamentos`,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(payload)
+      });
+      const j=await r.json().catch(()=>({}));
+      if(!r.ok) throw new Error(j.message || `HTTP ${r.status}`);
+      const novoId=j.data?.id ?? j.id;
+      if(novoId) setLastAg(novoId);
+      openOk(`Horário reservado para ${fmtBR(inputData.value)} às ${slotSelecionado}.`);
+      gerarSlots();
+    }catch(e){
+      erroEl.textContent=`Falha ao agendar: ${e.message}`;
+      erroEl.style.display="block";
+    }
+  }
+
+  $("#btn-confirmar").onclick=()=>{
+    if(!servicoSelecionado || !selProf.value || !inputData.value || !slotSelecionado){
+      erroEl.style.display="block";
+      return;
+    }
+    openModal();
+  };
+
+  (async function init(){
+    const hojeISO=new Date().toISOString().slice(0,10);
+    inputData.value=hojeISO;
+    inputData.min=hojeISO;
+
+    try{
+      const [cfg,e]=await Promise.all([loadConfig(),loadEstab()]);
+      $("#shop-name").textContent=e.nome || `Estabelecimento #${estabelecimentoId}`;
+      $("#shop-address").textContent=e.endereco || "—";
+      $("#shop-rating").textContent=e.avaliacao ? `⭐ ${Number(e.avaliacao).toFixed(1)}` : "—";
+      $("#shop-open").textContent=e.aberta ? "Aberta agora" : "Fechada";
+      $("#shop-open").className="badge"+(e.aberta ? "" : " off");
+
+      if(typeof e.abreMin==="number") abreMin=e.abreMin;
+      if(typeof e.fechaMin==="number") fechaMin=e.fechaMin;
+
+      const localLogo=localStorage.getItem(LS_LOGO_KEY);
+      const logo=normalizeImageUrl(localLogo || cfg?.logoUrl || e.imagemUrl || "");
+      const cover=$("#cover");
+      if(logo){
+        cover.src=logo;
+      }else{
+        cover.src="data:image/svg+xml;utf8,"+encodeURIComponent(
+          `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360">
+             <rect width="100%" height="100%" fill="#eef2f7"/>
+             <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                   font-family="Inter, Arial, sans-serif" font-size="24" fill="#0f2b5c">
+               AgoraHora • Barbearia
+             </text>
+           </svg>`
+        );
+      }
+    }catch{}
+
+    servicos=await loadServicos();
+    listaServ.innerHTML="";
+    servicos.forEach(s=>{
+      const el=document.createElement("div");
+      el.className="servico-item";
+      el.innerHTML=`
+        <div>
+          <div class="srv-title">${s.nome}</div>
+          <div class="srv-meta">R$ ${Number(s.preco).toFixed(2).replace(".",",")} • ${s.duracao} min</div>
+        </div>
+        <button class="btn btn-ghost">Escolher</button>`;
+      el.querySelector("button").onclick=()=>{
+        servicoSelecionado=s;
+        $$("#lista-servicos .servico-item").forEach(i=>i.style.borderColor="#e3e8ef");
+        el.style.borderColor="var(--brand-teal)";
+        atualizarResumo();
+        gerarSlots();
+      };
+      listaServ.appendChild(el);
+    });
+
+    const profs=await loadProfissionais();
+    selProf.innerHTML="";
+    if(!profs || !profs.length){
+      const o=document.createElement("option");
+      o.value="";
+      o.textContent="Nenhum profissional disponível";
+      selProf.appendChild(o);
+      selProf.disabled=true;
+      btnConfirmar.disabled=true;
+      slotsEl.innerHTML='<div class="muted">Nenhum profissional disponível.</div>';
+    }else{
+      selProf.disabled=false;
+      btnConfirmar.disabled=false;
+      profs.forEach(p=>{
+        const o=document.createElement("option");
+        o.value=p.id;
+        o.textContent=p.nome;
+        selProf.appendChild(o);
+      });
+    }
+
+    selProf.addEventListener("change",gerarSlots);
+    inputData.addEventListener("change",gerarSlots);
+
+    window.addEventListener("storage",ev=>{
+      if(ev.key===LS_LOGO_KEY){
+        const v=localStorage.getItem(LS_LOGO_KEY);
+        const cover=$("#cover");
+        cover.src=normalizeImageUrl(v) || cover.src;
+      }
+    });
+
+    atualizarResumo();
+    gerarSlots();
+  })();
+</script>
 </body>
 </html>

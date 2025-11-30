@@ -1,152 +1,697 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Agendamentos - AgoraHora</title>
 <style>
-  :root{--brand-navy:#0f2b5c;--brand-teal:#19b7a6;--brand-teal-hover:#139987;--bg:#f5f7fa;--card:#fff;--muted:#8a94a6}
-  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:#1c2430;font:500 15px/1.45 Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif}
-  header{background:#fff;border-bottom:1px solid #e9eef5;position:sticky;top:0;z-index:10}
-  .top{max-width:1200px;margin:auto;padding:14px 20px;display:flex;align-items:center;gap:14px;justify-content:space-between}
-  .brand{display:flex;align-items:center;gap:10px}.brand svg{width:34px;height:34px}.brand .name{font-weight:800;font-size:20px;color:var(--brand-navy)}
-  .btn{padding:10px 14px;border:none;border-radius:10px;background:var(--brand-teal);color:#fff;font-weight:700;cursor:pointer}
-  .btn:hover{background:var(--brand-teal-hover)}
-  .container{max-width:1200px;margin:24px auto;padding:0 20px}
-  .card{background:var(--card);border-radius:20px;padding:20px;box-shadow:0 16px 40px rgba(15,43,92,.06),0 4px 12px rgba(15,43,92,.05)}
-  .searchbar{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap}
-  input,select{width:100%;padding:10px 12px;border:1px solid #e3e8ef;border-radius:10px;outline:none}
-  input:focus,select:focus{box-shadow:0 0 0 4px rgba(25,183,166,.12)}
-  table{width:100%;border-collapse:collapse} th,td{padding:12px 10px;border-bottom:1px solid #eef2f7;text-align:left} th{color:#30405a;font-size:13px}
-  .badge{display:inline-block;padding:4px 8px;border-radius:10px;font-size:12px;background:#eefaf8;color:#0d6e64}
-  .empty{color:var(--muted);padding:6px 0}
-  .error{margin-top:10px;color:#c62828;font-weight:700;display:none}
-  @media(min-width:800px){ .searchbar > *{flex:1} .searchbar button{flex:0 0 auto} }
+  :root{
+    --brand-navy:#0f2b5c;
+    --brand-teal:#19b7a6;
+    --brand-teal-soft:#d6f4f1;
+    --brand-teal-hover:#119a8a;
+    --bg:#edf1f7;
+    --card:#ffffff;
+    --border:#e1e7f0;
+    --muted:#7e8799;
+    --danger:#e53935;
+    --warning:#f9a825;
+    --success:#2e7d32;
+    --radius-lg:20px;
+    --radius-md:12px;
+    --shadow-elevated:0 20px 45px rgba(10,28,69,.14);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    min-height:100vh;
+    background:radial-gradient(circle at top left,#f4fbff 0,#edf1f7 40%,#e3e7f3 100%);
+    color:#111827;
+    font:500 15px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+
+  .page-header{
+    position:sticky;
+    top:0;
+    z-index:10;
+    backdrop-filter:blur(16px);
+    background:linear-gradient(to right,rgba(255,255,255,.92),rgba(255,255,255,.96));
+    border-bottom:1px solid rgba(225,231,240,.8);
+  }
+
+  .page-header-inner{
+    max-width:1200px;
+    margin:0 auto;
+    padding:14px 20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:18px;
+  }
+
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+
+  .brand-icon{
+    width:38px;
+    height:38px;
+    border-radius:16px;
+    background:radial-gradient(circle at 20% 0,#22e0c8,#0f2b5c);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .brand-icon svg{
+    width:22px;
+    height:22px;
+  }
+
+  .brand-title{
+    display:flex;
+    flex-direction:column;
+  }
+
+  .brand-name{
+    font-weight:800;
+    font-size:20px;
+    letter-spacing:.03em;
+    color:var(--brand-navy);
+  }
+
+  .brand-sub{
+    font-size:12px;
+    color:var(--muted);
+  }
+
+  .btn{
+    border:none;
+    border-radius:999px;
+    padding:9px 18px;
+    font-weight:600;
+    font-size:14px;
+    cursor:pointer;
+    transition:transform .12s ease,box-shadow .12s ease,background .12s ease;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+  }
+
+  .btn-primary{
+    background:var(--brand-teal);
+    color:#fff;
+    box-shadow:0 10px 25px rgba(25,183,166,.28);
+  }
+
+  .btn-primary:hover{
+    background:var(--brand-teal-hover);
+    transform:translateY(-1px);
+    box-shadow:0 16px 35px rgba(25,183,166,.35);
+  }
+
+  .btn-ghost{
+    background:rgba(15,43,92,.04);
+    color:var(--brand-navy);
+  }
+
+  .btn-ghost:hover{
+    background:rgba(15,43,92,.07);
+    transform:translateY(-1px);
+  }
+
+  .page{
+    max-width:1200px;
+    margin:22px auto 32px;
+    padding:0 20px 32px;
+  }
+
+  .page-heading{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:16px;
+  }
+
+  .page-title{
+    font-size:24px;
+    font-weight:800;
+    color:var(--brand-navy);
+  }
+
+  .page-subtitle{
+    font-size:13px;
+    color:var(--muted);
+  }
+
+  .page-chips{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+
+  .chip{
+    border-radius:999px;
+    padding:6px 12px;
+    background:#eef2fb;
+    font-size:12px;
+    color:#3b4861;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+  }
+
+  .chip-dot{
+    width:8px;
+    height:8px;
+    border-radius:999px;
+    background:var(--brand-teal);
+  }
+
+  .card{
+    background:var(--card);
+    border-radius:var(--radius-lg);
+    padding:18px 18px 20px;
+    box-shadow:var(--shadow-elevated);
+    border:1px solid rgba(225,231,240,.6);
+  }
+
+  .card-header{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:14px;
+  }
+
+  .card-title{
+    font-size:16px;
+    font-weight:700;
+    color:var(--brand-navy);
+  }
+
+  .card-caption{
+    font-size:12px;
+    color:var(--muted);
+  }
+
+  .filters{
+    display:grid;
+    grid-template-columns:repeat(1,minmax(0,1fr));
+    gap:10px;
+    margin-bottom:14px;
+  }
+
+  .field{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    font-size:12px;
+    color:var(--muted);
+  }
+
+  .field-label{
+    font-weight:600;
+    color:#445069;
+  }
+
+  .field-control{
+    position:relative;
+  }
+
+  .field-control input,
+  .field-control select{
+    width:100%;
+    padding:9px 11px;
+    border-radius:var(--radius-md);
+    border:1px solid var(--border);
+    background:#fafbff;
+    font-size:14px;
+    outline:none;
+    transition:border .12s ease,box-shadow .12s ease,background .12s ease;
+  }
+
+  .field-control input:focus,
+  .field-control select:focus{
+    background:#ffffff;
+    border-color:var(--brand-teal);
+    box-shadow:0 0 0 3px rgba(25,183,166,.22);
+  }
+
+  .filters-actions{
+    display:flex;
+    gap:8px;
+    align-items:flex-end;
+  }
+
+  .filters-actions .btn{
+    width:100%;
+    justify-content:center;
+  }
+
+  .table-wrapper{
+    width:100%;
+    overflow-x:auto;
+    border-radius:16px;
+    border:1px solid var(--border);
+    background:linear-gradient(to bottom,#ffffff,#f8f9fd);
+  }
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:640px;
+  }
+
+  thead{
+    background:linear-gradient(to right,#f4f7fd,#edf2ff);
+  }
+
+  th,td{
+    padding:11px 12px;
+    font-size:13px;
+    text-align:left;
+    border-bottom:1px solid #eef1f7;
+    white-space:nowrap;
+  }
+
+  th{
+    font-weight:700;
+    color:#3b4861;
+  }
+
+  tbody tr:nth-child(even){
+    background:#fbfcff;
+  }
+
+  tbody tr:hover{
+    background:#f0f5ff;
+  }
+
+  td:first-child,
+  th:first-child{
+    padding-left:18px;
+  }
+
+  td:last-child,
+  th:last-child{
+    padding-right:18px;
+  }
+
+  .cell-client{
+    font-weight:600;
+    color:#111827;
+  }
+
+  .cell-service{
+    color:#344054;
+  }
+
+  .cell-prof{
+    color:#3b4f72;
+  }
+
+  .cell-date{
+    font-feature-settings:"tnum" 1,"lnum" 1;
+    font-variant-numeric:tabular-nums;
+    color:#374151;
+  }
+
+  .badge{
+    display:inline-flex;
+    align-items:center;
+    justify-content:flex-start;
+    gap:6px;
+    padding:4px 10px;
+    border-radius:999px;
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:.02em;
+    text-transform:uppercase;
+  }
+
+  .badge-dot{
+    width:8px;
+    height:8px;
+    border-radius:999px;
+  }
+
+  .badge[data-status="pendente"]{
+    background:#fff7e6;
+    color:#8d5b00;
+  }
+
+  .badge[data-status="pendente"] .badge-dot{
+    background:#f9a825;
+  }
+
+  .badge[data-status="confirmado"]{
+    background:#e7f7ef;
+    color:#1b5e20;
+  }
+
+  .badge[data-status="confirmado"] .badge-dot{
+    background:#2e7d32;
+  }
+
+  .badge[data-status="cancelado"]{
+    background:#ffebee;
+    color:#b71c1c;
+  }
+
+  .badge[data-status="cancelado"] .badge-dot{
+    background:#e53935;
+  }
+
+  .badge[data-status="concluido"],
+  .badge[data-status="concluído"]{
+    background:#e3f5ff;
+    color:#0b4680;
+  }
+
+  .badge[data-status="concluido"] .badge-dot,
+  .badge[data-status="concluído"] .badge-dot{
+    background:#1565c0;
+  }
+
+  .row-empty td{
+    text-align:center;
+    padding:18px 12px;
+    color:var(--muted);
+    font-size:13px;
+  }
+
+  .error{
+    margin-top:10px;
+    font-size:13px;
+    color:var(--danger);
+    font-weight:600;
+    display:none;
+  }
+
+  @media(min-width:720px){
+    .filters{
+      grid-template-columns:2fr 1.2fr 1.2fr auto;
+      align-items:flex-end;
+    }
+    .filters-actions .btn{
+      width:auto;
+      padding-inline:18px;
+    }
+  }
+
+  @media(max-width:480px){
+    .page-header-inner{
+      padding:10px 14px;
+    }
+    .page{
+      padding-inline:14px;
+    }
+    .card{
+      padding-inline:14px;
+    }
+  }
 </style>
 </head>
 <body>
-<header>
-  <div class="top">
+<header class="page-header">
+  <div class="page-header-inner">
     <div class="brand" aria-label="AgoraHora">
-      <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="28" fill="none" stroke="#19b7a6" stroke-width="6"/><path d="M20 33.5l7 7 17-17" fill="none" stroke="#19b7a6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="name">AgoraHora</div>
+      <div class="brand-icon">
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+          <circle cx="32" cy="32" r="24" fill="none" stroke="#ffffff" stroke-width="4"/>
+          <path d="M22 33.5l6 6 14-14" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="brand-title">
+        <span class="brand-name">AgoraHora</span>
+        <span class="brand-sub">Painel de agendamentos em tempo real</span>
+      </div>
     </div>
-    <button class="btn" id="voltar">Voltar</button>
+    <button class="btn btn-ghost" id="voltar">
+      ‹ Voltar
+    </button>
   </div>
 </header>
 
-<main class="container">
-  <div class="card">
-    <h2 style="margin-top:0;color:var(--brand-navy)">Agendamentos</h2>
-    <div class="searchbar">
-      <select id="profissional"></select>
-      <input id="filtro-data" type="date"/>
-      <select id="filtro-status" title="Status">
-        <option value="">Todos</option>
-        <option value="Pendente">Pendente</option>
-        <option value="Confirmado">Confirmado</option>
-        <option value="Cancelado">Cancelado</option>
-        <option value="Concluido">Concluído</option>
-      </select>
-      <button class="btn" id="btn-filtrar">Filtrar</button>
+<main class="page">
+  <section class="page-heading">
+    <div>
+      <h1 class="page-title">Agendamentos</h1>
+      <p id="resumo" class="page-subtitle">Carregando dados do dia…</p>
     </div>
-    <table>
-      <thead><tr><th>Cliente</th><th>Serviço</th><th>Profissional</th><th>Data</th><th>Status</th></tr></thead>
-      <tbody id="tbody"><tr><td class="empty" colspan="5">Carregando…</td></tr></tbody>
-    </table>
-    <div id="erro" class="error">Não foi possível carregar os agendamentos.</div>
-  </div>
+    <div class="page-chips">
+      <div class="chip">
+        <span class="chip-dot"></span>
+        <span id="chip-dia">Hoje</span>
+      </div>
+      <div class="chip">
+        Total: <span id="chip-total">0</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Filtrar agendamentos</div>
+        <div class="card-caption">Selecione o profissional, dia e status para visualizar os horários.</div>
+      </div>
+      <button class="btn btn-primary" id="btn-hoje">Hoje</button>
+    </div>
+
+    <div class="filters">
+      <div class="field">
+        <span class="field-label">Profissional</span>
+        <div class="field-control">
+          <select id="profissional"></select>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Data</span>
+        <div class="field-control">
+          <input id="filtro-data" type="date"/>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Status</span>
+        <div class="field-control">
+          <select id="filtro-status">
+            <option value="">Todos</option>
+            <option value="Pendente">Pendente</option>
+            <option value="Confirmado">Confirmado</option>
+            <option value="Cancelado">Cancelado</option>
+            <option value="Concluido">Concluído</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="filters-actions">
+        <button class="btn btn-primary" id="btn-filtrar">Aplicar filtros</button>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th>Serviço</th>
+            <th>Profissional</th>
+            <th>Data e horário</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          <tr class="row-empty">
+            <td colspan="5">Carregando agendamentos…</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="erro" class="error">Não foi possível carregar os agendamentos. Tente novamente em instantes.</div>
+  </section>
 </main>
 
 <script>
-  const API_BASE = 'http://localhost:7050/api'; // ajuste se necessário
+  const API_BASE = "http://localhost:7050/api";
   const qs = new URLSearchParams(location.search);
-  const estabelecimentoId = Number(qs.get('estabelecimentoId') || 1);
+  const estabelecimentoId = Number(qs.get("estabelecimentoId") || 1);
 
-  const selProf   = document.getElementById('profissional');
-  const filtroData   = document.getElementById('filtro-data');
-  const filtroStatus = document.getElementById('filtro-status');
-  const tbody = document.getElementById('tbody');
-  const erro  = document.getElementById('erro');
+  const selProf = document.getElementById("profissional");
+  const filtroData = document.getElementById("filtro-data");
+  const filtroStatus = document.getElementById("filtro-status");
+  const tbody = document.getElementById("tbody");
+  const erro = document.getElementById("erro");
+  const resumo = document.getElementById("resumo");
+  const chipDia = document.getElementById("chip-dia");
+  const chipTotal = document.getElementById("chip-total");
+  const btnHoje = document.getElementById("btn-hoje");
 
-  // ===== BOTÃO VOLTAR =====
-  document.getElementById('voltar').onclick = () => {
-    if (document.referrer && document.referrer !== location.href)
+  document.getElementById("voltar").onclick = () => {
+    if (document.referrer && document.referrer !== location.href) {
       history.back();
-    else
-      window.location.href = 'index.html';
+    } else {
+      window.location.href = "index.html";
+    }
   };
 
-  filtroData.value = new Date().toISOString().slice(0,10);
-  document.getElementById('btn-filtrar').onclick = carregar;
+  function hojeIso() {
+    return new Date().toISOString().slice(0, 10);
+  }
+
+  filtroData.value = hojeIso();
+
+  document.getElementById("btn-filtrar").onclick = carregar;
   selProf.onchange = carregar;
 
-  const fmt = d => new Date(d).toLocaleString('pt-BR',{
-    day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'
-  });
+  btnHoje.onclick = () => {
+    filtroData.value = hojeIso();
+    carregar();
+  };
 
-  async function j(url){
+  function fmtData(dataStr) {
+    return new Date(dataStr).toLocaleString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+  }
+
+  async function getJson(url) {
     const r = await fetch(url);
-    if(!r.ok) throw new Error('HTTP '+r.status);
+    if (!r.ok) {
+      throw new Error("HTTP " + r.status);
+    }
     return r.json();
   }
 
-  async function carregarProfissionais(){
+  async function carregarProfissionais() {
     const url = `${API_BASE}/profissionais/${estabelecimentoId}`;
-    const js = await j(url);
+    const js = await getJson(url);
     const profs = js.data ?? js;
-    selProf.innerHTML = profs.map(p => `<option value="${p.id}">${p.nome}</option>`).join('');
+    selProf.innerHTML = profs
+      .map(p => `<option value="${p.id}">${p.nome}</option>`)
+      .join("");
   }
 
-  async function carregar(){
-    erro.style.display = 'none';
-    tbody.innerHTML = `<tr><td class="empty" colspan="5">Carregando…</td></tr>`;
+  function statusKey(status) {
+    if (!status) return "pendente";
+    const s = status.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    return s.toLowerCase();
+  }
 
-    const dia = filtroData.value || new Date().toISOString().slice(0,10);
+  function atualizarResumo(lista, dia) {
+    const total = lista.length;
+    chipTotal.textContent = total.toString();
+    const dataBr = new Date(dia + "T00:00:00").toLocaleDateString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    });
+    chipDia.textContent = dataBr;
+    if (!total) {
+      resumo.textContent = `Nenhum agendamento encontrado para ${dataBr}.`;
+    } else if (total === 1) {
+      resumo.textContent = `1 agendamento encontrado para ${dataBr}.`;
+    } else {
+      resumo.textContent = `${total} agendamentos encontrados para ${dataBr}.`;
+    }
+  }
+
+  async function carregar() {
+    erro.style.display = "none";
+    tbody.innerHTML = `
+      <tr class="row-empty">
+        <td colspan="5">Carregando agendamentos…</td>
+      </tr>`;
+
+    const dia = filtroData.value || hojeIso();
     const ini = `${dia}T00:00:00`;
     const fim = `${dia}T23:59:59`;
     const profId = selProf.value;
 
-    if(!profId){
-      tbody.innerHTML = `<tr><td class="empty" colspan="5">Selecione um profissional.</td></tr>`;
+    if (!profId) {
+      tbody.innerHTML = `
+        <tr class="row-empty">
+          <td colspan="5">Selecione um profissional para visualizar os agendamentos.</td>
+        </tr>`;
+      atualizarResumo([], dia);
       return;
     }
 
-    const url = `${API_BASE}/agendamentos/profissional` +
-                `?profissionalId=${encodeURIComponent(profId)}` +
-                `&ini=${encodeURIComponent(ini)}` +
-                `&fim=${encodeURIComponent(fim)}` +
-                (filtroStatus.value ? `&status=${encodeURIComponent(filtroStatus.value)}` : '');
+    let url = `${API_BASE}/agendamentos/profissional?profissionalId=${encodeURIComponent(
+      profId
+    )}&ini=${encodeURIComponent(ini)}&fim=${encodeURIComponent(fim)}`;
 
-    try{
-      const js = await j(url);
-      const list = js.data ?? [];
-      render(list);
-    }catch(e){
+    if (filtroStatus.value) {
+      url += `&status=${encodeURIComponent(filtroStatus.value)}`;
+    }
+
+    try {
+      const js = await getJson(url);
+      const lista = js.data ?? [];
+      render(lista);
+      atualizarResumo(lista, dia);
+    } catch (e) {
       console.error(e);
-      erro.style.display = 'block';
-      tbody.innerHTML = `<tr><td class="empty" colspan="5">Sem dados.</td></tr>`;
+      erro.style.display = "block";
+      tbody.innerHTML = `
+        <tr class="row-empty">
+          <td colspan="5">Sem dados para exibir.</td>
+        </tr>`;
+      atualizarResumo([], filtroData.value || hojeIso());
     }
   }
 
-  function render(lista){
-    if(!lista.length){
-      tbody.innerHTML = `<tr><td class="empty" colspan="5">Nenhum agendamento para os filtros.</td></tr>`;
+  function render(lista) {
+    if (!lista.length) {
+      tbody.innerHTML = `
+        <tr class="row-empty">
+          <td colspan="5">Nenhum agendamento para os filtros selecionados.</td>
+        </tr>`;
       return;
     }
-    tbody.innerHTML = lista.map(a => `
-      <tr>
-        <td>${a.cliente ?? '—'}</td>
-        <td>${a.servico ?? '—'}</td>
-        <td>${a.profissional ?? '—'}</td>
-        <td>${fmt(a.dtInicio)}</td>
-        <td><span class="badge">${a.status ?? 'Pendente'}</span></td>
-      </tr>
-    `).join('');
+
+    tbody.innerHTML = lista
+      .map(a => {
+        const st = a.status ?? "Pendente";
+        const key = statusKey(st);
+        return `
+        <tr>
+          <td class="cell-client">${a.cliente ?? "—"}</td>
+          <td class="cell-service">${a.servico ?? "—"}</td>
+          <td class="cell-prof">${a.profissional ?? "—"}</td>
+          <td class="cell-date">${a.dtInicio ? fmtData(a.dtInicio) : "—"}</td>
+          <td>
+            <span class="badge" data-status="${key}">
+              <span class="badge-dot"></span>
+              <span>${st}</span>
+            </span>
+          </td>
+        </tr>`;
+      })
+      .join("");
   }
 
-  (async function init(){
-    await carregarProfissionais();
-    await carregar();
+  (async function init() {
+    try {
+      await carregarProfissionais();
+      await carregar();
+    } catch (e) {
+      console.error(e);
+      erro.style.display = "block";
+      resumo.textContent = "Não foi possível carregar os dados iniciais.";
+    }
   })();
 </script>
 </body>

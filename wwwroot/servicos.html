@@ -1,331 +1,376 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Serviços - AgoraHora</title>
-    <style>
-        :root {
-            --brand-navy: #0f2b5c;
-            --brand-teal: #19b7a6;
-            --brand-teal-hover: #139987;
-            --bg: #f5f7fa;
-            --card: #fff;
-            --muted: #8a94a6
-        }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Serviços - AgoraHora</title>
 
-        * {
-            box-sizing: border-box
-        }
+<style>
+/* ================== TEMA DARK ================== */
+:root{
+    --bg:#020617;
+    --bg-light:#0f172a;
+    --card:#0f172a;
+    --border:#1e293b;
+    --text:#e2e8f0;
+    --text-muted:#94a3b8;
 
-        body {
-            margin: 0;
-            background: var(--bg);
-            color: #1c2430;
-            font: 500 15px/1.45 Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif
-        }
+    --blue:#38bdf8;
+    --blue-2:#0ea5e9;
+    --red:#f87171;
 
-        header {
-            background: #fff;
-            border-bottom: 1px solid #e9eef5;
-            position: sticky;
-            top: 0;
-            z-index: 10
-        }
+    --radius:16px;
+    --shadow:0 12px 32px rgba(0,0,0,.45);
+}
+/* RESET */
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+    background:var(--bg);
+    color:var(--text);
+    font:500 15px/1.45 Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;
+}
 
-        .top {
-            max-width: 1200px;
-            margin: auto;
-            padding: 14px 20px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            justify-content: space-between
-        }
+/* ================= HEADER ================= */
+header{
+    background:rgba(15,23,42,.92);
+    border-bottom:1px solid var(--border);
+    backdrop-filter:blur(12px);
+    position:sticky;top:0;z-index:20;
+}
+.top{
+    max-width:1200px;
+    margin:auto;
+    padding:14px 20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+}
+.brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+.brand svg{
+    width:34px;height:34px;
+    stroke:var(--blue);
+}
+.brand .name{
+    font-weight:800;
+    font-size:20px;
+    color:var(--blue);
+}
 
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 10px
-        }
+/* ================= BUTTONS ================= */
+.btn{
+    padding:10px 16px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(90deg,var(--blue),var(--blue-2));
+    color:#0f172a;
+    font-weight:800;
+    cursor:pointer;
+    box-shadow:0 10px 22px rgba(14,165,233,.4);
+    transition:.2s;
+}
+.btn:hover{
+    filter:brightness(1.12);
+    transform:translateY(-2px);
+}
 
-            .brand svg {
-                width: 34px;
-                height: 34px
-            }
+.btn-ghost{
+    padding:8px 12px;
+    border-radius:10px;
+    border:1px solid var(--border);
+    background:rgba(255,255,255,.04);
+    color:var(--text);
+    cursor:pointer;
+    font-weight:700;
+}
+.btn-ghost:hover{
+    background:rgba(255,255,255,.08);
+}
 
-            .brand .name {
-                font-weight: 800;
-                font-size: 20px;
-                color: var(--brand-navy)
-            }
+.btn-danger{
+    padding:8px 12px;
+    border-radius:10px;
+    background:rgba(239,68,68,.18);
+    border:1px solid rgba(239,68,68,.35);
+    color:#f87171;
+    cursor:pointer;
+    font-weight:700;
+}
+.btn-danger:hover{
+    background:rgba(239,68,68,.32);
+}
 
-        .btn {
-            padding: 10px 14px;
-            border: none;
-            border-radius: 10px;
-            background: var(--brand-teal);
-            color: #fff;
-            font-weight: 700;
-            cursor: pointer
-        }
+/* ================= LAYOUT ================= */
+.container{
+    max-width:1200px;
+    margin:24px auto;
+    padding:0 20px;
+}
+.grid{display:grid;gap:20px}
+@media(min-width:900px){
+    .grid-2{grid-template-columns:1fr 2fr;}
+}
 
-            .btn:hover {
-                background: var(--brand-teal-hover)
-            }
+/* ================= CARD ================= */
+.card{
+    background:var(--card);
+    border-radius:var(--radius);
+    padding:24px;
+    border:1px solid var(--border);
+    box-shadow:var(--shadow);
+}
 
-        .btn-ghost {
-            padding: 6px 10px;
-            border: 1px solid #e3e8ef;
-            border-radius: 8px;
-            background: #fff;
-            color: #1c2430;
-            cursor: pointer;
-            font-weight: 700
-        }
+/* ================= FORM ================= */
+label{
+    display:block;
+    margin:8px 0 6px;
+    font-weight:700;
+    color:var(--blue);
+}
+input{
+    width:100%;
+    padding:12px;
+    border-radius:12px;
+    border:1px solid var(--border);
+    background:#0b1120;
+    color:var(--text);
+    outline:none;
+}
+input:focus{
+    border-color:var(--blue);
+    box-shadow:0 0 0 3px rgba(56,189,248,.25);
+}
 
-            .btn-ghost:hover {
-                background: #f2f6fa
-            }
-
-        .btn-danger {
-            padding: 6px 10px;
-            border: 1px solid #f2d6d6;
-            border-radius: 8px;
-            background: #ffecec;
-            color: #a30000;
-            cursor: pointer;
-            font-weight: 700
-        }
-
-            .btn-danger:hover {
-                background: #ffd9d9
-            }
-
-        .container {
-            max-width: 1200px;
-            margin: 24px auto;
-            padding: 0 20px
-        }
-
-        .grid {
-            display: grid;
-            gap: 16px
-        }
-
-        @media(min-width:900px) {
-            .grid-2 {
-                grid-template-columns: 1fr 2fr
-            }
-        }
-
-        .card {
-            background: var(--card);
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 16px 40px rgba(15,43,92,.06),0 4px 12px rgba(15,43,92,.05)
-        }
-
-        label {
-            display: block;
-            margin: 8px 0 6px;
-            color: var(--brand-navy);
-            font-weight: 700
-        }
-
-        input {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #e3e8ef;
-            border-radius: 10px;
-            outline: none
-        }
-
-            input:focus {
-                box-shadow: 0 0 0 4px rgba(25,183,166,.12)
-            }
-
-        table {
-            width: 100%;
-            border-collapse: collapse
-        }
-
-        th, td {
-            padding: 12px 10px;
-            border-bottom: 1px solid #eef2f7;
-            text-align: left
-        }
-
-        th {
-            color: #30405a;
-            font-size: 13px
-        }
-
-        .empty {
-            color: var(--muted);
-            padding: 6px 0
-        }
-
-        .td-actions {
-            width: 240px
-        }
-
-        .row-actions {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap
-        }
-    </style>
+/* ================= TABLE ================= */
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+th,td{
+    padding:12px 10px;
+    border-bottom:1px solid var(--border);
+}
+th{
+    font-size:13px;
+    color:var(--text-muted);
+    font-weight:700;
+}
+.empty{
+    text-align:center;
+    padding:12px 0;
+    color:var(--text-muted);
+}
+.row-actions{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+.td-actions{
+    width:240px;
+}
+</style>
 </head>
+
 <body>
-    <header>
-        <div class="top">
-            <div class="brand" aria-label="AgoraHora">
-                <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="28" fill="none" stroke="#19b7a6" stroke-width="6" /><path d="M20 33.5l7 7 17-17" fill="none" stroke="#19b7a6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                <div class="name">AgoraHora</div>
-            </div>
-            <button class="btn" id="logout">Voltar</button>
+
+<header>
+    <div class="top">
+        <div class="brand" aria-label="AgoraHora">
+            <svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="none" stroke-width="6"/><path d="M20 33.5l7 7 17-17" fill="none" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="name">AgoraHora</div>
         </div>
-    </header>
+        <button class="btn" id="logout">Voltar</button>
+    </div>
+</header>
 
-    <main class="container grid grid-2">
-        <div class="card">
-            <h2 style="margin-top:0;color:var(--brand-navy)">Cadastrar serviço</h2>
-            <label for="nome">Nome</label>
-            <input id="nome" placeholder="Ex.: Corte de cabelo">
-            <label for="preco">Preço (R$)</label>
-            <input id="preco" type="number" step="0.01" placeholder="Ex.: 40,00">
-            <label for="duracao">Duração (min)</label>
-            <input id="duracao" type="number" placeholder="Ex.: 30">
-            <button class="btn" id="btn-salvar" style="margin-top:10px">Salvar</button>
-            <div id="msg" class="empty" style="display:none;margin-top:8px">Salvo!</div>
-        </div>
+<main class="container grid grid-2">
 
-        <div class="card">
-            <h2 style="margin-top:0;color:var(--brand-navy)">Serviços cadastrados</h2>
-            <table>
-                <thead><tr><th>Nome</th><th>Preço</th><th>Duração</th><th class="td-actions">Ações</th></tr></thead>
-                <tbody id="tbody"><tr><td class="empty" colspan="4">Sem serviços…</td></tr></tbody>
-            </table>
-        </div>
-    </main>
+    <!-- CADASTRO -->
+    <div class="card">
+        <h2 style="margin-top:0;color:var(--blue)">Cadastrar serviço</h2>
 
-    <script>
-        const t = localStorage.getItem('ah_token'); if (!t) location.replace('login.html');
-        document.getElementById('logout').onclick = () => location.href = 'index.html';
+        <label for="nome">Nome</label>
+        <input id="nome" placeholder="Ex.: Corte de cabelo">
 
-        const estabId = Number(localStorage.getItem('ah_estabelecimentoId') || 1);
-        const tbody = document.getElementById('tbody');
-        const msg = document.getElementById('msg');
-        let cache = [];
-        let editingId = null;
+        <label for="preco">Preço (R$)</label>
+        <input id="preco" type="number" step="0.01" placeholder="Ex.: 40,00">
 
-        async function api(path, opts = {}) {
-            const h = { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + t };
-            const r = await fetch('/api' + path, { method: opts.method || 'GET', headers: h, body: opts.body ? JSON.stringify(opts.body) : undefined });
-            if (!r.ok) throw new Error(await r.text());
-            return r.headers.get('content-type')?.includes('application/json') ? r.json() : r.text();
-        }
+        <label for="duracao">Duração (min)</label>
+        <input id="duracao" type="number" placeholder="Ex.: 30">
 
-        const brl = v => Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        <button class="btn" id="btn-salvar" style="margin-top:12px">Salvar</button>
 
-        function rowInputs(s) {
-            const nome = s.nome ?? '';
-            const preco = s.preco ?? 0;
-            const dur = s.duracao ?? 0;
-            return `
-          <td><input id="edit-nome" value="${nome}"/></td>
-          <td><input id="edit-preco" type="number" step="0.01" value="${preco}"/></td>
-          <td><input id="edit-dur" type="number" value="${dur}"/></td>
-          <td>
+        <div id="msg" class="empty" style="display:none;margin-top:10px;color:var(--blue)">Salvo!</div>
+    </div>
+
+    <!-- LISTA -->
+    <div class="card">
+        <h2 style="margin-top:0;color:var(--blue)">Serviços cadastrados</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th><th>Preço</th><th>Duração</th><th class="td-actions">Ações</th>
+                </tr>
+            </thead>
+
+            <tbody id="tbody">
+                <tr><td class="empty" colspan="4">Sem serviços…</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+</main>
+
+<script>
+/* ================= VALIDAÇÃO TOKEN ================= */
+const t = localStorage.getItem('ah_token');
+if(!t) location.replace('login.html');
+document.getElementById('logout').onclick = () => location.href='index.html';
+
+const estabId = Number(localStorage.getItem('ah_estabelecimentoId') || 1);
+const tbody = document.getElementById('tbody');
+const msg = document.getElementById('msg');
+let cache = [];
+let editingId = null;
+
+/* ================= API ================= */
+async function api(path, opts={}){
+    const h = {
+        'Content-Type':'application/json',
+        'Authorization':'Bearer ' + t
+    };
+    const r = await fetch('/api'+path,{
+        method:opts.method||'GET',
+        headers:h,
+        body:opts.body?JSON.stringify(opts.body):undefined
+    });
+    if(!r.ok) throw new Error(await r.text());
+    return r.headers.get('content-type')?.includes('json') ? r.json() : r.text();
+}
+
+const brl = v => Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+
+/* ================= RENDER TABLE ================= */
+function rowInputs(s){
+    return `
+        <td><input id="edit-nome" value="${s.nome}"></td>
+        <td><input id="edit-preco" type="number" step="0.01" value="${s.preco}"></td>
+        <td><input id="edit-dur" type="number" value="${s.duracao}"></td>
+        <td>
             <div class="row-actions">
-              <button class="btn-ghost" data-action="save" data-id="${s.id}">Salvar</button>
-              <button class="btn-ghost" data-action="cancel" data-id="${s.id}">Cancelar</button>
+                <button class="btn-ghost" data-action="save" data-id="${s.id}">Salvar</button>
+                <button class="btn-ghost" data-action="cancel" data-id="${s.id}">Cancelar</button>
             </div>
-          </td>`;
-        }
+        </td>
+    `;
+}
 
-        function rowRead(s) {
-            return `
-          <td>${s.nome}</td>
-          <td>${brl(s.preco)}</td>
-          <td>${s.duracao} min</td>
-          <td>
+function rowRead(s){
+    return `
+        <td>${s.nome}</td>
+        <td>${brl(s.preco)}</td>
+        <td>${s.duracao} min</td>
+        <td>
             <div class="row-actions">
-              <button class="btn-ghost" data-action="edit" data-id="${s.id}">Editar</button>
-              <button class="btn-danger" data-action="delete" data-id="${s.id}">Apagar</button>
+                <button class="btn-ghost" data-action="edit" data-id="${s.id}">Editar</button>
+                <button class="btn-danger" data-action="delete" data-id="${s.id}">Apagar</button>
             </div>
-          </td>`;
-        }
+        </td>
+    `;
+}
 
-        function render(list) {
-            cache = list.slice();
-            if (!list.length) {
-                tbody.innerHTML = `<tr><td class="empty" colspan="4">Sem serviços…</td></tr>`;
-                return;
-            }
-            tbody.innerHTML = list.map(s => `<tr data-id="${s.id}">${editingId === s.id ? rowInputs(s) : rowRead(s)}</tr>`).join('');
-        }
+function render(list){
+    cache=list.slice();
+    if(!list.length){
+        tbody.innerHTML=`<tr><td class="empty" colspan="4">Sem serviços…</td></tr>`;
+        return;
+    }
+    tbody.innerHTML=list.map(s=>`
+        <tr data-id="${s.id}">
+            ${editingId===s.id?rowInputs(s):rowRead(s)}
+        </tr>
+    `).join('');
+}
 
-        async function carregar() {
-            const r = await api(`/servicos/${estabId}`);
-            editingId = null;
-            render(r.data ?? []);
-        }
+/* ================= LOAD ================= */
+async function carregar(){
+    const r = await api(`/servicos/${estabId}`);
+    editingId=null;
+    render(r.data||[]);
+}
 
-        document.getElementById('btn-salvar').onclick = async () => {
-            const nome = document.getElementById('nome').value.trim();
-            const preco = parseFloat(String(document.getElementById('preco').value).replace(',', '.'));
-            const duracao = parseInt(document.getElementById('duracao').value, 10);
-            if (!nome || isNaN(preco) || isNaN(duracao)) { alert('Preencha os campos corretamente.'); return; }
+/* ================= CREATE ================= */
+document.getElementById('btn-salvar').onclick = async () =>{
+    const nome = document.getElementById('nome').value.trim();
+    const preco = parseFloat(String(document.getElementById('preco').value).replace(',','.'));
+    const dur = parseInt(document.getElementById('duracao').value,10);
 
-            try {
-                await api('/servicos', {
-                    method: 'POST',
-                    body: { EstabelecimentoId: estabId, Nome: nome, DuracaoMin: duracao, Preco: preco }
-                });
-                document.getElementById('nome').value = '';
-                document.getElementById('preco').value = '';
-                document.getElementById('duracao').value = '';
-                msg.style.display = 'block'; setTimeout(() => msg.style.display = 'none', 1500);
-                await carregar();
-            } catch (e) {
-                alert('Erro ao salvar: ' + (e?.message || e));
-            }
-        };
+    if(!nome || isNaN(preco) || isNaN(dur)){
+        alert('Preencha corretamente.');
+        return;
+    }
+    await api('/servicos',{
+        method:'POST',
+        body:{EstabelecimentoId:estabId,Nome:nome,DuracaoMin:dur,Preco:preco}
+    });
+    msg.style.display='block';
+    setTimeout(()=>msg.style.display='none',1500);
 
-        tbody.addEventListener('click', async (e) => {
-            const btn = e.target.closest('button'); if (!btn) return;
-            const action = btn.dataset.action;
-            const id = Number(btn.dataset.id);
-            const tr = tbody.querySelector(`tr[data-id="${id}"]`);
-            const s = cache.find(x => x.id === id);
+    document.getElementById('nome').value='';
+    document.getElementById('preco').value='';
+    document.getElementById('duracao').value='';
+    carregar();
+};
 
-            try {
-                if (action === 'edit') { editingId = id; tr.innerHTML = rowInputs(s); tr.querySelector('#edit-nome').focus(); }
-                if (action === 'cancel') { editingId = null; tr.innerHTML = rowRead(s); }
-                if (action === 'save') {
-                    const nome = tr.querySelector('#edit-nome').value.trim();
-                    const preco = parseFloat(String(tr.querySelector('#edit-preco').value).replace(',', '.'));
-                    const duracao = parseInt(tr.querySelector('#edit-dur').value, 10);
-                    if (!nome || isNaN(preco) || isNaN(duracao)) { alert('Preencha corretamente.'); return; }
+/* ================= EDIT / DELETE ================= */
+tbody.addEventListener('click', async e=>{
+    const btn=e.target.closest('button');
+    if(!btn) return;
 
-                    await api(`/servicos/${id}`, { method: 'PUT', body: { Nome: nome, Preco: preco, DuracaoMin: duracao } });
-                    await carregar();
-                }
-                if (action === 'delete') {
-                    if (!confirm('Confirmar exclusão do serviço?')) return;
-                    await api(`/servicos/${id}`, { method: 'DELETE' });
-                    await carregar();
-                }
-            } catch (err) {
-                const m = String(err?.message || err);
-                if (m.includes('conflit') || m.includes('Já existe')) alert('Já existe um serviço com esse nome neste estabelecimento.');
-                else alert('Erro: ' + m);
-            }
+    const action=btn.dataset.action;
+    const id=Number(btn.dataset.id);
+    const tr=tbody.querySelector(`tr[data-id="${id}"]`);
+    const s=cache.find(x=>x.id===id);
+
+    if(action==='edit'){
+        editingId=id;
+        tr.innerHTML=rowInputs(s);
+        tr.querySelector('#edit-nome').focus();
+        return;
+    }
+    if(action==='cancel'){
+        editingId=null;
+        tr.innerHTML=rowRead(s);
+        return;
+    }
+    if(action==='save'){
+        const nome=tr.querySelector('#edit-nome').value.trim();
+        const preco=parseFloat(String(tr.querySelector('#edit-preco').value).replace(',','.'));
+        const dur=parseInt(tr.querySelector('#edit-dur').value,10);
+        if(!nome||isNaN(preco)||isNaN(dur)){alert('Preencha corretamente.');return;}
+
+        await api(`/servicos/${id}`,{
+            method:'PUT',
+            body:{Nome:nome,Preco:preco,DuracaoMin:dur}
         });
-
         carregar();
-    </script>
+        return;
+    }
+    if(action==='delete'){
+        if(!confirm('Confirmar exclusão?')) return;
+        await api(`/servicos/${id}`,{method:'DELETE'});
+        carregar();
+        return;
+    }
+});
+
+carregar();
+</script>
+
 </body>
 </html>
