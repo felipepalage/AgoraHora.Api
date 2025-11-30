@@ -119,8 +119,8 @@ public class UsuariosController : ControllerBase
     }
 
 
-// 4) Meus estabelecimentos
-[HttpGet("me/estabelecimentos")]
+    // 4) Meus estabelecimentos
+    [HttpGet("me/estabelecimentos")]
     [Authorize]
     public async Task<IActionResult> GetMeEstabelecimentos()
     {
