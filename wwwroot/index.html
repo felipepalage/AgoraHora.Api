@@ -37,7 +37,8 @@
             margin: 0;
             background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
             color: #334155;
-            font: 500 15px/1.45 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif
+            font: 500 15px/1.45 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            min-height: 100vh;
         }
 
         header {
@@ -597,6 +598,44 @@
                 color: var(--brand-teal);
             }
 
+        /* Responsividade aprimorada */
+        @media(max-width:1200px) {
+            .container {
+                padding: 0 15px;
+            }
+        }
+
+        @media(max-width:1024px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .metric-head {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .kpis-mini {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .kpi-mini {
+                flex: 1;
+                min-width: 100px;
+            }
+        }
+
+        @media(max-width:900px) {
+            .grid-3 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .kpi strong {
+                font-size: 28px;
+            }
+        }
+
         @media(max-width:768px) {
             .searchbar {
                 flex-direction: column;
@@ -604,6 +643,149 @@
 
             .actions {
                 grid-template-columns: 1fr;
+            }
+
+            .brand .name {
+                font-size: 18px;
+            }
+
+            .kpi strong {
+                font-size: 24px;
+            }
+
+            .section-title {
+                font-size: 16px;
+            }
+
+            /* Transformar tabela em cards */
+            .table-wrapper {
+                border: none;
+                overflow-x: visible;
+            }
+
+            table {
+                display: none;
+            }
+
+            .mobile-cards {
+                display: block;
+            }
+
+            .mobile-card {
+                background: var(--card);
+                border: 1px solid var(--border);
+                border-radius: var(--radius-md);
+                padding: 16px;
+                margin-bottom: 12px;
+                box-shadow: var(--shadow-soft);
+            }
+
+            .mobile-card-row {
+                display: flex;
+                justify-content: space-between;
+                padding: 8px 0;
+                border-bottom: 1px solid rgba(226,232,240,0.5);
+            }
+
+                .mobile-card-row:last-child {
+                    border-bottom: none;
+                }
+
+            .mobile-card-label {
+                font-weight: 600;
+                color: var(--muted);
+                font-size: 13px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .mobile-card-value {
+                font-weight: 600;
+                color: var(--brand-navy);
+                text-align: right;
+            }
+
+            .meter-row {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .count {
+                text-align: left;
+            }
+        }
+
+        @media(max-width:480px) {
+            .top {
+                padding: 10px 15px;
+            }
+
+            .container {
+                margin: 15px auto;
+                padding: 0 15px;
+            }
+
+            .card {
+                padding: 16px;
+            }
+
+            .grid-3 {
+                grid-template-columns: 1fr;
+            }
+
+            .kpi {
+                padding: 15px 0;
+            }
+
+                .kpi i {
+                    font-size: 20px;
+                }
+
+                .kpi h3 {
+                    font-size: 12px;
+                }
+
+                .kpi strong {
+                    font-size: 22px;
+                }
+
+            .action {
+                padding: 12px;
+            }
+
+            .brand .name {
+                font-size: 16px;
+            }
+
+            .user span {
+                display: none;
+            }
+
+            .btn {
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+
+            .kpi-mini {
+                padding: 8px 12px;
+            }
+
+                .kpi-mini span {
+                    font-size: 10px;
+                }
+
+            .meter {
+                height: 12px;
+            }
+
+            .mobile-card {
+                padding: 12px;
+            }
+        }
+
+        @media(min-width:769px) {
+            .mobile-cards {
+                display: none;
             }
         }
     </style>
@@ -707,6 +889,12 @@
                         </tbody>
                     </table>
                 </div>
+
+                <!-- Cards para dispositivos móveis -->
+                <div class="mobile-cards" id="mobile-cards">
+                    <div class="empty">Carregando…</div>
+                </div>
+
                 <div id="erro" class="error">
                     <i class="fas fa-exclamation-circle"></i>
                     Não foi possível carregar os agendamentos.
@@ -779,6 +967,7 @@
         const kAtendidos = document.getElementById('kpi-atendidos');
         const kCancelados = document.getElementById('kpi-cancelados');
         const tbody = document.getElementById('tbody-agendamentos');
+        const mobileCards = document.getElementById('mobile-cards');
         const erro = document.getElementById('erro');
         const filtroData = document.getElementById('filtro-data');
         const filtroStatus = document.getElementById('filtro-status');
@@ -815,37 +1004,70 @@
         function statusControl(row) {
             const st = normalize(row.status);
             return `
-              <div class="status-wrap" data-id="${row.id}">
-                <button class="status-btn" data-role="open">
-                  <span class="${badgeClass(st)}" data-role="badge">
-                    <i class="fas fa-circle ${dotClass(st)}"></i> ${st}
-                  </span>
-                  <span class="chev">▼</span>
-                </button>
-                <div class="status-menu" data-role="menu" aria-hidden="true">
-                  ${STATUS.map(x => `
-                    <div class="status-item" data-role="set" data-value="${x}">
-                      <span class="${dotClass(x)}"></span> ${x}
-                    </div>`).join('')}
-                </div>
-              </div>`;
+                  <div class="status-wrap" data-id="${row.id}">
+                    <button class="status-btn" data-role="open">
+                      <span class="${badgeClass(st)}" data-role="badge">
+                        <i class="fas fa-circle ${dotClass(st)}"></i> ${st}
+                      </span>
+                      <span class="chev">▼</span>
+                    </button>
+                    <div class="status-menu" data-role="menu" aria-hidden="true">
+                      ${STATUS.map(x => `
+                        <div class="status-item" data-role="set" data-value="${x}">
+                          <span class="${dotClass(x)}"></span> ${x}
+                        </div>`).join('')}
+                    </div>
+                  </div>`;
         }
 
         function renderTabela(lista) {
             if (!lista.length) {
                 tbody.innerHTML = `<tr><td class="empty" colspan="6">Nenhum agendamento encontrado.</td></tr>`;
+                mobileCards.innerHTML = `<div class="empty">Nenhum agendamento encontrado.</div>`;
                 return;
             }
+
+            // Renderizar tabela para desktop
             tbody.innerHTML = lista.slice(0, 12).map(a => `
-              <tr data-id="${a.id}">
-                <td>${a.cliente ?? '—'}</td>
-                <td>${a.servico ?? a.especialidade ?? '—'}</td>
-                <td>${a.profissional ?? '—'}</td>
-                <td>${fmtData(a.dtInicio)}</td>
-                <td>${fmtHora(a.dtInicio)}</td>
-                <td>${statusControl(a)}</td>
-              </tr>
-            `).join('');
+                  <tr data-id="${a.id}">
+                    <td>${a.cliente ?? '—'}</td>
+                    <td>${a.servico ?? a.especialidade ?? '—'}</td>
+                    <td>${a.profissional ?? '—'}</td>
+                    <td>${fmtData(a.dtInicio)}</td>
+                    <td>${fmtHora(a.dtInicio)}</td>
+                    <td>${statusControl(a)}</td>
+                  </tr>
+                `).join('');
+
+            // Renderizar cards para mobile
+            mobileCards.innerHTML = lista.slice(0, 12).map(a => `
+                  <div class="mobile-card" data-id="${a.id}">
+                    <div class="mobile-card-row">
+                      <div class="mobile-card-label">Cliente</div>
+                      <div class="mobile-card-value">${a.cliente ?? '—'}</div>
+                    </div>
+                    <div class="mobile-card-row">
+                      <div class="mobile-card-label">Serviço</div>
+                      <div class="mobile-card-value">${a.servico ?? a.especialidade ?? '—'}</div>
+                    </div>
+                    <div class="mobile-card-row">
+                      <div class="mobile-card-label">Profissional</div>
+                      <div class="mobile-card-value">${a.profissional ?? '—'}</div>
+                    </div>
+                    <div class="mobile-card-row">
+                      <div class="mobile-card-label">Data</div>
+                      <div class="mobile-card-value">${fmtData(a.dtInicio)}</div>
+                    </div>
+                    <div class="mobile-card-row">
+                      <div class="mobile-card-label">Hora</div>
+                      <div class="mobile-card-value">${fmtHora(a.dtInicio)}</div>
+                    </div>
+                    <div class="mobile-card-row">
+                      <div class="mobile-card-label">Status</div>
+                      <div class="mobile-card-value">${statusControl(a)}</div>
+                    </div>
+                  </div>
+                `).join('');
         }
 
         function renderKPIs(hoje) {
@@ -859,6 +1081,7 @@
         async function carregar() {
             erro.style.display = 'none';
             tbody.innerHTML = `<tr><td class="empty" colspan="6">Carregando…</td></tr>`;
+            mobileCards.innerHTML = `<div class="empty">Carregando…</div>`;
             const dia = filtroData.value || todayISO;
             const ini = `${dia}T00:00:00`;
             const fim = `${dia}T23:59:59`;
@@ -871,6 +1094,7 @@
             } catch {
                 erro.style.display = 'flex';
                 tbody.innerHTML = `<tr><td class="empty" colspan="6">Sem dados.</td></tr>`;
+                mobileCards.innerHTML = `<div class="empty">Sem dados.</div>`;
                 kHoje.textContent = kAtendidos.textContent = kCancelados.textContent = '–';
             }
             await carregarResumoMes();
@@ -927,15 +1151,15 @@
                 lista.innerHTML = rows.map(([nome, qt]) => {
                     const pct = max ? Math.round(qt / max * 100) : 0;
                     return `
-                  <div class="meter-row">
-                    <div>
-                      <div class="meter-title">${nome}</div>
-                      <div class="meter" aria-label="${nome}">
-                        <div class="meter-fill" style="width:${pct}%"></div>
-                      </div>
-                    </div>
-                    <div class="count">${qt}</div>
-                  </div>`;
+                      <div class="meter-row">
+                        <div>
+                          <div class="meter-title">${nome}</div>
+                          <div class="meter" aria-label="${nome}">
+                            <div class="meter-fill" style="width:${pct}%"></div>
+                          </div>
+                        </div>
+                        <div class="count">${qt}</div>
+                      </div>`;
                 }).join('');
 
             } catch {
@@ -974,6 +1198,28 @@
                 erro.style.display = 'flex';
             }
         });
+
+        // Fechar menu de status ao clicar fora
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.status-wrap')) {
+                document.querySelectorAll('.status-menu').forEach(m => m.style.display = 'none');
+            }
+        });
+
+        // Melhorar interação com toque em dispositivos móveis
+        if ('ontouchstart' in window) {
+            document.addEventListener('touchstart', function () { }, { passive: true });
+
+            // Adicionar feedback visual para toques
+            document.querySelectorAll('.btn, .action, .status-btn, .status-item').forEach(el => {
+                el.addEventListener('touchstart', function () {
+                    this.style.opacity = '0.7';
+                });
+                el.addEventListener('touchend', function () {
+                    this.style.opacity = '1';
+                });
+            });
+        }
 
         const nome = localStorage.getItem('ah_user_name');
         if (nome) document.getElementById('usuario-nome').textContent = `Olá, ${nome}!`;
