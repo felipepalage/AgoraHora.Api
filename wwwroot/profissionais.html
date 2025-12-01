@@ -1,44 +1,35 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Profissionais - AgoraHora</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --brand-navy: #0a1933;
-            --brand-teal: #0da5a0;
-            --border: #e2e8f0;
-            --card: #ffffff;
-            --muted: #64748b;
-            --radius-md: 14px;
-            --shadow-medium: 0 10px 25px rgba(10,25,51,.08);
-            --radius-sm: 8px;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font: 500 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, Arial; background: linear-gradient(135deg,#f8fafc 0,#e2e8f0 100%); color:#334155; }
-        header { background: rgba(255,255,255,.9); border-bottom: 1px solid rgba(226,232,240,.6); backdrop-filter: blur(16px); position: sticky; top: 0; z-index: 20; }
-        .top { max-width: 1200px; margin: auto; padding: 14px 20px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
-        .brand{ display:flex; gap:12px; align-items:center; }
-        .brand-icon{ width:40px; height:40px; border-radius:12px; background: linear-gradient(135deg,var(--brand-teal),#6366f1); display:flex; align-items:center; justify-content:center; color:#fff; }
-        .btn{ padding:10px 16px; border-radius:8px; border:0; background: linear-gradient(135deg,var(--brand-teal),#098581); color:#fff; cursor:pointer; font-weight:600; display:inline-flex; gap:8px; align-items:center; }
-        .container{ max-width:1200px; margin:24px auto; padding:0 20px; }
-        .card{ background:var(--card); border-radius:var(--radius-md); padding:24px; box-shadow:var(--shadow-medium); border:1px solid rgba(226,232,240,.6); }
-        label{ display:block; margin:12px 0 6px; color:var(--brand-navy); font-weight:600; }
-        input{ width:100%; padding:12px 16px; border-radius:var(--radius-md); border:1px solid var(--border); background:#f8fafc; }
-        .table-wrapper{ overflow-x:auto; border-radius:var(--radius-md); border:1px solid var(--border); margin-top:16px; }
-        table{ width:100%; border-collapse:collapse; }
-        th,td{ padding:14px 16px; border-bottom:1px solid var(--border); text-align:left; }
-        th{ color:var(--brand-navy); font-size:13px; font-weight:700; text-transform:uppercase; }
-        .empty{ padding:20px; text-align:center; color:var(--muted); font-style:italic; }
-        .tag{ display:inline-block; padding:4px 8px; border-radius:8px; background:#e6f9f8; margin-right:4px; color:var(--brand-navy); font-weight:600; }
-        .row-actions{ display:flex; gap:8px; flex-wrap:wrap; }
-        .td-actions{ width:200px; }
-        .btn-ghost{ padding:8px 12px; border-radius:8px; border:1px solid var(--border); background:#fff; cursor:pointer; font-weight:600; }
-        .btn-danger{ padding:8px 12px; border-radius:8px; border:1px solid #fee2e2; background:#fee2e2; color:#ef4444; cursor:pointer; font-weight:600; }
-        .success-message{ margin-top:12px; padding:12px 16px; border-radius:12px; background:#e6f9f8; border:1px solid #0da5a0; display:none; align-items:center; gap:8px; font-weight:600; }
-    </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Profissionais - AgoraHora</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--brand-navy:#0a1933;--brand-teal:#0da5a0;--border:#e2e8f0;--card:#fff;--muted:#64748b;--radius-md:14px;--shadow-medium:0 10px 25px rgba(10,25,51,.08)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:500 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, Arial; background:linear-gradient(135deg,#f8fafc 0,#e2e8f0 100%);color:#334155}
+header{background:rgba(255,255,255,.9);border-bottom:1px solid rgba(226,232,240,.6);position:sticky;top:0;z-index:20;backdrop-filter:blur(16px)}
+.top{max-width:1200px;margin:auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;gap:12px;align-items:center}
+.brand-icon{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--brand-teal),#6366f1);display:flex;align-items:center;justify-content:center;color:#fff}
+.btn{padding:10px 16px;border-radius:8px;border:0;background:linear-gradient(135deg,var(--brand-teal),#098581);color:#fff;cursor:pointer;font-weight:600;display:inline-flex;gap:8px;align-items:center}
+.container{max-width:1200px;margin:24px auto;padding:0 20px}
+.card{background:var(--card);border-radius:var(--radius-md);padding:24px;box-shadow:var(--shadow-medium);border:1px solid rgba(226,232,240,.6);margin-bottom:20px}
+label{display:block;margin:12px 0 6px;color:var(--brand-navy);font-weight:600}
+input{width:100%;padding:12px 16px;border-radius:var(--radius-md);border:1px solid var(--border);background:#f8fafc}
+.table-wrapper{overflow-x:auto;border-radius:var(--radius-md);border:1px solid var(--border);margin-top:16px}
+table{width:100%;border-collapse:collapse}
+th,td{padding:14px 16px;border-bottom:1px solid var(--border);text-align:left}
+th{color:var(--brand-navy);font-size:13px;font-weight:700;text-transform:uppercase}
+.empty{padding:20px;text-align:center;color:var(--muted);font-style:italic}
+.tag{display:inline-block;padding:4px 8px;border-radius:8px;background:#e6f9f8;margin-right:4px;color:var(--brand-navy);font-weight:600}
+.row-actions{display:flex;gap:8px;flex-wrap:wrap}
+.td-actions{width:200px}
+.btn-ghost{padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:#fff;cursor:pointer;font-weight:600}
+.btn-danger{padding:8px 12px;border-radius:8px;border:1px solid #fee2e2;background:#fee2e2;color:#ef4444;cursor:pointer;font-weight:600}
+.success-message{margin-top:12px;padding:12px 16px;border-radius:12px;background:#e6f9f8;border:1px solid #0da5a0;display:none;align-items:center;gap:8px;font-weight:600}
+</style>
 </head>
 <body>
 <header>
@@ -52,11 +43,11 @@
 </header>
 
 <main class="container">
-  <div class="card" style="margin-bottom:20px">
+  <div class="card">
     <h2><i class="fas fa-user-plus"></i> Cadastrar profissional</h2>
-    <label for="nome"><i class="fas fa-id-card"></i> Nome</label>
+    <label for="nome">Nome</label>
     <input id="nome" placeholder="Ex.: João Silva" />
-    <label for="especialidade" style="margin-top:10px"><i class="fas fa-cut"></i> Especialidades (vírgula separa)</label>
+    <label for="especialidade">Especialidades (vírgula separa)</label>
     <input id="especialidade" placeholder="Ex.: Barba, Corte, Infantil" />
     <button class="btn" id="btn-salvar" style="margin-top:12px"><i class="fas fa-save"></i> Salvar</button>
     <div id="msg" class="success-message"><i class="fas fa-check-circle"></i> Profissional salvo com sucesso!</div>
@@ -78,7 +69,10 @@
 </main>
 
 <script>
-/* IMPLEMENTAÇÃO alinhada ao padrão de agendamentos (fetchWithTimeout, getJson, resolveEstabId) */
+/*
+  Versão sem nenhuma chamada para /api/usuario (singular).
+  Usa apenas /api/usuarios/* e /api/profissionais/*.
+*/
 
 const API_BASE = window.API_BASE || "http://179.0.176.111:5000/api";
 
@@ -95,260 +89,203 @@ voltar.onclick = () => {
   else location.href = 'index.html';
 };
 
-/* fetch com timeout */
+/* fetch util com timeout */
 async function fetchWithTimeout(resource, options = {}) {
-    const { timeout = 10000 } = options;
-    const controller = new AbortController();
-    const id = setTimeout(() => controller.abort(), timeout);
-    try {
-        const res = await fetch(resource, { signal: controller.signal, ...options });
-        clearTimeout(id);
-        return res;
-    } catch (err) {
-        clearTimeout(id);
-        throw err;
-    }
+  const { timeout = 12000 } = options;
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
+  try {
+    const res = await fetch(resource, { signal: controller.signal, ...options });
+    clearTimeout(id);
+    return res;
+  } catch (err) {
+    clearTimeout(id);
+    throw err;
+  }
 }
 
-/* wrapper que monta URL com API_BASE e injeta token */
-async function getJson(url, opts = {}) {
-    if (!/^https?:\/\//i.test(url)) {
-        url = API_BASE.replace(/\/$/, '') + '/' + url.replace(/^\/+/, '');
-    }
-
-    const headers = Object.assign({ 'Accept': 'application/json' }, opts.headers || {});
-    const token = localStorage.getItem('ah_token');
-    if (token) headers['Authorization'] = 'Bearer ' + token;
-
-    try {
-        const r = await fetchWithTimeout(url, { headers, cache: 'no-store', ...opts });
-        const ct = r.headers.get('content-type') || '';
-
-        if (!r.ok) {
-            if (r.status === 401) {
-                localStorage.removeItem('ah_token');
-                localStorage.removeItem('ah_estab');
-                window.location.href = 'login.html';
-                throw new Error('Não autorizado (401)');
-            }
-            let bodyText = '';
-            try { bodyText = ct.includes('json') ? JSON.stringify(await r.json()) : await r.text(); } catch {}
-            throw new Error(`HTTP ${r.status} - ${bodyText || r.statusText}`);
-        }
-
-        if (ct.includes('json')) return r.json();
-        const txt = await r.text();
-        try { return JSON.parse(txt); } catch { return txt; }
-    } catch (err) {
-        if (err.name === 'AbortError') throw new Error('Request timeout');
-        throw err;
-    }
+/* monta URL (usa API_BASE quando for caminho relativo) e injeta token */
+function buildUrl(path) {
+  if (/^https?:\/\//i.test(path)) return path;
+  return API_BASE.replace(/\/$/,'') + '/' + String(path).replace(/^\//,'');
 }
 
-/* POST/PUT/DELETE helper */
+/* GET JSON com tratamento de 401 e timeouts */
+async function getJson(path, opts = {}) {
+  const url = buildUrl(path);
+  const token = localStorage.getItem('ah_token');
+  const headers = Object.assign({ 'Accept': 'application/json' }, opts.headers || {});
+  if (token) headers['Authorization'] = 'Bearer ' + token;
+  const res = await fetchWithTimeout(url, Object.assign({}, opts, { headers }));
+  if (res.status === 401) {
+    localStorage.removeItem('ah_token'); localStorage.removeItem('ah_estab'); location.href = 'login.html';
+    throw new Error('Não autorizado');
+  }
+  const ct = res.headers.get('content-type') || '';
+  const txt = await res.text();
+  if (!res.ok) throw new Error(ct.includes('json') ? txt : txt || res.statusText);
+  try { return ct.includes('application/json') ? JSON.parse(txt) : txt; } catch { return txt; }
+}
+
+/* POST/PUT/DELETE wrapper */
 async function sendJson(method, path, body) {
-    if (!/^https?:\/\//i.test(path)) path = API_BASE.replace(/\/$/, '') + '/' + path.replace(/^\/+/, '');
-    const token = localStorage.getItem('ah_token');
-    const headers = Object.assign({ 'Content-Type': 'application/json' }, token ? { 'Authorization': 'Bearer ' + token } : {});
-    const r = await fetchWithTimeout(path, { method, headers, body: body ? JSON.stringify(body) : undefined });
-    const txt = await r.text();
-    const ct = r.headers.get('content-type') || '';
-    if (!r.ok) {
-        if (r.status === 401) { localStorage.removeItem('ah_token'); window.location.href='login.html'; throw new Error('Não autorizado'); }
-        throw new Error(ct.includes('json') ? txt : (txt || r.statusText));
-    }
-    try { return ct.includes('json') ? JSON.parse(txt) : txt; } catch { return txt; }
+  const url = buildUrl(path);
+  const token = localStorage.getItem('ah_token');
+  const headers = Object.assign({}, token ? { 'Authorization': 'Bearer ' + token } : {}, body ? { 'Content-Type':'application/json' } : {});
+  const res = await fetchWithTimeout(url, { method, headers, body: body ? JSON.stringify(body) : undefined });
+  const txt = await res.text();
+  const ct = res.headers.get('content-type') || '';
+  if (res.status === 401) { localStorage.removeItem('ah_token'); location.href='login.html'; throw new Error('Não autorizado'); }
+  if (!res.ok) throw new Error(ct.includes('json') ? txt : (txt || res.statusText));
+  try { return ct.includes('application/json') ? JSON.parse(txt) : txt; } catch { return txt; }
 }
 
-/* resolve estabelecimento do usuário logado (mesma lógica de agendamentos) */
-async function resolveEstabId(){
-    const token = localStorage.getItem('ah_token');
-    if (!token) return null;
-    const headers = { 'Accept':'application/json', 'Authorization': 'Bearer ' + token };
-    const base = API_BASE.replace(/\/$/, '');
-
+/* obter estabelecimento do usuário logado usando rota existente -> /api/usuarios/me/estabelecimentos */
+async function resolveEstabId() {
+  const token = localStorage.getItem('ah_token');
+  if (!token) return null;
+  try {
+    const arr = await getJson('/usuarios/me/estabelecimentos');
+    const list = Array.isArray(arr) ? arr : (arr.data ?? arr);
+    if (Array.isArray(list) && list.length) return list[0].estabelecimentoId ?? list[0].EstabelecimentoId ?? null;
+  } catch(e) {
+    // fallback para /usuarios/me se backend expor
     try {
-        const r = await fetchWithTimeout(base + '/usuarios/me/estabelecimentos', { headers, cache:'no-store' });
-        if (r.status === 401) { localStorage.removeItem('ah_token'); window.location.href='login.html'; return null; }
-        if (r.ok) {
-            const data = await r.json();
-            if (Array.isArray(data) && data.length) return data[0].estabelecimentoId ?? data[0].EstabelecimentoId ?? null;
-        }
-    } catch (e) { console.warn('estabs failed', e); }
-
-    try {
-        const r2 = await fetchWithTimeout(base + '/usuarios/me', { headers, cache:'no-store' });
-        if (r2.status === 401) { localStorage.removeItem('ah_token'); window.location.href='login.html'; return null; }
-        if (r2.ok) {
-            const j = await r2.json();
-            return j?.estabelecimentoId ?? j?.estabId ?? null;
-        }
-    } catch (e) { console.warn('me failed', e); }
-
-    return null;
+      const me = await getJson('/usuarios/me');
+      return me?.estabelecimentoId ?? me?.estabId ?? null;
+    } catch {}
+  }
+  return null;
 }
 
-/* carregar profissionais - padrão idêntico ao agendamentos */
+/* carregar profissionais do estabelecimento */
 async function carregarProfissionais(estabId) {
-    try {
-        const url = `${API_BASE.replace(/\/$/,'')}/profissionais/${encodeURIComponent(estabId)}?page=1&pageSize=100`;
-        const js = await getJson(url);
-        const profs = js?.data ?? js;
-        if (!Array.isArray(profs) || !profs.length) {
-            tbody.innerHTML = `<tr><td class="empty" colspan="3"><i class="fas fa-user-slash"></i> Nenhum profissional</td></tr>`;
-            return [];
-        }
-        // render lista
-        tbody.innerHTML = profs.map(p => {
-            const id = p.id ?? p.Id ?? p.ID;
-            const nome = p.nome ?? p.Nome ?? '';
-            const list = p.especialidades ?? p.Especialidades;
-            const esp = Array.isArray(list) && list.length ? list.map(x=>`<span class="tag">${escapeHtml(x)}</span>`).join('') : escapeHtml(p.especialidade ?? p.Especialidade ?? '—');
-            return `<tr data-id="${id}">
-                <td>${escapeHtml(nome)}</td>
-                <td>${esp}</td>
-                <td class="td-actions">
-                    <div class="row-actions">
-                        <button class="btn-ghost" data-action="edit" data-id="${id}"><i class="fas fa-edit"></i> Editar</button>
-                        <button class="btn-danger" data-action="delete" data-id="${id}"><i class="fas fa-trash"></i> Apagar</button>
-                    </div>
-                </td>
-            </tr>`;
-        }).join('');
-        return profs;
-    } catch (err) {
-        console.error('carregarProfissionais error', err);
-        tbody.innerHTML = `<tr><td class="empty" colspan="3">Erro ao carregar profissionais: ${escapeHtml(err.message || err)}</td></tr>`;
-        return [];
+  try {
+    const r = await getJson(`/profissionais/${encodeURIComponent(estabId)}?page=1&pageSize=100`);
+    const profs = Array.isArray(r) ? r : (r.data ?? r);
+    if (!Array.isArray(profs) || !profs.length) {
+      tbody.innerHTML = `<tr><td class="empty" colspan="3"><i class="fas fa-user-slash"></i> Nenhum profissional</td></tr>`;
+      return [];
     }
+    tbody.innerHTML = profs.map(p => {
+      const id = p.id ?? p.Id ?? p.ID;
+      const nome = p.nome ?? p.Nome ?? '';
+      const list = p.especialidades ?? p.Especialidades;
+      const esp = Array.isArray(list) && list.length ? list.map(x=>`<span class="tag">${escapeHtml(x)}</span>`).join('') : escapeHtml(p.especialidade ?? p.Especialidade ?? '—');
+      return `<tr data-id="${id}">
+        <td>${escapeHtml(nome)}</td>
+        <td>${esp}</td>
+        <td class="td-actions">
+          <div class="row-actions">
+            <button class="btn-ghost" data-action="edit" data-id="${id}"><i class="fas fa-edit"></i> Editar</button>
+            <button class="btn-danger" data-action="delete" data-id="${id}"><i class="fas fa-trash"></i> Apagar</button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+    return profs;
+  } catch (err) {
+    console.error('carregarProfissionais', err);
+    tbody.innerHTML = `<tr><td class="empty" colspan="3">Erro ao carregar profissionais: ${escapeHtml(err.message || err)}</td></tr>`;
+    return [];
+  }
 }
 
-/* escape */
 function escapeHtml(s){ return String(s ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
 
-/* create profissional */
+/* criar / editar / deletar */
 async function criarProfissional(estabId, nome, espTxt) {
-    const payload = { EstabelecimentoId: estabId, Nome: nome, Especialidade: espTxt };
-    return await sendJson('POST', '/profissionais', payload);
+  return await sendJson('POST', '/profissionais', { EstabelecimentoId: estabId, Nome: nome, Especialidade: espTxt });
 }
-
-/* editar profissional */
 async function editarProfissional(id, nome, espTxt) {
-    return await sendJson('PUT', `/profissionais/${encodeURIComponent(id)}`, { Nome: nome, Especialidade: espTxt });
+  return await sendJson('PUT', `/profissionais/${encodeURIComponent(id)}`, { Nome: nome, Especialidade: espTxt });
 }
-
-/* atualizar especialidades (rota que vc tem) */
 async function atualizarEspecialidadesById(id, nomes) {
-    return await sendJson('PUT', `/profissionais/id/${encodeURIComponent(id)}/especialidades`, { nomes });
+  return await sendJson('PUT', `/profissionais/id/${encodeURIComponent(id)}/especialidades`, { nomes });
 }
-
-/* deletar */
 async function deletarProfissional(id) {
-    return await sendJson('DELETE', `/profissionais/${encodeURIComponent(id)}`);
+  return await sendJson('DELETE', `/profissionais/${encodeURIComponent(id)}`);
 }
 
-/* interações UI (editar inline) */
-let editingId = null;
+/* eventos de linha (editar/salvar/cancelar/delete) */
+tbody.addEventListener('click', async (ev) => {
+  const btn = ev.target.closest('button');
+  if (!btn) return;
+  const action = btn.dataset.action;
+  const id = btn.dataset.id;
+  const tr = btn.closest('tr');
+  if (!tr) return;
 
-tbody.addEventListener('click', async (e) => {
-    const btn = e.target.closest('button');
-    if (!btn) return;
-    const action = btn.dataset.action;
-    const id = btn.dataset.id;
-    const tr = btn.closest('tr');
-    if (!tr) return;
-
-    try {
-        if (action === 'edit') {
-            // fetch single profissional data (rota /api/profissionais/{id} ? not listed, so reuse cached row values)
-            const nomeCell = tr.children[0].textContent.trim();
-            const espCell = Array.from(tr.children[1].querySelectorAll('.tag')).map(t => t.textContent.trim()).join(', ');
-            editingId = id;
-            tr.innerHTML = `
-                <td><input id="edit-nome" value="${escapeHtml(nomeCell)}" /></td>
-                <td><input id="edit-esp" value="${escapeHtml(espCell)}" placeholder="Separe por vírgulas" /></td>
-                <td class="td-actions">
-                    <div class="row-actions">
-                        <button class="btn-ghost" data-action="save" data-id="${id}"><i class="fas fa-save"></i> Salvar</button>
-                        <button class="btn-ghost" data-action="cancel" data-id="${id}"><i class="fas fa-times"></i> Cancelar</button>
-                    </div>
-                </td>`;
-            tr.querySelector('#edit-nome').focus();
-        } else if (action === 'cancel') {
-            // reload list
-            init(); // quick reload
-        } else if (action === 'save') {
-            const newNome = tr.querySelector('#edit-nome').value.trim();
-            const newEsp = tr.querySelector('#edit-esp').value.trim();
-            if (!newNome) { alert('Nome obrigatório'); return; }
-            await editarProfissional(id, newNome, newEsp);
-            const nomes = (newEsp || '').split(',').map(s=>s.trim()).filter(Boolean);
-            if (nomes.length) await atualizarEspecialidadesById(id, nomes);
-            editingId = null;
-            await init();
-        } else if (action === 'delete') {
-            if (!confirm('Confirmar exclusão do profissional?')) return;
-            await deletarProfissional(id);
-            await init();
-        }
-    } catch (err) {
-        alert('Erro: ' + (err?.message || err));
-        console.error(err);
+  try {
+    if (action === 'edit') {
+      const nomeCell = tr.children[0].textContent.trim();
+      const espCell = Array.from(tr.children[1].querySelectorAll('.tag')).map(t => t.textContent.trim()).join(', ');
+      tr.innerHTML = `
+        <td><input id="edit-nome" value="${escapeHtml(nomeCell)}" /></td>
+        <td><input id="edit-esp" value="${escapeHtml(espCell)}" placeholder="Separe por vírgulas" /></td>
+        <td class="td-actions">
+          <div class="row-actions">
+            <button class="btn-ghost" data-action="save" data-id="${id}"><i class="fas fa-save"></i> Salvar</button>
+            <button class="btn-ghost" data-action="cancel" data-id="${id}"><i class="fas fa-times"></i> Cancelar</button>
+          </div>
+        </td>`;
+      tr.querySelector('#edit-nome').focus();
+    } else if (action === 'cancel') {
+      await init(); // recarrega
+    } else if (action === 'save') {
+      const newNome = tr.querySelector('#edit-nome').value.trim();
+      const newEsp = tr.querySelector('#edit-esp').value.trim();
+      if (!newNome) { alert('Nome obrigatório'); return; }
+      await editarProfissional(id, newNome, newEsp);
+      const nomes = (newEsp||'').split(',').map(s=>s.trim()).filter(Boolean);
+      if (nomes.length) await atualizarEspecialidadesById(id, nomes);
+      await init();
+    } else if (action === 'delete') {
+      if (!confirm('Confirmar exclusão do profissional?')) return;
+      await deletarProfissional(id);
+      await init();
     }
+  } catch (err) {
+    alert('Erro: ' + (err?.message || err));
+    console.error(err);
+  }
 });
 
 /* salvar novo */
 btnSalvar.onclick = async () => {
-    try {
-        const nome = nomeInput.value.trim();
-        const espTxt = espInput.value.trim();
-        if (!nome) { alert('Informe o nome'); return; }
-
-        // resolve estab id (igual ao fluxo abaixo)
-        let estab = Number(localStorage.getItem('ah_estab')) || null;
-        if (!estab) estab = await resolveEstabId();
-        if (!estab) { alert('Estabelecimento não definido. Refaça login.'); return; }
-
-        const created = await criarProfissional(estab, nome, espTxt);
-        const id = created?.data?.id ?? created?.data?.Id ?? created?.id ?? created?.Id;
-        const nomes = (espTxt || '').split(',').map(s=>s.trim()).filter(Boolean);
-        if (id && nomes.length) await atualizarEspecialidadesById(id, nomes);
-
-        nomeInput.value = '';
-        espInput.value = '';
-        msg.style.display = 'flex';
-        setTimeout(()=> msg.style.display = 'none', 1500);
-        await init();
-    } catch (err) {
-        alert('Erro ao salvar: ' + (err?.message || err));
-        console.error(err);
-    }
+  try {
+    const nome = nomeInput.value.trim();
+    const espTxt = espInput.value.trim();
+    if (!nome) { alert('Informe o nome'); return; }
+    let estab = Number(localStorage.getItem('ah_estab')) || null;
+    if (!estab) estab = await resolveEstabId();
+    if (!estab) { alert('Estabelecimento não definido. Faça login novamente.'); localStorage.removeItem('ah_token'); location.href='login.html'; return; }
+    const created = await criarProfissional(estab, nome, espTxt);
+    const id = created?.data?.id ?? created?.data?.Id ?? created?.id ?? created?.Id;
+    const nomes = (espTxt||'').split(',').map(s=>s.trim()).filter(Boolean);
+    if (id && nomes.length) await atualizarEspecialidadesById(id, nomes);
+    nomeInput.value=''; espInput.value='';
+    msg.style.display='flex'; setTimeout(()=>msg.style.display='none',1500);
+    await init();
+  } catch (err) {
+    alert('Erro ao salvar: ' + (err?.message || err)); console.error(err);
+  }
 };
 
-/* inicialização idêntica ao agendamentos */
+/* init: garante token e carrega profissionais do estab correto */
 async function init() {
-    try {
-        // exigir token
-        const token = localStorage.getItem('ah_token');
-        if (!token) { window.location.href = 'login.html'; return; }
-
-        // tenta obter estab do backend (mesma rota usada no agendamentos)
-        let estab = Number(localStorage.getItem('ah_estab')) || null;
-        if (!estab) estab = await resolveEstabId();
-        if (!estab) estab = Number(localStorage.getItem('ah_estabelecimentoId')) || null;
-
-        if (!estab) {
-            alert('Estabelecimento não definido. Faça login novamente.');
-            localStorage.removeItem('ah_token');
-            window.location.href = 'login.html';
-            return;
-        }
-
-        await carregarProfissionais(estab);
-    } catch (err) {
-        tbody.innerHTML = `<tr><td class="empty" colspan="3">Falha na inicialização: ${escapeHtml(err.message || err)}</td></tr>`;
-        console.error('init error', err);
-    }
+  try {
+    const token = localStorage.getItem('ah_token');
+    if (!token) { location.href='login.html'; return; }
+    let estab = Number(localStorage.getItem('ah_estab')) || null;
+    if (!estab) estab = await resolveEstabId();
+    if (!estab) estab = Number(localStorage.getItem('ah_estabelecimentoId')) || null;
+    if (!estab) { alert('Estabelecimento não definido. Faça login novamente.'); localStorage.removeItem('ah_token'); location.href='login.html'; return; }
+    await carregarProfissionais(estab);
+  } catch (err) {
+    tbody.innerHTML = `<tr><td class="empty" colspan="3">Falha na inicialização: ${escapeHtml(err.message || err)}</td></tr>`;
+    console.error('init error', err);
+  }
 }
 
 /* start */
