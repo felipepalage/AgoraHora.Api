@@ -1,284 +1,214 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - AgoraHora</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --navy: #0a1933;
-            --teal: #0da5a0;
-            --teal-hover: #098581;
-            --purple: #6366f1;
-            --bg: #f8fafc;
-            --card: #fff;
-            --muted: #64748b;
-            --border: #e2e8f0;
-            --danger: #ef4444;
-            --radius-lg: 24px;
-            --radius-md: 14px;
-            --radius-sm: 8px;
-            --shadow: 0 20px 40px rgba(10,25,51,.12);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
-        }
-
-        body {
-            display: grid;
-            place-items: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg,#f8fafc 0%,#e2e8f0 100%);
-            position: relative;
-        }
-
-        .card {
-            width: 100%;
-            max-width: 420px;
-            background: var(--card);
-            border-radius: var(--radius-lg);
-            padding: 36px 28px;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(226,232,240,.6);
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            justify-content: center;
-            margin-bottom: 16px;
-            cursor: pointer;
-        }
-
-        .brand-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 16px;
-            background: linear-gradient(135deg,var(--teal),var(--purple));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-            .brand-icon i {
-                color: #fff;
-                font-size: 24px;
-            }
-
-        .brand .name {
-            font-weight: 800;
-            font-size: 32px;
-            color: var(--navy);
-        }
-
-        h1 {
-            text-align: center;
-            font-size: 28px;
-            color: var(--navy);
-            margin-bottom: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        label {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 14px;
-            color: var(--navy);
-            margin: 16px 0 8px;
-            font-weight: 600;
-        }
-
-        .input-group {
-            position: relative;
-        }
-
-            .input-group i {
-                position: absolute;
-                left: 14px;
-                top: 50%;
-                transform: translateY(-50%);
-                color: var(--muted);
-            }
-
-        .input {
-            width: 100%;
-            padding: 14px 16px 14px 44px;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            background: var(--bg);
-            font-size: 16px;
-        }
-
-            .input:focus {
-                background: #fff;
-                border-color: var(--teal);
-                box-shadow: 0 0 0 3px rgba(13,165,160,.15);
-                outline: 0;
-            }
-
-        .btn {
-            width: 100%;
-            margin-top: 20px;
-            padding: 14px;
-            border: none;
-            border-radius: var(--radius-md);
-            font-weight: 700;
-            color: #fff;
-            background: linear-gradient(135deg,var(--teal),var(--teal-hover));
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: 0.2s;
-            position: relative;
-        }
-
-            .btn:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(13,165,160,.35);
-            }
-
-            .btn:disabled {
-                opacity: 0.7;
-                cursor: not-allowed;
-            }
-
-        .spinner {
-            border: 3px solid rgba(255,255,255,0.3);
-            border-top: 3px solid #fff;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        .error {
-            margin-top: 16px;
-            padding: 12px 16px;
-            background: #fee2e2;
-            color: var(--danger);
-            font-weight: 600;
-            border-radius: var(--radius-sm);
-            border-left: 4px solid var(--danger);
-            display: none;
-            align-items: center;
-            gap: 8px;
-        }
-
-            .error i {
-                color: var(--danger);
-            }
-
-        @media(max-width:480px) {
-            .card {
-                margin: 20px;
-                padding: 24px 20px;
-            }
-
-            .brand .name {
-                font-size: 28px;
-            }
-
-            h1 {
-                font-size: 24px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - AgoraHora</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+    --navy: #0a1933;
+    --teal: #0da5a0;
+    --teal-hover: #098581;
+    --purple: #6366f1;
+    --bg: #f8fafc;
+    --card: #fff;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    --danger: #ef4444;
+    --radius-lg: 24px;
+    --radius-md: 14px;
+    --radius-sm: 8px;
+    --shadow: 0 20px 40px rgba(10,25,51,.12);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif; }
+body { display: grid; place-items: center; min-height: 100vh; background: linear-gradient(135deg,#f8fafc 0%,#e2e8f0 100%); position: relative; }
+.card { width: 100%; max-width: 420px; background: var(--card); border-radius: var(--radius-lg); padding: 36px 28px; box-shadow: var(--shadow); border: 1px solid rgba(226,232,240,.6); }
+.brand { display: flex; align-items: center; gap: 12px; justify-content: center; margin-bottom: 16px; cursor: pointer; }
+.brand-icon { width: 48px; height: 48px; border-radius: 16px; background: linear-gradient(135deg,var(--teal),var(--purple)); display: flex; align-items: center; justify-content: center; }
+.brand-icon i { color: #fff; font-size: 24px; }
+.brand .name { font-weight: 800; font-size: 32px; color: var(--navy); }
+h1 { text-align: center; font-size: 28px; color: var(--navy); margin-bottom: 24px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+label { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--navy); margin: 16px 0 8px; font-weight: 600; }
+.input-group { position: relative; }
+.input-group i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+.input { width: 100%; padding: 14px 16px 14px 44px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg); font-size: 16px; }
+.input:focus { background: #fff; border-color: var(--teal); box-shadow: 0 0 0 3px rgba(13,165,160,.15); outline: 0; }
+.btn { width: 100%; margin-top: 20px; padding: 14px; border: none; border-radius: var(--radius-md); font-weight: 700; color: #fff; background: linear-gradient(135deg,var(--teal),var(--teal-hover)); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; position: relative; }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(13,165,160,.35); }
+.btn:disabled { opacity: 0.7; cursor: not-allowed; }
+.spinner { border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid #fff; border-radius: 50%; width: 18px; height: 18px; animation: spin 1s linear infinite; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+.error { margin-top: 16px; padding: 12px 16px; background: #fee2e2; color: var(--danger); font-weight: 600; border-radius: var(--radius-sm); border-left: 4px solid var(--danger); display: none; align-items: center; gap: 8px; }
+.error i { color: var(--danger); }
+@media(max-width:480px) { .card { margin: 20px; padding: 24px 20px; } .brand .name { font-size: 28px; } h1 { font-size: 24px; } }
+</style>
 </head>
 <body>
-    <main class="card">
-        <div class="brand">
-            <div class="brand-icon"><i class="fas fa-cut"></i></div>
-            <div class="name">AgoraHora</div>
+<main class="card">
+    <div class="brand">
+        <div class="brand-icon"><i class="fas fa-cut"></i></div>
+        <div class="name">AgoraHora</div>
+    </div>
+    <h1><i class="fas fa-sign-in-alt"></i> Login</h1>
+    <form id="form-login" novalidate>
+        <label for="email"><i class="fas fa-envelope"></i> E-mail</label>
+        <div class="input-group">
+            <i class="fas fa-envelope"></i>
+            <input id="email" name="email" type="email" class="input" placeholder="E-mail" autocomplete="username" required />
         </div>
-        <h1><i class="fas fa-sign-in-alt"></i> Login</h1>
-        <form id="form-login" novalidate>
-            <label for="email"><i class="fas fa-envelope"></i> E-mail</label>
-            <div class="input-group">
-                <i class="fas fa-envelope"></i>
-                <input id="email" name="email" type="email" class="input" placeholder="E-mail" autocomplete="username" required />
-            </div>
-            <label for="senha"><i class="fas fa-lock"></i> Senha</label>
-            <div class="input-group">
-                <i class="fas fa-lock"></i>
-                <input id="senha" name="senha" type="password" class="input" placeholder="Senha" autocomplete="current-password" required minlength="3" />
-            </div>
-            <button id="btn-login" class="btn" type="submit"><i class="fas fa-sign-in-alt"></i> Entrar</button>
-            <div id="erro" class="error"><i class="fas fa-exclamation-circle"></i><span></span></div>
-        </form>
-    </main>
+        <label for="senha"><i class="fas fa-lock"></i> Senha</label>
+        <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input id="senha" name="senha" type="password" class="input" placeholder="Senha" autocomplete="current-password" required minlength="3" />
+        </div>
+        <button id="btn-login" class="btn" type="submit"><i class="fas fa-sign-in-alt"></i> Entrar</button>
+        <div id="erro" class="error"><i class="fas fa-exclamation-circle"></i><span></span></div>
+    </form>
+</main>
 
-    <script>
-        const API_BASE = 'http://179.0.176.111:5000/api';
-        (function () { const t = localStorage.getItem('ah_token'); const e = localStorage.getItem('ah_estab'); if (t && e) location.href = 'index.html'; })();
-        const form = document.getElementById('form-login');
-        const erro = document.getElementById('erro');
-        const erroText = erro.querySelector('span');
-        const btn = document.getElementById('btn-login');
+<script>
+const API_BASE = 'http://179.0.176.111:5000/api';
 
-        form.addEventListener('submit', async e => {
-            e.preventDefault();
-            erro.style.display = 'none';
-            btn.disabled = true;
-            const originalContent = btn.innerHTML;
-            btn.innerHTML = '<div class="spinner"></div> Carregando...';
+// Redireciona se já estiver logado
+(function() { const t = localStorage.getItem('ah_token'); const e = localStorage.getItem('ah_estab'); if (t && e) location.href = 'index.html'; })();
 
-            const email = document.getElementById('email').value.trim();
-            const senha = document.getElementById('senha').value;
-            if (!email || !senha) { btn.disabled = false; btn.innerHTML = originalContent; return showError('Informe e-mail e senha.'); }
-            try {
-                const resp = await fetch(`${API_BASE}/usuarios/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, senha }) });
-                if (!resp.ok) { btn.disabled = false; btn.innerHTML = originalContent; return showError(await safeMsg(resp, 'Credenciais inválidas.')); }
-                const { token } = await resp.json();
-                if (!token) { btn.disabled = false; btn.innerHTML = originalContent; return showError('Token ausente.'); }
-                localStorage.setItem('ah_token', token);
-                localStorage.setItem('ah_user_name', email.split('@')[0] || 'Usuário');
-                const me = await fetch(`${API_BASE}/usuarios/me/estabelecimentos`, { headers: { 'Authorization': `Bearer ${token}` } });
-                if (!me.ok) { btn.disabled = false; btn.innerHTML = originalContent; return showError(await safeMsg(me, 'Falha ao obter estabelecimentos.')); }
-                const estabs = await me.json();
-                if (!Array.isArray(estabs) || estabs.length === 0) { btn.disabled = false; btn.innerHTML = originalContent; return showError('Usuário sem estabelecimento vinculado.'); }
-                if (estabs.length === 1) { localStorage.setItem('ah_estab', String(estabs[0].estabelecimentoId ?? estabs[0].EstabelecimentoId)); return location.href = 'index.html'; }
-                openEstabSelector(estabs, chosenId => { localStorage.setItem('ah_estab', String(chosenId)); location.href = 'index.html'; });
-            } catch (err) { console.error(err); showError('Falha de comunicação com a API.'); }
-            btn.disabled = false; btn.innerHTML = originalContent;
+const form = document.getElementById('form-login');
+const erro = document.getElementById('erro');
+const erroText = erro.querySelector('span');
+const btn = document.getElementById('btn-login');
+
+// Função centralizada para chamadas à API
+async function apiFetch(endpoint, options = {}) {
+    const token = localStorage.getItem('ah_token');
+    options.headers = options.headers || {};
+    if (token) options.headers['Authorization'] = `Bearer ${token}`;
+    options.headers['Content-Type'] = options.headers['Content-Type'] || 'application/json';
+    const resp = await fetch(`${API_BASE}${endpoint}`, options);
+    if (resp.status === 401) {
+        localStorage.removeItem('ah_token');
+        localStorage.removeItem('ah_estab');
+        location.href = 'login.html';
+        throw new Error('Não autorizado');
+    }
+    return resp;
+}
+
+form.addEventListener('submit', async e => {
+    e.preventDefault();
+    erro.style.display = 'none';
+    btn.disabled = true;
+    const originalContent = btn.innerHTML;
+    btn.innerHTML = '<div class="spinner"></div> Carregando...';
+
+    const email = document.getElementById('email').value.trim();
+    const senha = document.getElementById('senha').value;
+
+    if (!email || !senha) {
+        btn.disabled = false; btn.innerHTML = originalContent;
+        return showError('Informe e-mail e senha.');
+    }
+
+    try {
+        const loginResp = await apiFetch('/usuarios/login', {
+            method: 'POST',
+            body: JSON.stringify({ email, senha })
         });
 
-        function showError(msg) { erroText.textContent = msg; erro.style.display = 'flex'; }
-        async function safeMsg(resp, fallback) { try { const j = await resp.json(); return j?.message || fallback } catch { return fallback; } }
-        function openEstabSelector(estabs, onChoose) {
-            const overlay = document.createElement('div'); overlay.style.position = 'fixed'; overlay.style.inset = '0'; overlay.style.background = 'rgba(10,25,51,.5)'; overlay.style.display = 'flex'; overlay.style.alignItems = 'center'; overlay.style.justifyContent = 'center'; overlay.style.backdropFilter = 'blur(4px)';
-            const modal = document.createElement('div'); modal.style.background = '#fff'; modal.style.padding = '24px'; modal.style.borderRadius = '24px'; modal.style.maxWidth = '420px'; modal.style.width = '92%'; modal.style.boxShadow = '0 20px 40px rgba(10,25,51,.12)';
-            const h2 = document.createElement('h2'); h2.textContent = 'Escolha o estabelecimento'; modal.appendChild(h2);
-            const list = document.createElement('div'); list.style.display = 'grid'; list.style.gap = '12px'; list.style.marginTop = '16px';
-            estabs.forEach(e => {
-                const id = e.estabelecimentoId ?? e.EstabelecimentoId;
-                const papel = e.papel ?? e.Papel ?? '';
-                const btn = document.createElement('button'); btn.type = 'button'; btn.style.padding = '14px 16px'; btn.style.borderRadius = '14px'; btn.style.border = '1px solid #e2e8f0'; btn.style.background = '#f8fafc'; btn.style.cursor = 'pointer'; btn.textContent = `Estabelecimento ${id}${papel ? ' - ' + papel : ''}`; btn.addEventListener('click', () => { document.body.removeChild(overlay); onChoose(id); });
-                list.appendChild(btn);
-            });
-            modal.appendChild(list); overlay.appendChild(modal); document.body.appendChild(overlay);
+        if (!loginResp.ok) {
+            btn.disabled = false; btn.innerHTML = originalContent;
+            return showError(await safeMsg(loginResp, 'Credenciais inválidas.'));
         }
-    </script>
+
+        const { token } = await loginResp.json();
+        if (!token) {
+            btn.disabled = false; btn.innerHTML = originalContent;
+            return showError('Token ausente.');
+        }
+
+        localStorage.setItem('ah_token', token);
+        localStorage.setItem('ah_user_name', email.split('@')[0] || 'Usuário');
+
+        const meResp = await apiFetch('/usuarios/me/estabelecimentos');
+        if (!meResp.ok) {
+            btn.disabled = false; btn.innerHTML = originalContent;
+            return showError(await safeMsg(meResp, 'Falha ao obter estabelecimentos.'));
+        }
+
+        const estabs = await meResp.json();
+        if (!Array.isArray(estabs) || estabs.length === 0) {
+            btn.disabled = false; btn.innerHTML = originalContent;
+            return showError('Usuário sem estabelecimento vinculado.');
+        }
+
+        if (estabs.length === 1) {
+            localStorage.setItem('ah_estab', String(estabs[0].estabelecimentoId ?? estabs[0].EstabelecimentoId));
+            return location.href = 'index.html';
+        }
+
+        openEstabSelector(estabs, chosenId => {
+            localStorage.setItem('ah_estab', String(chosenId));
+            location.href = 'index.html';
+        });
+
+    } catch (err) {
+        console.error(err);
+        showError('Falha de comunicação com a API.');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalContent;
+    }
+});
+
+function showError(msg) { erroText.textContent = msg; erro.style.display = 'flex'; }
+async function safeMsg(resp, fallback) { try { const j = await resp.json(); return j?.message || fallback } catch { return fallback; } }
+
+function openEstabSelector(estabs, onChoose) {
+    const overlay = document.createElement('div');
+    overlay.style.position = 'fixed';
+    overlay.style.inset = '0';
+    overlay.style.background = 'rgba(10,25,51,.5)';
+    overlay.style.display = 'flex';
+    overlay.style.alignItems = 'center';
+    overlay.style.justifyContent = 'center';
+    overlay.style.backdropFilter = 'blur(4px)';
+
+    const modal = document.createElement('div');
+    modal.style.background = '#fff';
+    modal.style.padding = '24px';
+    modal.style.borderRadius = '24px';
+    modal.style.maxWidth = '420px';
+    modal.style.width = '92%';
+    modal.style.boxShadow = '0 20px 40px rgba(10,25,51,.12)';
+
+    const h2 = document.createElement('h2');
+    h2.textContent = 'Escolha o estabelecimento';
+    modal.appendChild(h2);
+
+    const list = document.createElement('div');
+    list.style.display = 'grid';
+    list.style.gap = '12px';
+    list.style.marginTop = '16px';
+
+    estabs.forEach(e => {
+        const id = e.estabelecimentoId ?? e.EstabelecimentoId;
+        const papel = e.papel ?? e.Papel ?? '';
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.style.padding = '14px 16px';
+        btn.style.borderRadius = '14px';
+        btn.style.border = '1px solid #e2e8f0';
+        btn.style.background = '#f8fafc';
+        btn.style.cursor = 'pointer';
+        btn.textContent = `Estabelecimento ${id}${papel ? ' - ' + papel : ''}`;
+        btn.addEventListener('click', () => { document.body.removeChild(overlay); onChoose(id); });
+        list.appendChild(btn);
+    });
+
+    modal.appendChild(list);
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+}
+</script>
 </body>
 </html>
