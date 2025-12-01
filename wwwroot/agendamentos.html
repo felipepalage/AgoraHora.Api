@@ -6,82 +6,34 @@
     <title>Agendamentos - AgoraHora</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* ================== TEMA CLARO CONSISTENTE ================== */
-        :root {
-            --brand-navy: #0a1933;
-            --brand-teal: #0da5a0;
-            --brand-teal-hover: #098581;
-            --brand-teal-soft: #e6f9f8;
-            --brand-purple: #6366f1;
-            --bg: #f8fafc;
-            --card: #ffffff;
-            --muted: #64748b;
-            --border: #e2e8f0;
-            --danger: #ef4444;
-            --danger-dark: #dc2626;
-            --success: #10b981;
-            --info: #3b82f6;
-            --radius-lg: 20px;
-            --radius-md: 14px;
-            --radius-sm: 8px;
-            --shadow-soft: 0 4px 15px rgba(10,25,51,.05);
-            --shadow-medium: 0 10px 25px rgba(10,25,51,.08);
-            --shadow-strong: 0 20px 40px rgba(10,25,51,.12);
+        :root{
+            --brand-navy:#0a1933; --brand-teal:#0da5a0; --border:#e2e8f0; --card:#ffffff; --muted:#64748b;
+            --danger:#ef4444; --radius-md:14px; --shadow-medium: 0 10px 25px rgba(10,25,51,.08);
         }
-        /* RESET */
-        * { box-sizing: border-box; margin: 0; padding: 0 }
-        body {
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            color: #334155;
-            font: 500 15px/1.45 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-        }
-        header {
-            background: rgba(255,255,255,.9);
-            border-bottom: 1px solid rgba(226,232,240,.6);
-            backdrop-filter: blur(16px);
-            position: sticky; top: 0; z-index: 20;
-        }
-        .top { max-width: 1200px; margin: auto; padding: 14px 20px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
-        .brand { display:flex; align-items:center; gap:12px; cursor:pointer; transition: transform .2s ease; }
-        .brand:hover { transform: scale(1.02); }
-        .brand-icon { width:40px; height:40px; border-radius:12px; background: linear-gradient(135deg,var(--brand-teal),var(--brand-purple)); display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(13,165,160,.25); }
-        .brand-icon i { color:white; font-size:20px; }
-        .brand .name { font-weight:800; font-size:20px; color:var(--brand-navy); }
-        .btn { padding:10px 16px; border:none; border-radius:var(--radius-sm); background: linear-gradient(135deg,var(--brand-teal),var(--brand-teal-hover)); color:#fff; font-weight:600; cursor:pointer; box-shadow:0 4px 15px rgba(13,165,160,.25); transition:all .2s ease; display:inline-flex; align-items:center; gap:8px; position:relative; overflow:hidden; }
-        .btn::before { content:''; position:absolute; top:0; left:-100%; width:100%; height:100%; background:rgba(255,255,255,.2); transition:left .3s ease; }
-        .btn:hover::before { left:100%; } .btn:hover { transform: translateY(-2px); box-shadow:0 6px 20px rgba(13,165,160,.35); }
-        .btn-ghost { padding:8px 12px; border-radius:var(--radius-sm); border:1px solid var(--border); background:rgba(10,25,51,.05); color:var(--brand-navy); cursor:pointer; font-weight:600; transition:all .2s ease; display:inline-flex; align-items:center; gap:6px; }
-        .btn-ghost:hover { background:rgba(10,25,51,.1); transform: translateY(-1px); }
-        .container { max-width:1200px; margin:24px auto; padding:0 20px; }
-        .page-header { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:24px; }
-        .filters { display:grid; grid-template-columns:1fr 1fr 1fr auto; gap:16px; margin-bottom:20px; }
-        @media(max-width:768px){ .filters { grid-template-columns:1fr; } }
-        .field label { font-weight:600; margin-bottom:6px; display:flex; align-items:center; gap:6px; }
-        .field label i { color:var(--brand-teal); }
-        .field select, .field input { width:100%; padding:12px 16px; border-radius:var(--radius-md); border:1px solid var(--border); background:#f8fafc; color:#334155; outline:none; transition:all .2s ease; }
-        .field select:focus, .field input:focus { background:#fff; border-color:var(--brand-teal); box-shadow:0 0 0 3px rgba(13,165,160,.15); }
-        .table-wrapper { overflow-x:auto; border-radius:var(--radius-md); border:1px solid var(--border); background:var(--card); box-shadow:var(--shadow-medium); }
-        table { width:100%; border-collapse:collapse; }
-        th, td { padding:14px 16px; border-bottom:1px solid var(--border); text-align:left; }
-        th { color:var(--brand-navy); font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; background:#f8fafc; }
-        tbody tr:hover { background:#f1f5f9; }
-        .empty { text-align:center; padding:20px 0; color:var(--muted); font-style:italic; }
-        .empty i { font-size:24px; margin-bottom:8px; display:block; color:var(--muted); }
-        .badge { display:inline-flex; align-items:center; gap:6px; padding:6px 12px; border-radius:var(--radius-sm); font-size:12px; font-weight:600; text-transform:uppercase; }
-        .badge[data-status="pendente"] { background:#fef3c7; color:#92400e; }
-        .badge[data-status="confirmado"] { background:#d1fae5; color:#065f46; }
-        .badge[data-status="cancelado"] { background:#fee2e2; color:#991b1b; }
-        .badge[data-status="concluido"], .badge[data-status="concluído"] { background:#dbeafe; color:#1e40af; }
-        .badge-dot { width:8px; height:8px; border-radius:50%; display:inline-block; margin-right:6px; }
-        .badge[data-status="pendente"] .badge-dot { background:#f59e0b; }
-        .badge[data-status="confirmado"] .badge-dot { background:#10b981; }
-        .badge[data-status="cancelado"] .badge-dot { background:#ef4444; }
-        .badge[data-status="concluido"] .badge-dot, .badge[data-status="concluído"] .badge-dot { background:#3b82f6; }
-        .error-message { margin-top:16px; padding:12px 16px; border-radius:var(--radius-md); background:#fee2e2; border-left:4px solid var(--danger); color:var(--danger); font-weight:600; display:none; align-items:center; gap:8px; }
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{font:500 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, Arial; background:linear-gradient(135deg,#f8fafc 0,#e2e8f0 100%);color:#334155}
+        header{background:rgba(255,255,255,.9);border-bottom:1px solid rgba(226,232,240,.6);backdrop-filter:blur(16px);position:sticky;top:0;z-index:20}
+        .top{max-width:1200px;margin:auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+        .brand{display:flex;gap:12px;align-items:center}
+        .brand-icon{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--brand-teal),#6366f1);display:flex;align-items:center;justify-content:center;color:#fff}
+        .btn{padding:10px 16px;border-radius:8px;border:0;background:linear-gradient(135deg,var(--brand-teal),#098581);color:#fff;cursor:pointer;font-weight:600;display:inline-flex;gap:8px;align-items:center}
+        .container{max-width:1200px;margin:24px auto;padding:0 20px}
+        .page-header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:24px}
+        .filters{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:16px;margin-bottom:20px}
+        @media(max-width:768px){.filters{grid-template-columns:1fr}}
+        .field label{font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+        .field select,.field input{width:100%;padding:12px 16px;border-radius:var(--radius-md);border:1px solid var(--border);background:#f8fafc}
+        .table-wrapper{overflow-x:auto;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--card);box-shadow:var(--shadow-medium)}
+        table{width:100%;border-collapse:collapse}
+        th,td{padding:14px 16px;border-bottom:1px solid var(--border);text-align:left}
+        th{color:var(--brand-navy);font-size:13px;font-weight:700;text-transform:uppercase}
+        .empty{padding:20px;text-align:center;color:var(--muted);font-style:italic}
+        .badge{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;font-weight:600;text-transform:uppercase}
+        .error-message{margin-top:16px;padding:12px 16px;border-radius:12px;background:#fee2e2;border-left:4px solid var(--danger);color:var(--danger);font-weight:600;display:none}
+        .small-muted{font-size:13px;color:var(--muted)}
     </style>
 </head>
 <body>
-
     <header>
       <div class="top">
         <div class="brand">
@@ -93,7 +45,6 @@
     </header>
 
     <main class="container">
-
         <div class="page-header">
             <h2><i class="fas fa-calendar-alt"></i> Agendamentos</h2>
             <div>
@@ -101,18 +52,19 @@
             </div>
         </div>
 
-        <div class="filters">
+        <div class="filters" role="region" aria-label="Filtros">
             <div class="field">
                 <label><i class="fas fa-user-tie"></i> Profissional</label>
-                <select id="profissional"></select>
+                <select id="profissional" aria-label="Profissional"></select>
+                <div id="prof-help" class="small-muted" style="margin-top:6px">Selecione para ver agendamentos do dia.</div>
             </div>
             <div class="field">
                 <label><i class="fas fa-calendar"></i> Data</label>
-                <input type="date" id="filtro-data">
+                <input type="date" id="filtro-data" aria-label="Data">
             </div>
             <div class="field">
                 <label><i class="fas fa-info-circle"></i> Status</label>
-                <select id="filtro-status">
+                <select id="filtro-status" aria-label="Status">
                     <option value="">Todos</option>
                     <option value="Pendente">Pendente</option>
                     <option value="Confirmado">Confirmado</option>
@@ -120,12 +72,12 @@
                     <option value="Concluido">Concluído</option>
                 </select>
             </div>
-            <div>
+            <div style="display:flex;align-items:end">
                 <button class="btn" id="btn-filtrar"><i class="fas fa-search"></i> Filtrar</button>
             </div>
         </div>
 
-        <div class="table-wrapper">
+        <div class="table-wrapper" id="table-wrap">
             <table>
                 <thead>
                     <tr>
@@ -137,115 +89,135 @@
                     </tr>
                 </thead>
                 <tbody id="tbody">
-                    <tr class="empty">
-                        <td colspan="5"><i class="fas fa-spinner fa-spin"></i> Carregando agendamentos…</td>
-                    </tr>
+                    <tr class="empty"><td colspan="5"><i class="fas fa-spinner fa-spin"></i> Carregando agendamentos…</td></tr>
                 </tbody>
             </table>
         </div>
 
         <div id="erro" class="error-message"><i class="fas fa-exclamation-circle"></i> Não foi possível carregar os agendamentos.</div>
-
     </main>
 
 <script>
-/* ========== CONFIGURAÇÃO (defina seu endpoint da VM aqui) ========== */
-const API_BASE = "http://179.0.176.111:5000/api";
+/*
+  Ajustes front-end:
+  - configure API_BASE via window.API_BASE antes de incluir o arquivo ou deixe o IP padrão abaixo.
+  - este script evita usar "localhost" e trata erros de conexão/CORS mostrando mensagens úteis.
+*/
 
-/* ========== HELPERS DE URL e FETCH ========== */
-function fullApi(pathOrUrl) {
-    if (!pathOrUrl) return API_BASE;
-    try {
-        // se já for URL absoluta
-        const u = new URL(pathOrUrl);
-        return u.toString();
-    } catch { /* não absoluta */ }
-    return API_BASE.replace(/\/+$/, '') + '/' + String(pathOrUrl).replace(/^\/+/, '');
-}
+const API_BASE = window.API_BASE || "http://179.0.176.111:5000/api";
+console.info("API_BASE =", API_BASE);
 
-async function getJson(pathOrUrl, opts = {}) {
-    const url = fullApi(pathOrUrl);
-    const headers = Object.assign({}, opts.headers || {});
-    headers['Accept'] = headers['Accept'] || 'application/json';
-    const token = localStorage.getItem('ah_token');
-    if (token) headers['Authorization'] = 'Bearer ' + token;
-
-    // fetch com tratamento robusto de erros
-    try {
-        const res = await fetch(url, { method: opts.method || 'GET', headers, body: opts.body, cache: opts.cache || 'no-store' });
-        const text = await res.text().catch(()=>'');
-        const ct = (res.headers.get('content-type') || '').toLowerCase();
-        const body = ct.includes('application/json') && text ? JSON.parse(text) : text;
-        if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText} - ${typeof body === 'string' ? body : JSON.stringify(body)}`);
-        return body;
-    } catch (err) {
-        // normaliza TypeError de rede
-        if (err instanceof TypeError) {
-            throw new Error(`Network error: ${err.message}. Verifique API_BASE (${API_BASE}) e se a API está acessível a partir deste navegador.`);
-        }
-        throw err;
-    }
-}
-
-/* ========== UTILITÁRIOS LOCAIS ========== */
+/* elementos */
 const selProf = document.getElementById("profissional");
 const filtroData = document.getElementById("filtro-data");
 const filtroStatus = document.getElementById("filtro-status");
 const tbody = document.getElementById("tbody");
 const erro = document.getElementById("erro");
 const btnHoje = document.getElementById("btn-hoje");
+const btnFiltrar = document.getElementById("btn-filtrar");
+const profHelp = document.getElementById("prof-help");
 
 document.getElementById("voltar").onclick = () => {
     if (document.referrer && document.referrer !== location.href) history.back();
     else window.location.href = "index.html";
 };
 
-function hojeIso() { return new Date().toISOString().slice(0,10); }
+function hojeIso(){ return new Date().toISOString().slice(0,10); }
 filtroData.value = hojeIso();
 
 btnHoje.onclick = () => { filtroData.value = hojeIso(); carregar(); };
-document.getElementById("btn-filtrar").onclick = carregar;
+btnFiltrar.onclick = carregar;
 selProf.onchange = carregar;
 
-function statusKey(status) {
-    if (!status) return "pendente";
-    try {
-        return status.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
-    } catch { return String(status).toLowerCase(); }
+function statusKey(status){
+    if(!status) return "pendente";
+    return String(status).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
 }
 
-function fmtData(dt) {
-    try {
+function fmtData(dt){
+    try{
         const d = new Date(dt);
-        if (isNaN(d)) return dt;
-        return d.toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
-    } catch { return dt; }
+        if(isNaN(d)) return String(dt);
+        return d.toLocaleString("pt-BR", { day:"2-digit", month:"2-digit", hour:"2-digit", minute:"2-digit" });
+    }catch{ return String(dt); }
 }
 
-/* ========== Resolver estabelecimento do usuário logado (se existir) ========== */
-async function resolveEstabId() {
+/* fetch wrapper com tratamento de erros do body e timeout simples */
+async function fetchWithTimeout(resource, options = {}) {
+    const { timeout = 10000 } = options;
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeout);
     try {
-        // tenta rota pública /usuario/logado que já existe no seu backend
-        const res = await getJson('/usuario/logado');
-        // formato retornado pode ter { estabelecimentoId } ou { estabId } ou similar
-        return res?.estabelecimentoId ?? res?.estabId ?? res?.estab?.id ?? null;
+        const res = await fetch(resource, { signal: controller.signal, ...options });
+        clearTimeout(id);
+        return res;
+    } catch (err) {
+        clearTimeout(id);
+        throw err;
+    }
+}
+
+async function getJson(url) {
+    // garante que estamos usando API_BASE (evita caminhos relativos)
+    if (!/^https?:\/\//i.test(url) && !url.startsWith(API_BASE)) {
+        url = API_BASE.replace(/\/$/, '') + '/' + url.replace(/^\/+/, '');
+    }
+
+    const headers = { 'Accept': 'application/json' };
+    const token = localStorage.getItem('ah_token');
+    if (token) headers['Authorization'] = 'Bearer ' + token;
+
+    console.debug('fetch GET', url);
+    try {
+        const r = await fetchWithTimeout(url, { headers, cache: 'no-store', timeout: 12000 });
+        // se response não for json, tenta extrair texto
+        const ct = r.headers.get('content-type') || '';
+        if (!r.ok) {
+            let bodyText = '';
+            try {
+                bodyText = ct.includes('application/json') ? JSON.stringify(await r.json()) : await r.text();
+            } catch(e) { bodyText = await r.text().catch(()=>''); }
+            throw new Error(`HTTP ${r.status} - ${bodyText || r.statusText}`);
+        }
+        if (ct.includes('application/json')) return r.json();
+        // tentar tratar texto com JSON interno
+        const txt = await r.text();
+        try { return JSON.parse(txt); } catch { return txt; }
+    } catch (err) {
+        // normaliza AbortError
+        if (err.name === 'AbortError') throw new Error('Request timeout');
+        throw err;
+    }
+}
+
+/* tenta obter estabelecimento do usuário logado (rota opcional) */
+async function resolveEstabId(){
+    try{
+        const token = localStorage.getItem('ah_token');
+        const headers = token ? { 'Authorization': 'Bearer ' + token } : undefined;
+        const r = await fetchWithTimeout(`${API_BASE.replace(/\/$/, '')}/usuario/logado`, { headers, cache:'no-store', timeout:8000 });
+        if (!r.ok) return null;
+        const j = await r.json();
+        console.debug('usuario.logado ->', j);
+        return j?.estabelecimentoId ?? j?.estabId ?? null;
     } catch (ex) {
-        // não fatal — apenas fallback para 1 (desenvolvimento)
-        console.warn('resolveEstabId falhou:', ex.message);
+        console.warn('resolveEstabId failed:', ex && ex.message ? ex.message : ex);
         return null;
     }
 }
 
-/* ========== Carregar profissionais (usando URL absoluta garantida) ========== */
+/* carrega profissionais e popula select */
 async function carregarProfissionais() {
+    selProf.innerHTML = `<option value="">Carregando...</option>`;
     try {
-        let estabId = await resolveEstabId();
-        const finalEstab = estabId ?? 1; // fallback para dev
-        const js = await getJson(`/profissionais/${finalEstab}`);
-        // suporta { data: [...] } ou [...]
+        const estabId = await resolveEstabId();
+        const finalEstab = estabId ?? 1; // fallback para dev: 1
+        const url = `${API_BASE.replace(/\/$/, '')}/profissionais/${finalEstab}`;
+        const js = await getJson(url);
         const profs = (js?.data && Array.isArray(js.data)) ? js.data : (Array.isArray(js) ? js : []);
         if (!profs.length) {
-            selProf.innerHTML = `<option value="">Nenhum profissional</option>`;
+            selProf.innerHTML = `<option value="">Nenhum profissional disponível</option>`;
+            profHelp.textContent = 'Não existem profissionais cadastrados para este estabelecimento.';
             return;
         }
         selProf.innerHTML = `<option value="">-- Selecionar profissional --</option>` +
@@ -253,14 +225,17 @@ async function carregarProfissionais() {
                 const id = p.id ?? p.Id ?? p.ID ?? p.ID_PROFISSIONAL ?? p.IdProfissional;
                 const nome = p.nome ?? p.Nome ?? p.NM_PROFISSIONAL ?? p.NomeProfissional ?? "Sem nome";
                 return `<option value="${id}">${nome}</option>`;
-            }).join("");
+            }).join('');
+        profHelp.textContent = '';
     } catch (e) {
-        console.error("carregarProfissionais:", e);
-        selProf.innerHTML = `<option value="">Erro ao carregar</option>`;
+        console.error('carregarProfissionais:', e);
+        selProf.innerHTML = `<option value="">Erro ao carregar (ver console)</option>`;
+        profHelp.textContent = 'Falha ao carregar profissionais. Verifique se a API está disponível e CORS/URL corretos.';
+        throw e; // propaga para init se necessário
     }
 }
 
-/* ========== Render dos agendamentos ========== */
+/* renderiza tabela */
 function render(lista) {
     if (!lista || !lista.length) {
         tbody.innerHTML = `<tr class="empty"><td colspan="5"><i class="fas fa-calendar-times"></i> Nenhum agendamento encontrado.</td></tr>`;
@@ -274,18 +249,23 @@ function render(lista) {
         const st = a.status ?? a.Status ?? "Pendente";
         const key = statusKey(st);
         return `<tr>
-            <td>${cliente}</td>
-            <td>${servico}</td>
-            <td>${profissional}</td>
-            <td>${dtInicio ? fmtData(dtInicio) : "—"}</td>
-            <td><span class="badge" data-status="${key}"><span class="badge-dot"></span>${st}</span></td>
+            <td>${escapeHtml(cliente)}</td>
+            <td>${escapeHtml(servico)}</td>
+            <td>${escapeHtml(profissional)}</td>
+            <td>${dtInicio ? escapeHtml(fmtData(dtInicio)) : "—"}</td>
+            <td><span class="badge" data-status="${key}"><span class="badge-dot"></span>${escapeHtml(st)}</span></td>
         </tr>`;
-    }).join("");
+    }).join('');
 }
 
-/* ========== Carregar agendamentos filtrados por profissional e dia ========== */
-async function carregar() {
-    erro.style.display = "none";
+/* evita XSS simples (dados vindos do backend) */
+function escapeHtml(s){
+    return String(s ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
+}
+
+/* carregar agendamentos filtrados */
+async function carregar(){
+    erro.style.display = 'none';
     tbody.innerHTML = `<tr class="empty"><td colspan="5"><i class="fas fa-spinner fa-spin"></i> Carregando agendamentos…</td></tr>`;
 
     const profId = selProf.value;
@@ -295,33 +275,37 @@ async function carregar() {
     }
 
     const dia = filtroData.value || hojeIso();
-    const ini = `${dia}T00:00:00`;
-    const fim = `${dia}T23:59:59`;
-    let url = `/agendamentos/profissional?profissionalId=${encodeURIComponent(profId)}&ini=${encodeURIComponent(ini)}&fim=${encodeURIComponent(fim)}`;
+    const ini = encodeURIComponent(`${dia}T00:00:00`);
+    const fim = encodeURIComponent(`${dia}T23:59:59`);
+    let url = `${API_BASE.replace(/\/$/, '')}/agendamentos/profissional?profissionalId=${encodeURIComponent(profId)}&ini=${ini}&fim=${fim}`;
     if (filtroStatus.value) url += `&status=${encodeURIComponent(filtroStatus.value)}`;
 
     try {
         const js = await getJson(url);
+        // possibilidade: backend retorna { message: "...", data: [...] } ou somente array
         const lista = (js?.data && Array.isArray(js.data)) ? js.data : (Array.isArray(js) ? js : []);
         render(lista);
     } catch (e) {
-        console.error("carregar:", e);
-        erro.style.display = "flex";
-        tbody.innerHTML = `<tr class="empty"><td colspan="5"><i class="fas fa-exclamation-triangle"></i> Erro ao carregar agendamentos.</td></tr>`;
+        console.error('carregar:', e);
+        erro.style.display = 'flex';
+        erro.innerHTML = `<i class="fas fa-exclamation-circle"></i> Erro ao carregar agendamentos: ${escapeHtml(e.message || 'unknown')}`;
+        tbody.innerHTML = `<tr class="empty"><td colspan="5"><i class="fas fa-exclamation-triangle"></i> Erro ao carregar agendamentos. Veja detalhes acima.</td></tr>`;
     }
 }
 
-/* ========== Inicialização ========== */
-(async function init() {
+/* init */
+(async function init(){
     try {
         await carregarProfissionais();
-        await carregar();
+        // não chama carregar() automaticamente se não há profissional selecionado
+        // chamamos carregar() para a seleção atual (se houver)
+        if (selProf.value) await carregar();
     } catch (e) {
-        console.error("init:", e);
-        erro.style.display = "flex";
+        console.error('init error:', e);
+        erro.style.display = 'flex';
+        erro.innerHTML = `<i class="fas fa-exclamation-circle"></i> Falha na inicialização: ${escapeHtml(e.message || 'Ver console')}`;
     }
 })();
 </script>
-
 </body>
 </html>
