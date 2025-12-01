@@ -176,149 +176,238 @@
         </div>
     </main>
 
-    <script>
-        const API_BASE = 'http://179.0.176.111:5000/api';
+   <script>
+/* Configurações - script compatível com:
+   GET  /api/configuracao/{estabelecimentoId}
+   PUT  /api/configuracao/{estabelecimentoId}
+   (não requer endpoints extras)
+*/
 
-        let estabId;
-        const $ = id => document.getElementById(id);
+const API_BASE = 'http://179.0.176.111:5000/api';
+const $ = id => document.getElementById(id);
 
-        $('logout').onclick = () => { location.href = 'index.html'; };
-        const okEl = $('ok'), errEl = $('err'), btnSalvar = $('btn-salvar'), btnToggle = $('btn-toggle-ativo');
-        const logoKey = id => `logo_estab_${id}`;
+let estabId = null;
+const logoKey = id => `logo_estab_${id}`;
 
-        const pad2 = n => String(n).padStart(2,'0');
-        const minToHHmm = m => `${pad2(Math.floor(m/60))}:${pad2(m%60)}`;
-        const HHmmToMin = hhmm => { if(!hhmm) return null; const [h,m]=hhmm.split(':').map(Number); if(Number.isNaN(h)||Number.isNaN(m)) return null; return h*60+m; }
+/* UI elems */
+const okEl = $('ok'), errEl = $('err'), btnSalvar = $('btn-salvar'), btnToggle = $('btn-toggle-ativo');
+const preview = $('logoPreview');
 
-        function showOk(msg){ okEl.querySelector('span').textContent = msg; okEl.style.display='flex'; setTimeout(()=>okEl.style.display='none',3000); }
-        function showErr(msg){ errEl.querySelector('span').textContent = msg; errEl.style.display='flex'; setTimeout(()=>errEl.style.display='none',3000); }
-        function hideMsgs(){ okEl.style.display='none'; errEl.style.display='none'; }
+function showOk(msg){ okEl.querySelector('span').textContent = msg; okEl.style.display='flex'; setTimeout(()=>okEl.style.display='none',3000); }
+function showErr(msg){ errEl.querySelector('span').textContent = msg; errEl.style.display='flex'; setTimeout(()=>errEl.style.display='none',3000); }
+function hideMsgs(){ okEl.style.display='none'; errEl.style.display='none'; }
 
-        let estadoAtivo = true;
-        function setAtivoLabel(ativo){
-            const labelEl = $('ativoLabel');
-            if(ativo){
-                labelEl.innerHTML='<i class="fas fa-check-circle"></i> Status: Ativo (recebendo agendamentos)';
-                btnToggle.innerHTML='<i class="fas fa-times-circle"></i> Fechar agora';
-                btnToggle.className='btn btn-danger';
-            }else{
-                labelEl.innerHTML='<i class="fas fa-times-circle"></i> Status: Inativo';
-                btnToggle.innerHTML='<i class="fas fa-check-circle"></i> Abrir agora';
-                btnToggle.className='btn';
-            }
+function pad2(n){ return String(n).padStart(2,'0'); }
+function minToHHmm(m){ if (m==null || Number.isNaN(Number(m))) return ''; return `${pad2(Math.floor(m/60))}:${pad2(m%60)}`; }
+function HHmmToMin(hhmm){ if(!hhmm) return null; const [h,m]=hhmm.split(':').map(Number); if(Number.isNaN(h)||Number.isNaN(m)) return null; return h*60+m; }
+
+let estadoAtivo = true;
+function setAtivoLabel(ativo){
+    estadoAtivo = !!ativo;
+    const labelEl = $('ativoLabel');
+    if(estadoAtivo){
+        labelEl.innerHTML='<i class="fas fa-check-circle"></i> Status: Ativo (recebendo agendamentos)';
+        btnToggle.innerHTML='<i class="fas fa-times-circle"></i> Fechar agora';
+        btnToggle.className='btn btn-danger';
+    } else {
+        labelEl.innerHTML='<i class="fas fa-times-circle"></i> Status: Inativo';
+        btnToggle.innerHTML='<i class="fas fa-check-circle"></i> Abrir agora';
+        btnToggle.className='btn';
+    }
+}
+
+/* fetch simple with timeout */
+async function fetchWithTimeout(url, opts = {}, timeout = 12000){
+    const controller = new AbortController();
+    const id = setTimeout(()=>controller.abort(), timeout);
+    try {
+        const res = await fetch(url, { signal: controller.signal, ...opts });
+        clearTimeout(id);
+        return res;
+    } catch (e) {
+        clearTimeout(id);
+        throw e;
+    }
+}
+
+/* resolve estabId: url param ?estab=.. or localStorage ah_estab or /usuarios/me endpoints (requires token) */
+async function resolveEstabId(){
+    // 1) from querystring
+    const q = new URLSearchParams(location.search);
+    const qEst = q.get('estab');
+    if (qEst && Number(qEst)) return Number(qEst);
+
+    // 2) localStorage
+    const ls = localStorage.getItem('ah_estab') || localStorage.getItem('ah_estabelecimentoId');
+    if (ls && Number(ls)) return Number(ls);
+
+    // 3) if token present, try /usuarios/me/estabelecimentos or /usuarios/me
+    const token = localStorage.getItem('ah_token');
+    if (!token) return null;
+    const headers = { 'Authorization': 'Bearer ' + token, 'Accept': 'application/json' };
+
+    try {
+        const r = await fetchWithTimeout(`${API_BASE.replace(/\/$/,'')}/usuarios/me/estabelecimentos`, { headers, cache:'no-store' }, 8000);
+        if (r.ok) {
+            const arr = await r.json();
+            if (Array.isArray(arr) && arr.length) return arr[0].estabelecimentoId ?? arr[0].EstabelecimentoId ?? null;
+        }
+    } catch (e) { console.warn('me/estabs failed', e); }
+
+    try {
+        const r2 = await fetchWithTimeout(`${API_BASE.replace(/\/$/,'')}/usuarios/me`, { headers, cache:'no-store' }, 8000);
+        if (r2.ok) {
+            const me = await r2.json();
+            return me?.estabelecimentoId ?? me?.estabId ?? null;
+        }
+    } catch (e) { console.warn('usuarios/me failed', e); }
+
+    return null;
+}
+
+/* carregar configuração usando somente as rotas que existem (GET /api/configuracao/{id}) */
+async function loadConfiguracao(){
+    hideMsgs();
+
+    estabId = await resolveEstabId();
+    if (!estabId){
+        showErr('Estabelecimento não definido. Faça login novamente.');
+        localStorage.removeItem('ah_token');
+        return;
+    }
+
+    // carregar logo local (localStorage)
+    const logoData = localStorage.getItem(logoKey(estabId));
+    if (logoData) preview.src = logoData;
+
+    // chamar GET /api/configuracao/{id}
+    try {
+        const url = `${API_BASE.replace(/\/$/,'')}/configuracao/${encodeURIComponent(estabId)}?_ts=${Date.now()}`;
+        const r = await fetchWithTimeout(url, { cache:'no-store' }, 10000);
+
+        if (r.status === 401) { localStorage.removeItem('ah_token'); location.href='login.html'; return; }
+        if (r.status === 404) {
+            // backend não expôs /configuracao/{id}
+            showErr('Rota /api/configuracao/{id} não encontrada no backend. Preencha manualmente; salvar tentará criar/atualizar via PUT.');
+            // limpa campos para edição manual
+            $('nome').value = '';
+            $('endereco').value = '';
+            $('telefone').value = '';
+            $('horarios').value = '';
+            $('descricao').value = '';
+            $('abre').value = '';
+            $('fecha').value = '';
+            setAtivoLabel(true);
+            return;
         }
 
-        async function loadEstabId(){
-            try{
-                const r = await fetch(`${API_BASE}/usuario/login?_ts=${Date.now()}`, {cache:'no-store'});
-                if(r.ok){
-                    const user = await r.json();
-                    estabId = user?.estabelecimentoId;
-                    if(!estabId) throw new Error("Estabelecimento não definido para o usuário logado.");
-                    loadConfiguracao();
-                } else showErr("Falha ao obter dados do usuário.");
-            }catch(err){
-                console.error(err);
-                showErr("Falha ao obter estabelecimento.");
-            }
+        if (!r.ok) {
+            const t = await r.text().catch(()=>r.statusText);
+            throw new Error(t || `HTTP ${r.status}`);
         }
 
-        async function loadConfiguracao(){
-            if(!estabId) return;
-            hideMsgs();
-            try{
-                const r = await fetch(`${API_BASE}/configuracao/${estabId}?_ts=${Date.now()}`, {cache:'no-store'});
-                if(r.ok){
-                    const j = await r.json();
-                    const cfg = j?.data?.configuracao || {};
-                    const est = j?.data?.estabelecimento || {};
+        const j = await r.json();
+        const cfg = j?.data?.configuracao ?? j?.configuracao ?? j?.data ?? j;
+        const est = j?.data?.estabelecimento ?? j?.estabelecimento ?? null;
 
-                    $('nome').value = est?.nome ?? '';
-                    $('endereco').value = est?.endereco ?? cfg?.endereco ?? '';
-                    $('telefone').value = cfg?.telefone ?? '';
-                    $('horarios').value = cfg?.horarios ?? '';
-                    $('descricao').value = cfg?.descricao ?? '';
+        // preenche campos
+        $('nome').value = est?.Nome ?? est?.nome ?? (cfg?.NomeEstabelecimento ?? '') ;
+        $('endereco').value = cfg?.Endereco ?? est?.Endereco ?? est?.endereco ?? '';
+        $('telefone').value = cfg?.Telefone ?? '';
+        $('horarios').value = cfg?.Horarios ?? '';
+        $('descricao').value = cfg?.Descricao ?? '';
+        $('abre').value = minToHHmm(Number(est?.AbreMin ?? cfg?.AbreMin ?? est?.abreMin ?? cfg?.abreMin ?? null));
+        $('fecha').value = minToHHmm(Number(est?.FechaMin ?? cfg?.FechaMin ?? est?.fechaMin ?? cfg?.fechaMin ?? null));
+        setAtivoLabel(Boolean(est?.Ativo ?? cfg?.Ativo ?? true));
+    } catch (e) {
+        console.error('loadConfiguracao error', e);
+        if (e.name === 'AbortError') showErr('Timeout ao carregar configuração.');
+        else showErr('Erro ao carregar configuração: ' + (e.message || e));
+    }
+}
 
-                    const abreMin = Number(est?.abreMin ?? 540);
-                    const fechaMin = Number(est?.fechaMin ?? 1080);
-                    $('abre').value = minToHHmm(abreMin);
-                    $('fecha').value = minToHHmm(fechaMin);
+/* salvar via PUT /api/configuracao/{id} (upsert no backend conforme seu controller) */
+async function salvarConfiguracao(){
+    hideMsgs();
+    if (!estabId){ showErr('Estabelecimento indefinido.'); return; }
 
-                    estadoAtivo = Boolean(est?.ativo ?? true);
-                    setAtivoLabel(estadoAtivo);
-                }
-            }catch{ showErr("Falha ao carregar configuração."); }
+    const payload = {
+        Telefone: $('telefone').value || null,
+        Endereco: $('endereco').value || null,
+        Horarios: $('horarios').value || null,
+        Descricao: $('descricao').value || null,
+        NomeEstabelecimento: $('nome').value || null,
+        ImagemUrl: null, // deixamos imagem por localStorage; backend não aceita envio de arquivo aqui
+        AbreMin: HHmmToMin($('abre').value),
+        FechaMin: HHmmToMin($('fecha').value),
+        Ativo: estadoAtivo
+    };
 
-            // logo localStorage
-            const logoData = localStorage.getItem(logoKey(estabId));
-            if(logoData) $('logoPreview').src = logoData;
+    try {
+        const url = `${API_BASE.replace(/\/$/,'')}/configuracao/${encodeURIComponent(estabId)}`;
+        const r = await fetchWithTimeout(url, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        }, 10000);
+
+        if (r.status === 401) { localStorage.removeItem('ah_token'); location.href='login.html'; return; }
+        if (r.status === 404) {
+            showErr('PUT /api/configuracao/{id} não disponível no backend (404).');
+            return;
+        }
+        if (!r.ok) {
+            const t = await r.text().catch(()=>r.statusText);
+            throw new Error(t || `HTTP ${r.status}`);
         }
 
-        $('logo').addEventListener('change', async e => {
-            const file = e.target.files[0];
-            if(!file) return;
-            const reader = new FileReader();
-            reader.onload = async () => {
-                $('logoPreview').src = reader.result;
-                localStorage.setItem(logoKey(estabId), reader.result);
+        const j = await r.json().catch(()=>null);
+        showOk('Configurações salvas!');
+        // salvar logo localmente (persistência no front)
+        const logoData = preview.src;
+        if (logoData && logoData.startsWith('data:')) localStorage.setItem(logoKey(estabId), logoData);
+    } catch (e) {
+        console.error('salvarConfiguracao error', e);
+        if (e.name === 'AbortError') showErr('Timeout ao salvar configuração.');
+        else showErr('Falha ao salvar: ' + (e.message || e));
+    }
+}
 
-                // enviar para API
-                try{
-                    const formData = new FormData();
-                    formData.append('logo', file);
-                    const r = await fetch(`${API_BASE}/configuracao/${estabId}/logo`, {method:'POST', body: formData});
-                    if(r.ok) showOk("Logo atualizada!"); else showErr("Falha ao enviar logo");
-                }catch{ showErr("Falha ao enviar logo"); }
-            };
-            reader.readAsDataURL(file);
-        });
+/* handler para botão toggle: atualiza estado local e salva via PUT (o backend atualiza Estabelecimento/Ativo no PUT) */
+async function toggleAtivo(){
+    estadoAtivo = !estadoAtivo;
+    setAtivoLabel(estadoAtivo);
+    // salva alteração no servidor via PUT reutilizando campos atuais
+    await salvarConfiguracao();
+}
 
-        $('removerLogo').onclick = async () => {
-            $('logoPreview').src = '';
-            localStorage.removeItem(logoKey(estabId));
-            try{
-                const r = await fetch(`${API_BASE}/configuracao/${estabId}/logo`, {method:'DELETE'});
-                if(r.ok) showOk("Logo removida!"); else showErr("Falha ao remover logo");
-            }catch{ showErr("Falha ao remover logo"); }
-        };
+/* logo preview only: grava apenas em localStorage (backend não tem rota de logo) */
+$('logo').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+        preview.src = reader.result;
+        if (estabId && preview.src && preview.src.startsWith('data:')) localStorage.setItem(logoKey(estabId), preview.src);
+        showOk('Logo atualizada localmente (localStorage). Backend não suporta upload por essa rota.');
+    };
+    reader.readAsDataURL(file);
+});
 
-        btnSalvar.onclick = async () => {
-            hideMsgs();
-            const payload = {
-                nome: $('nome').value,
-                endereco: $('endereco').value,
-                telefone: $('telefone').value,
-                horarios: $('horarios').value,
-                descricao: $('descricao').value,
-                abreMin: HHmmToMin($('abre').value),
-                fechaMin: HHmmToMin($('fecha').value),
-                ativo: estadoAtivo
-            };
-            try{
-                const r = await fetch(`${API_BASE}/configuracao/${estabId}`, {
-                    method:'PUT',
-                    headers:{'Content-Type':'application/json'},
-                    body: JSON.stringify(payload)
-                });
-                if(r.ok) showOk("Configurações salvas!"); else showErr("Falha ao salvar.");
-            }catch(e){ console.error(e); showErr("Falha ao salvar."); }
-        };
+$('removerLogo').onclick = () => {
+    preview.src = '';
+    if (estabId) localStorage.removeItem(logoKey(estabId));
+    showOk('Logo removida localmente.');
+};
 
-        btnToggle.onclick = async () => {
-            estadoAtivo = !estadoAtivo;
-            setAtivoLabel(estadoAtivo);
-            try{
-                await fetch(`${API_BASE}/configuracao/${estabId}/ativo`, {
-                    method:'PATCH',
-                    headers:{'Content-Type':'application/json'},
-                    body: JSON.stringify({ativo: estadoAtivo})
-                });
-            }catch(e){ console.error(e); showErr("Falha ao atualizar status"); }
-        };
+btnSalvar.onclick = salvarConfiguracao;
+btnToggle.onclick = toggleAtivo;
+$('btn-recarregar').onclick = loadConfiguracao;
+$('logout').onclick = () => { location.href = 'index.html'; };
 
-        $('btn-recarregar').onclick = loadConfiguracao;
+/* start */
+loadConfiguracao();
+</script>
 
-        loadEstabId();
-    </script>
 </body>
 </html>
