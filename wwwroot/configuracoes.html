@@ -210,7 +210,7 @@
 
         async function loadEstabId(){
             try{
-                const r = await fetch(`${API_BASE}/usuario/logado?_ts=${Date.now()}`, {cache:'no-store'});
+                const r = await fetch(`${API_BASE}/usuario/login?_ts=${Date.now()}`, {cache:'no-store'});
                 if(r.ok){
                     const user = await r.json();
                     estabId = user?.estabelecimentoId;

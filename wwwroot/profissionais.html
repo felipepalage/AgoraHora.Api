@@ -555,7 +555,7 @@
 
     async function init() {
         try {
-            const user = await api('/usuario/logado');
+            const user = await api('/usuario/login');
             estabId = user?.estabelecimentoId;
             if (!estabId) {
                 alert('Estabelecimento não definido. Faça login corretamente.');
