@@ -29,9 +29,7 @@
             --shadow-strong: 0 20px 40px rgba(10,25,51,.12);
         }
 
-        * {
-            box-sizing: border-box
-        }
+        * { box-sizing: border-box; }
 
         body {
             margin: 0;
@@ -58,7 +56,7 @@
             display: flex;
             align-items: center;
             gap: 14px;
-            justify-content: space-between
+            justify-content: space-between;
         }
 
         .brand {
@@ -69,9 +67,7 @@
             transition: transform 0.2s ease;
         }
 
-            .brand:hover {
-                transform: scale(1.02);
-            }
+        .brand:hover { transform: scale(1.02); }
 
         .brand-icon {
             width: 40px;
@@ -84,27 +80,13 @@
             box-shadow: 0 4px 10px rgba(13,165,160,.25);
         }
 
-            .brand-icon i {
-                color: white;
-                font-size: 20px;
-            }
+        .brand-icon i { color: white; font-size: 20px; }
 
-        .brand .name {
-            font-weight: 800;
-            font-size: 22px;
-            color: var(--brand-navy)
-        }
+        .brand .name { font-weight: 800; font-size: 22px; color: var(--brand-navy); }
 
-        .user {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: var(--muted)
-        }
+        .user { display: flex; align-items: center; gap: 12px; color: var(--muted); }
 
-            .user i {
-                color: var(--brand-teal);
-            }
+        .user i { color: var(--brand-teal); }
 
         .btn {
             padding: 10px 16px;
@@ -122,46 +104,23 @@
             overflow: hidden;
         }
 
-            .btn::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: -100%;
-                width: 100%;
-                height: 100%;
-                background: rgba(255,255,255,0.2);
-                transition: left 0.3s ease;
-            }
-
-            .btn:hover::before {
-                left: 100%;
-            }
-
-            .btn:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(13,165,160,.35);
-            }
-
-        .container {
-            max-width: 1200px;
-            margin: 24px auto;
-            padding: 0 20px
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.2);
+            transition: left 0.3s ease;
         }
 
-        .grid {
-            display: grid;
-            gap: 20px
-        }
+        .btn:hover::before { left: 100%; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(13,165,160,.35); }
 
-        @media(min-width:900px) {
-            .grid-3 {
-                grid-template-columns: repeat(3,1fr)
-            }
-
-            .grid-2 {
-                grid-template-columns: 2fr 3fr
-            }
-        }
+        .container { max-width: 1200px; margin: 24px auto; padding: 0 20px; }
+        .grid { display: grid; gap: 20px; }
+        @media(min-width:900px) { .grid-3 { grid-template-columns: repeat(3,1fr); } .grid-2 { grid-template-columns: 2fr 3fr; } }
 
         .card {
             background: var(--card);
@@ -172,9 +131,7 @@
             transition: all 0.3s ease;
         }
 
-            .card:hover {
-                box-shadow: var(--shadow-strong);
-            }
+        .card:hover { box-shadow: var(--shadow-strong); }
 
         .kpi {
             display: flex;
@@ -187,44 +144,21 @@
             overflow: hidden;
         }
 
-            .kpi::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                height: 4px;
-                background: linear-gradient(90deg, var(--brand-teal), var(--brand-purple));
-            }
-
-            .kpi i {
-                font-size: 24px;
-                color: var(--brand-teal);
-                margin-bottom: 10px;
-            }
-
-            .kpi h3 {
-                margin: 0;
-                font-size: 14px;
-                color: var(--muted);
-                font-weight: 600;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-            }
-
-            .kpi strong {
-                font-size: 32px;
-                color: var(--brand-navy);
-                font-weight: 800;
-                margin-top: 5px;
-            }
-
-        .actions {
-            display: grid;
-            gap: 12px;
-            grid-template-columns: repeat(2,1fr)
+        .kpi::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--brand-teal), var(--brand-purple));
         }
 
+        .kpi i { font-size: 24px; color: var(--brand-teal); margin-bottom: 10px; }
+        .kpi h3 { margin: 0; font-size: 14px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .kpi strong { font-size: 32px; color: var(--brand-navy); font-weight: 800; margin-top: 5px; }
+
+        .actions { display: grid; gap: 12px; grid-template-columns: repeat(2,1fr); }
         .action {
             border: 1px solid var(--border);
             border-radius: var(--radius-md);
@@ -241,102 +175,25 @@
             gap: 8px;
         }
 
-            .action i {
-                font-size: 20px;
-                color: var(--brand-teal);
-            }
+        .action i { font-size: 20px; color: var(--brand-teal); }
+        .action:hover { border-color: var(--brand-teal); transform: translateY(-2px); box-shadow: var(--shadow-soft); }
 
-            .action:hover {
-                border-color: var(--brand-teal);
-                transform: translateY(-2px);
-                box-shadow: var(--shadow-soft);
-            }
+        .table-wrapper { overflow-x: auto; border-radius: var(--radius-md); border: 1px solid var(--border); margin-top: 16px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px 14px; border-bottom: 1px solid var(--border); text-align: left; }
+        th { color: var(--brand-navy); font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; background: #f8fafc; }
+        tbody tr { transition: background 0.2s ease; }
+        tbody tr:hover { background: #f8fafc; }
+        .empty { color: var(--muted); padding: 20px 0; text-align: center; font-style: italic; }
 
-        .table-wrapper {
-            overflow-x: auto;
-            border-radius: var(--radius-md);
-            border: 1px solid var(--border);
-            margin-top: 16px;
-        }
+        .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .badge i { font-size: 10px; }
+        .b-gray { background: #f1f5f9; color: #475569; }
+        .b-red { background: #fee2e2; color: #b91c1c; }
+        .b-orange { background: #fef3c7; color: #b45309; }
+        .b-green { background: #d1fae5; color: #0f766e; }
 
-        table {
-            width: 100%;
-            border-collapse: collapse
-        }
-
-        th, td {
-            padding: 12px 14px;
-            border-bottom: 1px solid var(--border);
-            text-align: left
-        }
-
-        th {
-            color: var(--brand-navy);
-            font-size: 13px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            background: #f8fafc;
-        }
-
-        tbody tr {
-            transition: background 0.2s ease;
-        }
-
-            tbody tr:hover {
-                background: #f8fafc;
-            }
-
-        .empty {
-            color: var(--muted);
-            padding: 20px 0;
-            text-align: center;
-            font-style: italic;
-        }
-
-        /* badges */
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            border-radius: 999px;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-            .badge i {
-                font-size: 10px;
-            }
-
-        .b-gray {
-            background: #f1f5f9;
-            color: #475569;
-        }
-
-        .b-red {
-            background: #fee2e2;
-            color: #b91c1c;
-        }
-
-        .b-orange {
-            background: #fef3c7;
-            color: #b45309;
-        }
-
-        .b-green {
-            background: #d1fae5;
-            color: #0f766e;
-        }
-
-        /* botão de status + menu */
-        .status-wrap {
-            position: relative;
-            display: inline-block
-        }
-
+        .status-wrap { position: relative; display: inline-block; }
         .status-btn {
             display: inline-flex;
             align-items: center;
@@ -350,21 +207,9 @@
             transition: all 0.2s ease;
         }
 
-            .status-btn:hover {
-                box-shadow: 0 0 0 3px rgba(13,165,160,.15);
-                border-color: var(--brand-teal);
-            }
-
-        .chev {
-            font-size: 12px;
-            color: var(--muted);
-            transition: transform 0.2s ease;
-        }
-
-        .status-wrap:hover .chev {
-            transform: rotate(180deg);
-        }
-
+        .status-btn:hover { box-shadow: 0 0 0 3px rgba(13,165,160,.15); border-color: var(--brand-teal); }
+        .chev { font-size: 12px; color: var(--muted); transition: transform 0.2s ease; }
+        .status-wrap:hover .chev { transform: rotate(180deg); }
         .status-menu {
             position: absolute;
             top: 110%;
@@ -380,78 +225,19 @@
             animation: fadeIn 0.2s ease;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .status-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: var(--radius-sm); cursor: pointer; font-weight: 600; transition: background 0.2s ease; }
+        .status-item:hover { background: var(--brand-teal-soft); }
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+        .dot { width: 8px; height: 8px; border-radius: 50%; }
+        .d-red { background: var(--danger); }
+        .d-orange { background: var(--warning); }
+        .d-green { background: var(--success); }
+        .d-gray { background: var(--muted); }
 
-        .status-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 12px;
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            font-weight: 600;
-            transition: background 0.2s ease;
-        }
-
-            .status-item:hover {
-                background: var(--brand-teal-soft);
-            }
-
-        .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%
-        }
-
-        .d-red {
-            background: var(--danger)
-        }
-
-        .d-orange {
-            background: var(--warning)
-        }
-
-        .d-green {
-            background: var(--success)
-        }
-
-        .d-gray {
-            background: var(--muted)
-        }
-
-        .searchbar {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            outline: none;
-            background: #f8fafc;
-            font-size: 14px;
-            transition: all 0.2s ease;
-        }
-
-            input:focus, select:focus {
-                background: #ffffff;
-                border-color: var(--brand-teal);
-                box-shadow: 0 0 0 3px rgba(13,165,160,.15);
-            }
+        .searchbar { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+        input, select { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--radius-md); outline: none; background: #f8fafc; font-size: 14px; transition: all 0.2s ease; }
+        input:focus, select:focus { background: #ffffff; border-color: var(--brand-teal); box-shadow: 0 0 0 3px rgba(13,165,160,.15); }
 
         .error {
             margin-top: 12px;
@@ -467,764 +253,227 @@
             gap: 8px;
         }
 
-            .error i {
-                font-size: 16px;
-            }
+        .error i { font-size: 16px; }
 
-        .legend {
-            color: var(--muted);
-            font-size: 13px;
-            margin-bottom: 12px;
-            font-style: italic;
-        }
+        .legend { color: var(--muted); font-size: 13px; margin-bottom: 12px; font-style: italic; }
 
-        .grid-1 {
-            display: grid;
-            gap: 20px
-        }
+        .grid-1 { display: grid; gap: 20px; }
 
-        /* ===== Desempenho no mês (UI nova) ===== */
-        .metric-head {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 16px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid var(--border);
-        }
-
-            .metric-head h2 {
-                margin: 0;
-                color: var(--brand-navy);
-                font-size: 20px;
-                display: flex;
-                align-items: center;
-                gap: 10px;
-            }
-
-                .metric-head h2 i {
-                    color: var(--brand-teal);
-                }
-
-        .kpis-mini {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px
-        }
-
-        .kpi-mini {
-            background: var(--brand-teal-soft);
-            border: 1px solid var(--brand-teal);
-            border-radius: var(--radius-sm);
-            padding: 10px 14px;
-            font-weight: 700;
-            color: var(--brand-navy);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-
-            .kpi-mini span {
-                display: block;
-                font-size: 11px;
-                color: var(--muted);
-                font-weight: 600;
-                margin-bottom: 4px;
-            }
-
-        .meter-row {
-            display: grid;
-            grid-template-columns: 1fr auto;
-            gap: 12px;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px dashed var(--border);
-        }
-
-            .meter-row:last-child {
-                border-bottom: none
-            }
-
-        .meter-title {
-            font-weight: 700;
-            color: var(--brand-navy);
-            margin-bottom: 6px;
-        }
-
-        .meter {
-            height: 14px;
-            background: #f1f5f9;
-            border-radius: 999px;
-            overflow: hidden;
-            position: relative
-        }
-
-        .meter-fill {
-            height: 100%;
-            border-radius: 999px;
-            background: linear-gradient(90deg,var(--brand-teal),var(--brand-purple));
-            transition: width 0.8s ease;
-        }
-
-        .count {
-            min-width: 48px;
-            text-align: right;
-            font-weight: 800;
-            color: var(--brand-navy);
-            font-size: 18px;
-        }
-
-        .small-muted {
-            color: var(--muted);
-            font-size: 13px;
-            margin-bottom: 12px;
-            font-style: italic;
-        }
-
-        .section-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--brand-navy);
-            margin: 0 0 16px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-            .section-title i {
-                color: var(--brand-teal);
-            }
-
-        /* Responsividade aprimorada */
-        @media(max-width:1200px) {
-            .container {
-                padding: 0 15px;
-            }
-        }
-
-        @media(max-width:1024px) {
-            .grid-2 {
-                grid-template-columns: 1fr;
-            }
-
-            .metric-head {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .kpis-mini {
-                width: 100%;
-                justify-content: space-between;
-            }
-
-            .kpi-mini {
-                flex: 1;
-                min-width: 100px;
-            }
-        }
-
-        @media(max-width:900px) {
-            .grid-3 {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .kpi strong {
-                font-size: 28px;
-            }
-        }
-
-        @media(max-width:768px) {
-            .searchbar {
-                flex-direction: column;
-            }
-
-            .actions {
-                grid-template-columns: 1fr;
-            }
-
-            .brand .name {
-                font-size: 18px;
-            }
-
-            .kpi strong {
-                font-size: 24px;
-            }
-
-            .section-title {
-                font-size: 16px;
-            }
-
-            /* Transformar tabela em cards */
-            .table-wrapper {
-                border: none;
-                overflow-x: visible;
-            }
-
-            table {
-                display: none;
-            }
-
-            .mobile-cards {
-                display: block;
-            }
-
-            .mobile-card {
-                background: var(--card);
-                border: 1px solid var(--border);
-                border-radius: var(--radius-md);
-                padding: 16px;
-                margin-bottom: 12px;
-                box-shadow: var(--shadow-soft);
-            }
-
-            .mobile-card-row {
-                display: flex;
-                justify-content: space-between;
-                padding: 8px 0;
-                border-bottom: 1px solid rgba(226,232,240,0.5);
-            }
-
-                .mobile-card-row:last-child {
-                    border-bottom: none;
-                }
-
-            .mobile-card-label {
-                font-weight: 600;
-                color: var(--muted);
-                font-size: 13px;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-            }
-
-            .mobile-card-value {
-                font-weight: 600;
-                color: var(--brand-navy);
-                text-align: right;
-            }
-
-            .meter-row {
-                grid-template-columns: 1fr;
-                gap: 8px;
-            }
-
-            .count {
-                text-align: left;
-            }
-        }
-
-        @media(max-width:480px) {
-            .top {
-                padding: 10px 15px;
-            }
-
-            .container {
-                margin: 15px auto;
-                padding: 0 15px;
-            }
-
-            .card {
-                padding: 16px;
-            }
-
-            .grid-3 {
-                grid-template-columns: 1fr;
-            }
-
-            .kpi {
-                padding: 15px 0;
-            }
-
-                .kpi i {
-                    font-size: 20px;
-                }
-
-                .kpi h3 {
-                    font-size: 12px;
-                }
-
-                .kpi strong {
-                    font-size: 22px;
-                }
-
-            .action {
-                padding: 12px;
-            }
-
-            .brand .name {
-                font-size: 16px;
-            }
-
-            .user span {
-                display: none;
-            }
-
-            .btn {
-                padding: 8px 12px;
-                font-size: 14px;
-            }
-
-            .kpi-mini {
-                padding: 8px 12px;
-            }
-
-                .kpi-mini span {
-                    font-size: 10px;
-                }
-
-            .meter {
-                height: 12px;
-            }
-
-            .mobile-card {
-                padding: 12px;
-            }
-        }
-
-        @media(min-width:769px) {
-            .mobile-cards {
-                display: none;
-            }
-        }
+        /* Responsividade */
+        @media(max-width:768px) { .table-wrapper { border: none; overflow-x: visible; } table { display: none; } .mobile-cards { display: block; } }
+        @media(min-width:769px) { .mobile-cards { display: none; } }
     </style>
 </head>
 <body>
-    <header>
-        <div class="top">
-            <div class="brand" aria-label="AgoraHora">
-                <div class="brand-icon">
-                    <i class="fas fa-chart-line"></i>
-                </div>
-                <div class="name">AgoraHora</div>
-            </div>
-            <div class="user">
-                <i class="fas fa-user-circle"></i>
-                <span id="usuario-nome">Bem-vindo!</span>
-                <button class="btn" id="logout">
-                    <i class="fas fa-sign-out-alt"></i> Sair
-                </button>
+<header>
+    <div class="top">
+        <div class="brand" aria-label="AgoraHora">
+            <div class="brand-icon"><i class="fas fa-chart-line"></i></div>
+            <div class="name">AgoraHora</div>
+        </div>
+        <div class="user">
+            <i class="fas fa-user-circle"></i>
+            <span id="usuario-nome">Bem-vindo!</span>
+            <button class="btn" id="logout"><i class="fas fa-sign-out-alt"></i> Sair</button>
+        </div>
+    </div>
+</header>
+
+<main class="container grid-1">
+    <section class="grid grid-3">
+        <div class="card kpi">
+            <i class="fas fa-calendar-check"></i>
+            <h3>Agendados</h3>
+            <strong id="kpi-hoje">–</strong>
+        </div>
+        <div class="card kpi">
+            <i class="fas fa-user-check"></i>
+            <h3>Atendidos</h3>
+            <strong id="kpi-atendidos">–</strong>
+        </div>
+        <div class="card kpi">
+            <i class="fas fa-calendar-times"></i>
+            <h3>Cancelados</h3>
+            <strong id="kpi-cancelados">–</strong>
+        </div>
+    </section>
+
+    <section class="grid grid-2">
+        <div class="card">
+            <h2 class="section-title"><i class="fas fa-th-large"></i> Acesso rápido</h2>
+            <div class="actions">
+                <a class="action" href="agendamentos.html"><i class="fas fa-calendar-alt"></i> Agendamentos</a>
+                <a class="action" href="servicos.html"><i class="fas fa-concierge-bell"></i> Serviços</a>
+                <a class="action" href="profissionais.html"><i class="fas fa-user-tie"></i> Profissionais</a>
+                <a class="action" href="configuracoes.html?estab=1"><i class="fas fa-cog"></i> Configurações</a>
             </div>
         </div>
-    </header>
 
-    <main class="container grid-1">
-        <section class="grid grid-3">
-            <div class="card kpi">
-                <i class="fas fa-calendar-check"></i>
-                <h3>Agendados</h3>
-                <strong id="kpi-hoje">–</strong>
+        <div class="card">
+            <h2 class="section-title"><i class="fas fa-list"></i> Agendamentos recentes</h2>
+            <div class="searchbar">
+                <input id="filtro-data" type="date" />
+                <select id="filtro-status">
+                    <option value="">Todos os status</option>
+                    <option value="PENDENTE">Pendente</option>
+                    <option value="CONFIRMADO">Confirmado</option>
+                    <option value="CONCLUIDO">Concluído</option>
+                    <option value="CANCELADO">Cancelado</option>
+                </select>
+                <button class="btn" id="btn-filtrar"><i class="fas fa-filter"></i> Filtrar</button>
             </div>
-            <div class="card kpi">
-                <i class="fas fa-user-check"></i>
-                <h3>Atendidos</h3>
-                <strong id="kpi-atendidos">–</strong>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Serviço</th>
+                            <th>Profissional</th>
+                            <th>Data</th>
+                            <th>Hora</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-agendamentos">
+                        <tr><td class="empty" colspan="6">Carregando…</td></tr>
+                    </tbody>
+                </table>
             </div>
-            <div class="card kpi">
-                <i class="fas fa-calendar-times"></i>
-                <h3>Cancelados</h3>
-                <strong id="kpi-cancelados">–</strong>
-            </div>
-        </section>
+            <div class="mobile-cards" id="mobile-cards"><div class="empty">Carregando…</div></div>
+            <div id="erro" class="error"><i class="fas fa-exclamation-circle"></i> Não foi possível carregar os agendamentos.</div>
+        </div>
+    </section>
+</main>
 
-        <section class="grid grid-2">
-            <div class="card">
-                <h2 class="section-title">
-                    <i class="fas fa-th-large"></i>
-                    Acesso rápido
-                </h2>
-                <div class="actions">
-                    <a class="action" href="agendamentos.html">
-                        <i class="fas fa-calendar-alt"></i>
-                        Agendamentos
-                    </a>
-                    <a class="action" href="servicos.html">
-                        <i class="fas fa-concierge-bell"></i>
-                        Serviços
-                    </a>
-                    <a class="action" href="profissionais.html">
-                        <i class="fas fa-user-tie"></i>
-                        Profissionais
-                    </a>
-                    <a class="action" href="configuracoes.html?estab=1">
-                        <i class="fas fa-cog"></i>
-                        Configurações
-                    </a>
-                </div>
-            </div>
+<script>
+    const token = localStorage.getItem('ah_token');
+    if (!token) location.replace('login.html');
 
-            <div class="card">
-                <h2 class="section-title">
-                    <i class="fas fa-list"></i>
-                    Agendamentos recentes
-                </h2>
-                <div class="searchbar">
-                    <input id="filtro-data" type="date" />
-                    <select id="filtro-status">
-                        <option value="">Todos os status</option>
-                        <option value="PENDENTE">Pendente</option>
-                        <option value="CONFIRMADO">Confirmado</option>
-                        <option value="CONCLUIDO">Concluído</option>
-                        <option value="CANCELADO">Cancelado</option>
-                    </select>
-                    <button class="btn" id="btn-filtrar">
-                        <i class="fas fa-filter"></i> Filtrar
-                    </button>
-                </div>
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Cliente</th>
-                                <th>Serviço</th>
-                                <th>Profissional</th>
-                                <th>Data</th>
-                                <th>Hora</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbody-agendamentos">
-                            <tr><td class="empty" colspan="6">Carregando…</td></tr>
-                        </tbody>
-                    </table>
-                </div>
+    document.getElementById('logout').onclick = () => {
+        localStorage.removeItem('ah_token');
+        localStorage.removeItem('ah_estabelecimentoId');
+        localStorage.removeItem('ah_user_name');
+        location.href = 'login.html';
+    };
 
-                <!-- Cards para dispositivos móveis -->
-                <div class="mobile-cards" id="mobile-cards">
-                    <div class="empty">Carregando…</div>
-                </div>
+    async function api(path) {
+        const r = await fetch('/api'+path, { headers:{ Authorization:'Bearer '+token }});
+        if(!r.ok) throw new Error('HTTP '+r.status);
+        return r.json();
+    }
 
-                <div id="erro" class="error">
-                    <i class="fas fa-exclamation-circle"></i>
-                    Não foi possível carregar os agendamentos.
-                </div>
-            </div>
-        </section>
+    async function apiPatch(path, body){
+        const r = await fetch('/api'+path, { method:'PATCH', headers:{ 'Content-Type':'application/json', Authorization:'Bearer '+token }, body:JSON.stringify(body) });
+        if(!r.ok) throw new Error('HTTP '+r.status);
+    }
 
-        <!-- Desempenho no mês - UI nova -->
-        <section class="card" id="sec-mes">
-            <div class="metric-head">
-                <h2>
-                    <i class="fas fa-chart-bar"></i>
-                    Desempenho no mês — <span id="mes-prof">Profissional</span>
-                </h2>
-                <div class="kpis-mini">
-                    <div class="kpi-mini">
-                        <span>Mês</span>
-                        <b id="mes-legenda">—</b>
-                    </div>
-                    <div class="kpi-mini">
-                        <span>Total concl.</span>
-                        <b id="mes-total">0</b>
-                    </div>
-                    <div class="kpi-mini">
-                        <span>Top serviço</span>
-                        <b id="mes-top">—</b>
-                    </div>
-                    <div class="kpi-mini">
-                        <span>Média/dia</span>
-                        <b id="mes-media">0</b>
+    const PROFISSIONAL_ID = 1;
+    const fmtData = d => new Date(d).toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit' });
+    const fmtHora = d => new Date(d).toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+
+    const kHoje = document.getElementById('kpi-hoje');
+    const kAtendidos = document.getElementById('kpi-atendidos');
+    const kCancelados = document.getElementById('kpi-cancelados');
+    const tbody = document.getElementById('tbody-agendamentos');
+    const mobileCards = document.getElementById('mobile-cards');
+    const erro = document.getElementById('erro');
+    const filtroData = document.getElementById('filtro-data');
+    const filtroStatus = document.getElementById('filtro-status');
+
+    function criaStatusBadge(status){
+        let cls = 'b-gray', dot = 'd-gray';
+        switch(status){
+            case 'PENDENTE': cls='b-gray'; dot='d-gray'; break;
+            case 'CONFIRMADO': cls='b-green'; dot='d-green'; break;
+            case 'CONCLUIDO': cls='b-teal'; dot='d-green'; break;
+            case 'CANCELADO': cls='b-red'; dot='d-red'; break;
+        }
+        return `<span class="badge ${cls}"><span class="dot ${dot}"></span>${status}</span>`;
+    }
+
+    function criaLinha(a){
+        return `<tr data-id="${a.id}">
+            <td>${a.cliente}</td>
+            <td>${a.servico}</td>
+            <td>${a.profissional}</td>
+            <td>${fmtData(a.data)}</td>
+            <td>${fmtHora(a.data)}</td>
+            <td>
+                <div class="status-wrap">
+                    <div class="status-btn">${criaStatusBadge(a.status)}<span class="chev"><i class="fas fa-chevron-down"></i></span></div>
+                    <div class="status-menu">
+                        <div class="status-item" data-role="set" data-status="PENDENTE">${criaStatusBadge('PENDENTE')}</div>
+                        <div class="status-item" data-role="set" data-status="CONFIRMADO">${criaStatusBadge('CONFIRMADO')}</div>
+                        <div class="status-item" data-role="set" data-status="CONCLUIDO">${criaStatusBadge('CONCLUIDO')}</div>
+                        <div class="status-item" data-role="set" data-status="CANCELADO">${criaStatusBadge('CANCELADO')}</div>
                     </div>
                 </div>
-            </div>
-            <div class="small-muted">Somente agendamentos <b>Concluídos</b> no mês atual.</div>
-            <div id="mes-lista" style="margin-top:16px"></div>
-        </section>
-    </main>
+            </td>
+        </tr>`;
+    }
 
-    <script>
-        // auth/guard
-        const token = localStorage.getItem('ah_token');
-        if (!token) { location.replace('login.html'); }
+    function criaCard(a){
+        return `<div class="card" data-id="${a.id}">
+            <div><strong>${a.cliente}</strong></div>
+            <div>${a.servico}</div>
+            <div>${a.profissional}</div>
+            <div>${fmtData(a.data)} ${fmtHora(a.data)}</div>
+            <div>${criaStatusBadge(a.status)}</div>
+        </div>`;
+    }
 
-        document.getElementById('logout').onclick = () => {
-            localStorage.removeItem('ah_token');
-            localStorage.removeItem('ah_estabelecimentoId');
-            localStorage.removeItem('ah_user_name');
-            location.href = 'login.html';
-        };
-
-        async function api(path) {
-            const r = await fetch('/api' + path, { headers: { Authorization: 'Bearer ' + token } });
-            if (!r.ok) throw new Error('HTTP ' + r.status);
-            return r.json();
+    async function carregaAgendamentos(){
+        try {
+            erro.style.display='none';
+            const data = filtroData.value ? `?data=${filtroData.value}` : '';
+            const status = filtroStatus.value ? `&status=${filtroStatus.value}` : '';
+            const res = await api(`/agendamentos${data}${status}`);
+            kHoje.textContent=res.filter(a=>a.status==='PENDENTE').length;
+            kAtendidos.textContent=res.filter(a=>a.status==='CONCLUIDO').length;
+            kCancelados.textContent=res.filter(a=>a.status==='CANCELADO').length;
+            tbody.innerHTML = res.length ? res.map(criaLinha).join('') : '<tr><td class="empty" colspan="6">Nenhum agendamento</td></tr>';
+            mobileCards.innerHTML = res.length ? res.map(criaCard).join('') : '<div class="empty">Nenhum agendamento</div>';
+        } catch(e){
+            erro.style.display='flex';
+            tbody.innerHTML = '<tr><td class="empty" colspan="6">Erro ao carregar</td></tr>';
+            mobileCards.innerHTML = '<div class="empty">Erro ao carregar</div>';
         }
-        async function apiPatch(path, body) {
-            const r = await fetch('/api' + path, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
-                body: JSON.stringify(body)
-            });
-            if (!r.ok) throw new Error('HTTP ' + r.status);
-        }
+    }
 
-        const PROFISSIONAL_ID = 1;
-        const fmtData = d => new Date(d).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
-        const fmtHora = d => new Date(d).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    document.getElementById('btn-filtrar').onclick = carregaAgendamentos;
 
-        const kHoje = document.getElementById('kpi-hoje');
-        const kAtendidos = document.getElementById('kpi-atendidos');
-        const kCancelados = document.getElementById('kpi-cancelados');
-        const tbody = document.getElementById('tbody-agendamentos');
-        const mobileCards = document.getElementById('mobile-cards');
-        const erro = document.getElementById('erro');
-        const filtroData = document.getElementById('filtro-data');
-        const filtroStatus = document.getElementById('filtro-status');
-
-        const mesTotal = document.getElementById('mes-total');
-        const mesLegenda = document.getElementById('mes-legenda');
-        const mesProf = document.getElementById('mes-prof');
-
-        const todayISO = new Date().toISOString().slice(0, 10);
-        filtroData.value = todayISO;
-        document.getElementById('btn-filtrar').onclick = carregar;
-
-        const STATUS = ["PENDENTE", "CONFIRMADO", "CONCLUIDO", "CANCELADO"];
-        const normalize = s => {
-            s = String(s || "").toUpperCase();
-            if (s === "CONCLUÍDO") s = "CONCLUIDO";
-            return STATUS.includes(s) ? s : "PENDENTE";
-        };
-        const badgeClass = s => {
-            s = normalize(s);
-            if (s === "CANCELADO") return "badge b-red";
-            if (s === "PENDENTE") return "badge b-orange";
-            if (s === "CONFIRMED" || s === "CONCLUIDO") return "badge b-green";
-            return "badge b-gray";
-        };
-        const dotClass = s => {
-            s = normalize(s);
-            if (s === "CANCELADO") return "dot d-red";
-            if (s === "PENDENTE") return "dot d-orange";
-            if (s === "CONFIRMED" || s === "CONCLUIDO") return "dot d-green";
-            return "dot d-gray";
-        };
-
-        function statusControl(row) {
-            const st = normalize(row.status);
-            return `
-                  <div class="status-wrap" data-id="${row.id}">
-                    <button class="status-btn" data-role="open">
-                      <span class="${badgeClass(st)}" data-role="badge">
-                        <i class="fas fa-circle ${dotClass(st)}"></i> ${st}
-                      </span>
-                      <span class="chev">▼</span>
-                    </button>
-                    <div class="status-menu" data-role="menu" aria-hidden="true">
-                      ${STATUS.map(x => `
-                        <div class="status-item" data-role="set" data-value="${x}">
-                          <span class="${dotClass(x)}"></span> ${x}
-                        </div>`).join('')}
-                    </div>
-                  </div>`;
+    document.addEventListener('click', async e => {
+        // toggle menu
+        if(e.target.closest('.status-btn')){
+            const wrap = e.target.closest('.status-wrap');
+            const menu = wrap.querySelector('.status-menu');
+            menu.style.display = menu.style.display==='block'?'none':'block';
+            return;
         }
 
-        function renderTabela(lista) {
-            if (!lista.length) {
-                tbody.innerHTML = `<tr><td class="empty" colspan="6">Nenhum agendamento encontrado.</td></tr>`;
-                mobileCards.innerHTML = `<div class="empty">Nenhum agendamento encontrado.</div>`;
-                return;
-            }
-
-            // Renderizar tabela para desktop
-            tbody.innerHTML = lista.slice(0, 12).map(a => `
-                  <tr data-id="${a.id}">
-                    <td>${a.cliente ?? '—'}</td>
-                    <td>${a.servico ?? a.especialidade ?? '—'}</td>
-                    <td>${a.profissional ?? '—'}</td>
-                    <td>${fmtData(a.dtInicio)}</td>
-                    <td>${fmtHora(a.dtInicio)}</td>
-                    <td>${statusControl(a)}</td>
-                  </tr>
-                `).join('');
-
-            // Renderizar cards para mobile
-            mobileCards.innerHTML = lista.slice(0, 12).map(a => `
-                  <div class="mobile-card" data-id="${a.id}">
-                    <div class="mobile-card-row">
-                      <div class="mobile-card-label">Cliente</div>
-                      <div class="mobile-card-value">${a.cliente ?? '—'}</div>
-                    </div>
-                    <div class="mobile-card-row">
-                      <div class="mobile-card-label">Serviço</div>
-                      <div class="mobile-card-value">${a.servico ?? a.especialidade ?? '—'}</div>
-                    </div>
-                    <div class="mobile-card-row">
-                      <div class="mobile-card-label">Profissional</div>
-                      <div class="mobile-card-value">${a.profissional ?? '—'}</div>
-                    </div>
-                    <div class="mobile-card-row">
-                      <div class="mobile-card-label">Data</div>
-                      <div class="mobile-card-value">${fmtData(a.dtInicio)}</div>
-                    </div>
-                    <div class="mobile-card-row">
-                      <div class="mobile-card-label">Hora</div>
-                      <div class="mobile-card-value">${fmtHora(a.dtInicio)}</div>
-                    </div>
-                    <div class="mobile-card-row">
-                      <div class="mobile-card-label">Status</div>
-                      <div class="mobile-card-value">${statusControl(a)}</div>
-                    </div>
-                  </div>
-                `).join('');
-        }
-
-        function renderKPIs(hoje) {
-            const atendidos = hoje.filter(a => normalize(a.status) === 'CONCLUIDO').length;
-            const cancelados = hoje.filter(a => normalize(a.status) === 'CANCELADO').length;
-            kHoje.textContent = hoje.length;
-            kAtendidos.textContent = atendidos;
-            kCancelados.textContent = cancelados;
-        }
-
-        async function carregar() {
-            erro.style.display = 'none';
-            tbody.innerHTML = `<tr><td class="empty" colspan="6">Carregando…</td></tr>`;
-            mobileCards.innerHTML = `<div class="empty">Carregando…</div>`;
-            const dia = filtroData.value || todayISO;
-            const ini = `${dia}T00:00:00`;
-            const fim = `${dia}T23:59:59`;
-            try {
-                const r = await api(`/agendamentos/profissional?profissionalId=${PROFISSIONAL_ID}&ini=${encodeURIComponent(ini)}&fim=${encodeURIComponent(fim)}`);
-                const dados = Array.isArray(r) ? r : (r.data ?? []);
-                const fil = filtroStatus.value ? dados.filter(a => normalize(a.status) === filtroStatus.value) : dados;
-                renderTabela(fil);
-                renderKPIs(dados);
-            } catch {
-                erro.style.display = 'flex';
-                tbody.innerHTML = `<tr><td class="empty" colspan="6">Sem dados.</td></tr>`;
-                mobileCards.innerHTML = `<div class="empty">Sem dados.</div>`;
-                kHoje.textContent = kAtendidos.textContent = kCancelados.textContent = '–';
-            }
-            await carregarResumoMes();
-        }
-
-        function rangeMesAtual() {
-            const d = new Date();
-            const ini = new Date(d.getFullYear(), d.getMonth(), 1);
-            const fim = new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 59, 999);
-            return { ini: ini.toISOString(), fim: fim.toISOString(), label: ini.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }) };
-        }
-
-        async function getProfNome(id) {
-            try { const r = await api(`/profissionais/id/${id}`); return r?.data?.nome ?? `#${id}`; }
-            catch { return `#${id}`; }
-        }
-
-        async function carregarResumoMes() {
-            const { ini, fim, label } = rangeMesAtual();
-            mesLegenda.textContent = label;
-            mesProf.textContent = await getProfNome(PROFISSIONAL_ID);
-
-            const lista = document.getElementById('mes-lista');
-            lista.innerHTML = `<div class="small-muted">Carregando…</div>`;
-            mesTotal.textContent = '0';
-            document.getElementById('mes-top').textContent = '—';
-            document.getElementById('mes-media').textContent = '0';
-
-            try {
-                const r = await api(`/agendamentos/profissional?profissionalId=${PROFISSIONAL_ID}&ini=${encodeURIComponent(ini)}&fim=${encodeURIComponent(fim)}`);
-                const dados = Array.isArray(r) ? r : (r.data ?? []);
-                const concluidos = dados.filter(a => normalize(a.status) === 'CONCLUIDO');
-
-                const mapa = {};
-                for (const a of concluidos) {
-                    const key = (a.servico ?? a.especialidade ?? '—').trim() || '—';
-                    mapa[key] = (mapa[key] || 0) + 1;
-                }
-                const rows = Object.entries(mapa).sort((a, b) => b[1] - a[1]);
-                const total = concluidos.length;
-                mesTotal.textContent = String(total);
-
-                if (rows.length) { document.getElementById('mes-top').textContent = rows[0][0]; }
-                const d = new Date();
-                const diasNoMes = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
-                document.getElementById('mes-media').textContent = (total / diasNoMes).toFixed(1);
-
-                if (!rows.length) {
-                    lista.innerHTML = `<div class="small-muted">Sem atendimentos concluídos no mês.</div>`;
-                    return;
-                }
-
-                const max = Math.max(...rows.map(([, q]) => q));
-                lista.innerHTML = rows.map(([nome, qt]) => {
-                    const pct = max ? Math.round(qt / max * 100) : 0;
-                    return `
-                      <div class="meter-row">
-                        <div>
-                          <div class="meter-title">${nome}</div>
-                          <div class="meter" aria-label="${nome}">
-                            <div class="meter-fill" style="width:${pct}%"></div>
-                          </div>
-                        </div>
-                        <div class="count">${qt}</div>
-                      </div>`;
-                }).join('');
-
-            } catch {
-                document.getElementById('mes-lista').innerHTML = `<div class="small-muted">Erro ao carregar.</div>`;
-            }
-        }
-
-        // eventos do botão de status
-        document.addEventListener('click', async (e) => {
-            // fecha todos os menus primeiro
-            document.querySelectorAll('.status-menu').forEach(m => m.style.display = 'none');
-
-            const openBtn = e.target.closest('[data-role="open"]');
-            if (openBtn) {
-                const wrap = openBtn.closest('.status-wrap');
-                const menu = wrap.querySelector('[data-role="menu"]');
-                menu.style.display = 'block';
-                return;
-            }
-
-            const item = e.target.closest('.status-item[data-role="set"]');
-            if (!item) return;
+        // selecionar status
+        const item = e.target.closest('.status-item[data-role="set"]');
+        if(item){
             const wrap = item.closest('.status-wrap');
-            const id = Number(wrap.dataset.id);
-            const novo = item.dataset.value;
-
-            // otimista
-            const badge = wrap.querySelector('[data-role="badge"]');
-            badge.className = badgeClass(novo);
-            badge.innerHTML = `<i class="fas fa-circle ${dotClass(novo)}"></i> ${novo}`;
-
+            const id = wrap.closest('tr, .card').dataset.id;
+            const novoStatus = item.dataset.status;
             try {
-                await apiPatch(`/agendamentos/${id}/status`, { status: novo });
-                await carregar();
-            } catch {
-                erro.style.display = 'flex';
+                await apiPatch(`/agendamentos/${id}/status`, { status: novoStatus });
+                // atualizar visual
+                wrap.querySelector('.status-btn').innerHTML = criaStatusBadge(novoStatus) + '<span class="chev"><i class="fas fa-chevron-down"></i></span>';
+                wrap.querySelector('.status-menu').style.display='none';
+            } catch(err){
+                alert('Erro ao atualizar status');
             }
-        });
-
-        // Fechar menu de status ao clicar fora
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.status-wrap')) {
-                document.querySelectorAll('.status-menu').forEach(m => m.style.display = 'none');
-            }
-        });
-
-        // Melhorar interação com toque em dispositivos móveis
-        if ('ontouchstart' in window) {
-            document.addEventListener('touchstart', function () { }, { passive: true });
-
-            // Adicionar feedback visual para toques
-            document.querySelectorAll('.btn, .action, .status-btn, .status-item').forEach(el => {
-                el.addEventListener('touchstart', function () {
-                    this.style.opacity = '0.7';
-                });
-                el.addEventListener('touchend', function () {
-                    this.style.opacity = '1';
-                });
-            });
         }
 
-        const nome = localStorage.getItem('ah_user_name');
-        if (nome) document.getElementById('usuario-nome').textContent = `Olá, ${nome}!`;
+        // fechar menus se clicar fora
+        if(!e.target.closest('.status-wrap')){
+            document.querySelectorAll('.status-menu').forEach(m=>m.style.display='none');
+        }
+    });
 
-        carregar();
-    </script>
+    window.addEventListener('load', carregaAgendamentos);
+</script>
 </body>
 </html>

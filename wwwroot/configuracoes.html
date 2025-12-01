@@ -28,369 +28,55 @@
             --shadow-medium: 0 10px 25px rgba(10,25,51,.08);
             --shadow-strong: 0 20px 40px rgba(10,25,51,.12);
         }
-
-        * {
-            box-sizing: border-box
-        }
-
-        body {
-            margin: 0;
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            color: #334155;
-            font: 500 15px/1.45 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif
-        }
-
-        header {
-            background: rgba(255,255,255,.9);
-            border-bottom: 1px solid rgba(226,232,240,.6);
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            backdrop-filter: blur(16px);
-            box-shadow: var(--shadow-soft);
-        }
-
-        .top {
-            max-width: 800px;
-            margin: auto;
-            padding: 14px 20px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            justify-content: space-between
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-        }
-
-            .brand:hover {
-                transform: scale(1.02);
-            }
-
-        .brand-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, var(--brand-teal), var(--brand-purple));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 10px rgba(13,165,160,.25);
-        }
-
-            .brand-icon i {
-                color: white;
-                font-size: 20px;
-            }
-
-        .brand .name {
-            font-weight: 800;
-            font-size: 22px;
-            color: var(--brand-navy)
-        }
-
-        .btn {
-            padding: 10px 16px;
-            border: none;
-            border-radius: var(--radius-sm);
-            background: linear-gradient(135deg, var(--brand-teal), var(--brand-teal-hover));
-            color: #fff;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-            .btn::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: -100%;
-                width: 100%;
-                height: 100%;
-                background: rgba(255,255,255,0.2);
-                transition: left 0.3s ease;
-            }
-
-            .btn:hover::before {
-                left: 100%;
-            }
-
-            .btn:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(13,165,160,.35);
-            }
-
-            .btn[disabled] {
-                opacity: .6;
-                cursor: not-allowed;
-                transform: none;
-            }
-
-        .btn-secondary {
-            background: rgba(10,25,51,.05);
-            color: var(--brand-navy);
-        }
-
-            .btn-secondary:hover {
-                background: rgba(10,25,51,.1);
-                transform: translateY(-2px);
-            }
-
-        .btn-danger {
-            background: var(--danger);
-            box-shadow: 0 4px 15px rgba(239,68,68,.25);
-        }
-
-            .btn-danger:hover {
-                background: var(--danger-dark);
-                transform: translateY(-2px);
-            }
-
-        .container {
-            max-width: 800px;
-            margin: 24px auto;
-            padding: 0 20px
-        }
-
-        .card {
-            background: var(--card);
-            border-radius: var(--radius-lg);
-            padding: 24px;
-            box-shadow: var(--shadow-medium);
-            border: 1px solid rgba(226,232,240,.6);
-            transition: all 0.3s ease;
-        }
-
-            .card:hover {
-                box-shadow: var(--shadow-strong);
-            }
-
-        h2 {
-            margin-top: 0;
-            color: var(--brand-navy);
-            font-size: 24px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-            h2 i {
-                color: var(--brand-teal);
-            }
-
-        label {
-            display: block;
-            margin: 12px 0 6px;
-            color: var(--brand-navy);
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-            label i {
-                color: var(--brand-teal);
-                font-size: 14px;
-            }
-
-        input, textarea, select {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            outline: none;
-            background: #f8fafc;
-            font-size: 14px;
-            transition: all 0.2s ease;
-        }
-
-            input:focus, textarea:focus, select:focus {
-                background: #ffffff;
-                border-color: var(--brand-teal);
-                box-shadow: 0 0 0 3px rgba(13,165,160,.15);
-            }
-
-        textarea {
-            min-height: 100px;
-            resize: vertical
-        }
-
-        .row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px
-        }
-
-        @media(max-width:700px) {
-            .row {
-                grid-template-columns: 1fr
-            }
-        }
-
-        .logo-wrap {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-bottom: 16px;
-        }
-
-        .logo-img {
-            max-width: 220px;
-            max-height: 150px;
-            border-radius: var(--radius-md);
-            background: #f1f5f9;
-            object-fit: cover;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow-soft);
-            transition: all 0.3s ease;
-        }
-
-            .logo-img:hover {
-                transform: scale(1.02);
-                box-shadow: var(--shadow-medium);
-            }
-
-        .ok {
-            margin-top: 12px;
-            padding: 12px 16px;
-            border-radius: var(--radius-md);
-            background: var(--brand-teal-soft);
-            border: 1px solid var(--brand-teal);
-            color: var(--brand-navy);
-            font-weight: 600;
-            display: none;
-            animation: fadeIn 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-            .ok i {
-                color: var(--success);
-            }
-
-        .err {
-            margin-top: 12px;
-            padding: 12px 16px;
-            border-radius: var(--radius-md);
-            background: #fee2e2;
-            border: 1px solid #fca5a5;
-            color: var(--danger);
-            font-weight: 600;
-            display: none;
-            animation: fadeIn 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-            .err i {
-                color: var(--danger);
-            }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .status-line {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            flex-wrap: wrap;
-            margin: 16px 0;
-            padding: 16px;
-            background: #f8fafc;
-            border-radius: var(--radius-md);
-            border: 1px solid var(--border);
-        }
-
-        .pill {
-            background: var(--brand-teal-soft);
-            color: var(--brand-navy);
-            padding: 8px 16px;
-            border-radius: 999px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-
-            .pill i {
-                color: var(--brand-teal);
-            }
-
-        .actions {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            justify-content: flex-end;
-            margin-top: 20px;
-        }
-
-        .file-input-wrapper {
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
-        }
-
-            .file-input-wrapper input[type=file] {
-                position: absolute;
-                left: -9999px;
-            }
-
-        .file-input-label {
-            padding: 10px 16px;
-            border-radius: var(--radius-sm);
-            background: rgba(10,25,51,.05);
-            color: var(--brand-navy);
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s ease;
-        }
-
-            .file-input-label:hover {
-                background: rgba(10,25,51,.1);
-                transform: translateY(-2px);
-            }
-
-        .section-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--brand-navy);
-            margin: 24px 0 12px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-            .section-title i {
-                color: var(--brand-teal);
-            }
+        * { box-sizing: border-box; }
+        body { margin: 0; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); color: #334155; font: 500 15px/1.45 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+        header { background: rgba(255,255,255,.9); border-bottom: 1px solid rgba(226,232,240,.6); position: sticky; top: 0; z-index: 10; backdrop-filter: blur(16px); box-shadow: var(--shadow-soft); }
+        .top { max-width: 900px; margin: auto; padding: 14px 20px; display: flex; align-items: center; gap: 14px; justify-content: space-between; }
+        .brand { display: flex; align-items: center; gap: 12px; cursor: pointer; transition: transform 0.2s ease; }
+        .brand:hover { transform: scale(1.02); }
+        .brand-icon { width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(135deg, var(--brand-teal), var(--brand-purple)); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(13,165,160,.25); }
+        .brand-icon i { color: white; font-size: 20px; }
+        .brand .name { font-weight: 800; font-size: 22px; color: var(--brand-navy); }
+        .btn { padding: 10px 16px; border: none; border-radius: var(--radius-sm); background: linear-gradient(135deg, var(--brand-teal), var(--brand-teal-hover)); color: #fff; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s ease; position: relative; overflow: hidden; }
+        .btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: rgba(255,255,255,0.2); transition: left 0.3s ease; }
+        .btn:hover::before { left: 100%; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(13,165,160,.35); }
+        .btn[disabled] { opacity: .6; cursor: not-allowed; transform: none; }
+        .btn-secondary { background: rgba(10,25,51,.05); color: var(--brand-navy); }
+        .btn-secondary:hover { background: rgba(10,25,51,.1); transform: translateY(-2px); }
+        .btn-danger { background: var(--danger); box-shadow: 0 4px 15px rgba(239,68,68,.25); }
+        .btn-danger:hover { background: var(--danger-dark); transform: translateY(-2px); }
+        .container { max-width: 900px; margin: 24px auto; padding: 0 20px; }
+        .card { background: var(--card); border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow-medium); border: 1px solid rgba(226,232,240,.6); transition: all 0.3s ease; }
+        .card:hover { box-shadow: var(--shadow-strong); }
+        h2 { margin-top: 0; color: var(--brand-navy); font-size: 24px; display: flex; align-items: center; gap: 10px; }
+        h2 i { color: var(--brand-teal); }
+        label { display: block; margin: 12px 0 6px; color: var(--brand-navy); font-weight: 600; display: flex; align-items: center; gap: 6px; }
+        label i { color: var(--brand-teal); font-size: 14px; }
+        input, textarea, select { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--radius-md); outline: none; background: #f8fafc; font-size: 14px; transition: all 0.2s ease; }
+        input:focus, textarea:focus, select:focus { background: #ffffff; border-color: var(--brand-teal); box-shadow: 0 0 0 3px rgba(13,165,160,.15); }
+        textarea { min-height: 100px; resize: vertical; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        @media(max-width:700px) { .row { grid-template-columns: 1fr; } }
+        .logo-wrap { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+        .logo-img { max-width: 220px; max-height: 150px; border-radius: var(--radius-md); background: #f1f5f9; object-fit: contain; border: 1px solid var(--border); box-shadow: var(--shadow-soft); transition: all 0.3s ease; }
+        .logo-img:hover { transform: scale(1.02); box-shadow: var(--shadow-medium); }
+        .ok, .err { margin-top: 12px; padding: 12px 16px; border-radius: var(--radius-md); font-weight: 600; display: flex; align-items: center; gap: 8px; animation: fadeIn 0.3s ease; display: none; }
+        .ok { background: var(--brand-teal-soft); border: 1px solid var(--brand-teal); color: var(--brand-navy); }
+        .ok i { color: var(--success); }
+        .err { background: #fee2e2; border: 1px solid #fca5a5; color: var(--danger); }
+        .err i { color: var(--danger); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .status-line { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin: 16px 0; padding: 16px; background: #f8fafc; border-radius: var(--radius-md); border: 1px solid var(--border); }
+        .pill { background: var(--brand-teal-soft); color: var(--brand-navy); padding: 8px 16px; border-radius: 999px; font-weight: 700; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .pill i { color: var(--brand-teal); }
+        .actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: flex-end; margin-top: 20px; }
+        .file-input-wrapper { position: relative; overflow: hidden; display: inline-block; }
+        .file-input-wrapper input[type=file] { position: absolute; left: -9999px; }
+        .file-input-label { padding: 10px 16px; border-radius: var(--radius-sm); background: rgba(10,25,51,.05); color: var(--brand-navy); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s ease; }
+        .file-input-label:hover { background: rgba(10,25,51,.1); transform: translateY(-2px); }
+        .section-title { font-size: 18px; font-weight: 700; color: var(--brand-navy); margin: 24px 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+        .section-title i { color: var(--brand-teal); }
     </style>
 </head>
 <body>
@@ -411,8 +97,7 @@
     <main class="container">
         <div class="card">
             <h2><i class="fas fa-store"></i> Dados do Estabelecimento</h2>
-
-            <!-- Logo salva no navegador -->
+            
             <div class="section-title"><i class="fas fa-image"></i> Identidade Visual</div>
             <label for="logo">Logo do estabelecimento</label>
             <div class="logo-wrap">
@@ -439,14 +124,12 @@
                     <input id="telefone" placeholder="(11) 99999-9999">
                 </div>
             </div>
-
             <label for="endereco"><i class="fas fa-map-marker-alt"></i> Endereço</label>
             <input id="endereco" placeholder="Rua, número, bairro, cidade">
 
             <div class="section-title"><i class="fas fa-clock"></i> Horários de Funcionamento</div>
             <label for="horarios"><i class="fas fa-calendar-alt"></i> Horários (descrição)</label>
             <textarea id="horarios" placeholder="Seg-Sex 09:00-19:00, Sáb 09:00-14:00"></textarea>
-
             <div class="row">
                 <div>
                     <label for="abre"><i class="fas fa-door-open"></i> Abre às</label>
@@ -494,249 +177,148 @@
     </main>
 
     <script>
-        // ===== CONFIG =====
-        const API_BASE = '/api';
-        const estabId = Number(new URLSearchParams(location.search).get('estab') || 1);
+        const API_BASE = 'http://179.0.176.111:5000/api';
 
-        // UI
+        let estabId;
         const $ = id => document.getElementById(id);
+
         $('logout').onclick = () => { location.href = 'index.html'; };
         const okEl = $('ok'), errEl = $('err'), btnSalvar = $('btn-salvar'), btnToggle = $('btn-toggle-ativo');
-
-        // storage keys
         const logoKey = id => `logo_estab_${id}`;
-        const estabUpdatedKey = id => `estab_${id}_updated`;
 
-        // utils
-        const pad2 = n => String(n).padStart(2, '0');
-        const minToHHmm = m => `${pad2(Math.floor(m / 60))}:${pad2(m % 60)}`;
-        const HHmmToMin = hhmm => {
-            if (!hhmm) return null;
-            const [h, m] = hhmm.split(':').map(Number);
-            if (Number.isNaN(h) || Number.isNaN(m)) return null;
-            return h * 60 + m;
-        };
+        const pad2 = n => String(n).padStart(2,'0');
+        const minToHHmm = m => `${pad2(Math.floor(m/60))}:${pad2(m%60)}`;
+        const HHmmToMin = hhmm => { if(!hhmm) return null; const [h,m]=hhmm.split(':').map(Number); if(Number.isNaN(h)||Number.isNaN(m)) return null; return h*60+m; }
 
-        function normalizeImageUrl(u) {
-            const fallback = '';
-            try {
-                if (!u) return fallback;
-                u = String(u).trim();
-                if (u.startsWith('//')) return location.protocol + u;
-                if (/^https?:/i.test(u)) {
-                    const url = new URL(u);
-                    url.pathname = url.pathname.split('/').map(encodeURIComponent).join('/');
-                    return url.toString();
-                }
-                return u;
-            } catch { return fallback; }
-        }
+        function showOk(msg){ okEl.querySelector('span').textContent = msg; okEl.style.display='flex'; setTimeout(()=>okEl.style.display='none',3000); }
+        function showErr(msg){ errEl.querySelector('span').textContent = msg; errEl.style.display='flex'; setTimeout(()=>errEl.style.display='none',3000); }
+        function hideMsgs(){ okEl.style.display='none'; errEl.style.display='none'; }
 
-        function showOk(msg) {
-            okEl.querySelector('span').textContent = msg;
-            okEl.style.display = 'flex';
-            setTimeout(() => okEl.style.display = 'none', 3000);
-        }
-
-        function showErr(msg) {
-            errEl.querySelector('span').textContent = msg;
-            errEl.style.display = 'flex';
-            setTimeout(() => errEl.style.display = 'none', 3000);
-        }
-
-        function hideMsgs() { okEl.style.display = 'none'; errEl.style.display = 'none'; }
-
-        function setAtivoLabel(ativo) {
+        let estadoAtivo = true;
+        function setAtivoLabel(ativo){
             const labelEl = $('ativoLabel');
-            if (ativo) {
-                labelEl.innerHTML = '<i class="fas fa-check-circle"></i> Status: Ativo (recebendo agendamentos)';
-                btnToggle.innerHTML = '<i class="fas fa-times-circle"></i> Fechar agora';
-                btnToggle.className = 'btn btn-danger';
-            } else {
-                labelEl.innerHTML = '<i class="fas fa-times-circle"></i> Status: Inativo';
-                btnToggle.innerHTML = '<i class="fas fa-check-circle"></i> Abrir agora';
-                btnToggle.className = 'btn';
+            if(ativo){
+                labelEl.innerHTML='<i class="fas fa-check-circle"></i> Status: Ativo (recebendo agendamentos)';
+                btnToggle.innerHTML='<i class="fas fa-times-circle"></i> Fechar agora';
+                btnToggle.className='btn btn-danger';
+            }else{
+                labelEl.innerHTML='<i class="fas fa-times-circle"></i> Status: Inativo';
+                btnToggle.innerHTML='<i class="fas fa-check-circle"></i> Abrir agora';
+                btnToggle.className='btn';
             }
         }
 
-        // ===== LOAD =====
-        let estadoAtivo = true;
-        async function load() {
+        async function loadEstabId(){
+            try{
+                const r = await fetch(`${API_BASE}/usuario/logado?_ts=${Date.now()}`, {cache:'no-store'});
+                if(r.ok){
+                    const user = await r.json();
+                    estabId = user?.estabelecimentoId;
+                    if(!estabId) throw new Error("Estabelecimento não definido para o usuário logado.");
+                    loadConfiguracao();
+                } else showErr("Falha ao obter dados do usuário.");
+            }catch(err){
+                console.error(err);
+                showErr("Falha ao obter estabelecimento.");
+            }
+        }
+
+        async function loadConfiguracao(){
+            if(!estabId) return;
             hideMsgs();
-            try {
-                // GET Config + Estabelecimento agregado
-                const r = await fetch(`${API_BASE}/configuracao/${estabId}?_ts=${Date.now()}`, { cache: 'no-store' });
-                if (r.ok) {
+            try{
+                const r = await fetch(`${API_BASE}/configuracao/${estabId}?_ts=${Date.now()}`, {cache:'no-store'});
+                if(r.ok){
                     const j = await r.json();
                     const cfg = j?.data?.configuracao || {};
                     const est = j?.data?.estabelecimento || {};
 
-                    // campos texto
                     $('nome').value = est?.nome ?? '';
                     $('endereco').value = est?.endereco ?? cfg?.endereco ?? '';
                     $('telefone').value = cfg?.telefone ?? '';
                     $('horarios').value = cfg?.horarios ?? '';
                     $('descricao').value = cfg?.descricao ?? '';
 
-                    // horários de funcionamento
                     const abreMin = Number(est?.abreMin ?? 540);
                     const fechaMin = Number(est?.fechaMin ?? 1080);
                     $('abre').value = minToHHmm(abreMin);
                     $('fecha').value = minToHHmm(fechaMin);
 
-                    // status ativo
                     estadoAtivo = Boolean(est?.ativo ?? true);
                     setAtivoLabel(estadoAtivo);
-
-                    // logo preview
-                    const custom = localStorage.getItem(logoKey(estabId));
-                    const fromApi = normalizeImageUrl(est?.imagemUrl);
-                    $('logoPreview').src = custom || fromApi || '';
-                } else {
-                    // fallback: carregar só estabelecimento simples
-                    const re = await fetch(`${API_BASE}/estabelecimentos/${estabId}?_ts=${Date.now()}`, { cache: 'no-store' });
-                    if (re.ok) {
-                        const je = await re.json(); const e = je?.data || je;
-                        $('nome').value = e?.nome ?? '';
-                        $('endereco').value = e?.endereco ?? '';
-                        $('abre').value = minToHHmm(e?.abreMin ?? 540);
-                        $('fecha').value = minToHHmm(e?.fechaMin ?? 1080);
-                        estadoAtivo = Boolean(e?.ativo ?? true);
-                        setAtivoLabel(estadoAtivo);
-                        const custom = localStorage.getItem(logoKey(estabId));
-                        const fromApi = normalizeImageUrl(e?.img || e?.imagemUrl);
-                        $('logoPreview').src = custom || fromApi || '';
-                    }
                 }
-            } catch { }
-            const cached = localStorage.getItem(logoKey(estabId));
-            if (cached) $('logoPreview').src = cached;
+            }catch{ showErr("Falha ao carregar configuração."); }
+
+            // logo localStorage
+            const logoData = localStorage.getItem(logoKey(estabId));
+            if(logoData) $('logoPreview').src = logoData;
         }
 
-        // ===== LOGO (localStorage) =====
-        $('logo').addEventListener('change', async () => {
-            const f = $('logo').files?.[0];
-            if (!f) return;
-            try {
-                const dataURL = await new Promise((resolve, reject) => {
-                    const img = new Image(), fr = new FileReader();
-                    fr.onload = e => img.src = e.target.result;
-                    fr.onerror = reject;
-                    img.onload = () => {
-                        const maxW = 960, quality = .85;
-                        const scale = Math.min(1, maxW / img.width);
-                        const w = Math.round(img.width * scale), h = Math.round(img.height * scale);
-                        const c = document.createElement('canvas'); c.width = w; c.height = h;
-                        c.getContext('2d').drawImage(img, 0, 0, w, h);
-                        resolve(c.toDataURL('image/webp', quality));
-                    };
-                    img.onerror = reject;
-                    fr.readAsDataURL(f);
-                });
-                localStorage.setItem(logoKey(estabId), dataURL);
-                $('logoPreview').src = dataURL;
-                localStorage.setItem(estabUpdatedKey(estabId), String(Date.now()));
-                showOk('Logo atualizada com sucesso!');
-            } catch { showErr('Falha ao processar a imagem.'); }
-        });
+        $('logo').addEventListener('change', async e => {
+            const file = e.target.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = async () => {
+                $('logoPreview').src = reader.result;
+                localStorage.setItem(logoKey(estabId), reader.result);
 
-        $('removerLogo').onclick = () => {
-            localStorage.removeItem(logoKey(estabId));
-            $('logoPreview').src = '';
-            localStorage.setItem(estabUpdatedKey(estabId), String(Date.now()));
-            showOk('Logo removida com sucesso!');
-        };
-
-        // ===== TOGGLE ATIVO =====
-        btnToggle.onclick = async () => {
-            hideMsgs();
-            btnToggle.disabled = true;
-            const novoAtivo = !estadoAtivo;
-            try {
-                const body = { Ativo: novoAtivo };
-                const r = await fetch(`${API_BASE}/configuracao/${estabId}`, {
-                    method: 'PUT', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(body)
-                });
-                if (!r.ok) {
-                    const j = await r.json().catch(() => ({}));
-                    throw new Error(j.message || `HTTP ${r.status}`);
-                }
-                estadoAtivo = novoAtivo;
-                setAtivoLabel(estadoAtivo);
-                showOk(novoAtivo ? 'Estabelecimento aberto.' : 'Estabelecimento fechado.');
-                localStorage.setItem(estabUpdatedKey(estabId), String(Date.now()));
-            } catch (e) {
-                showErr(e.message || 'Falha ao alterar status.');
-            } finally {
-                btnToggle.disabled = false;
-            }
-        };
-
-        // ===== SALVAR TUDO =====
-        $('btn-salvar').onclick = async () => {
-            hideMsgs(); btnSalvar.disabled = true;
-
-            const nome = $('nome').value.trim();
-            const endereco = $('endereco').value.trim();
-            const telefone = $('telefone').value.trim();
-            const horarios = $('horarios').value.trim();
-            const descricao = $('descricao').value.trim();
-            const abreMin = HHmmToMin($('abre').value);
-            const fechaMin = HHmmToMin($('fecha').value);
-
-            if (abreMin == null || fechaMin == null) {
-                showErr('Informe horários válidos.'); btnSalvar.disabled = false; return;
-            }
-            if (abreMin === fechaMin) {
-                showErr('AbreMin não pode ser igual a FechaMin.'); btnSalvar.disabled = false; return;
-            }
-
-            const body = {
-                Telefone: telefone || null,
-                Endereco: endereco || null,
-                Horarios: horarios || null,
-                Descricao: descricao || null,
-                NomeEstabelecimento: nome || null,
-                // ImagemUrl intencionalmente não enviada. Logo é localStorage no cliente.
-                AbreMin: abreMin,
-                FechaMin: fechaMin,
-                Ativo: estadoAtivo
+                // enviar para API
+                try{
+                    const formData = new FormData();
+                    formData.append('logo', file);
+                    const r = await fetch(`${API_BASE}/configuracao/${estabId}/logo`, {method:'POST', body: formData});
+                    if(r.ok) showOk("Logo atualizada!"); else showErr("Falha ao enviar logo");
+                }catch{ showErr("Falha ao enviar logo"); }
             };
-
-            try {
-                const r = await fetch(`${API_BASE}/configuracao/${estabId}`, {
-                    method: 'PUT', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(body)
-                });
-                if (!r.ok) {
-                    const j = await r.json().catch(() => ({}));
-                    throw new Error(j.message || `HTTP ${r.status}`);
-                }
-                showOk('Configurações salvas com sucesso!');
-                localStorage.setItem(estabUpdatedKey(estabId), String(Date.now()));
-            } catch (e) {
-                showErr(e.message || 'Falha ao salvar.');
-            } finally {
-                btnSalvar.disabled = false;
-            }
-        };
-
-        $('btn-recarregar').onclick = () => {
-            load();
-            showOk('Dados recarregados!');
-        };
-
-        // Auto-reload quando outra aba salvar algo
-        window.addEventListener('storage', ev => {
-            if (ev.key === logoKey(estabId)) {
-                const v = localStorage.getItem(logoKey(estabId));
-                if (v) $('logoPreview').src = v; else $('logoPreview').src = '';
-            }
-            if (ev.key === estabUpdatedKey(estabId)) load();
+            reader.readAsDataURL(file);
         });
 
-        load();
+        $('removerLogo').onclick = async () => {
+            $('logoPreview').src = '';
+            localStorage.removeItem(logoKey(estabId));
+            try{
+                const r = await fetch(`${API_BASE}/configuracao/${estabId}/logo`, {method:'DELETE'});
+                if(r.ok) showOk("Logo removida!"); else showErr("Falha ao remover logo");
+            }catch{ showErr("Falha ao remover logo"); }
+        };
+
+        btnSalvar.onclick = async () => {
+            hideMsgs();
+            const payload = {
+                nome: $('nome').value,
+                endereco: $('endereco').value,
+                telefone: $('telefone').value,
+                horarios: $('horarios').value,
+                descricao: $('descricao').value,
+                abreMin: HHmmToMin($('abre').value),
+                fechaMin: HHmmToMin($('fecha').value),
+                ativo: estadoAtivo
+            };
+            try{
+                const r = await fetch(`${API_BASE}/configuracao/${estabId}`, {
+                    method:'PUT',
+                    headers:{'Content-Type':'application/json'},
+                    body: JSON.stringify(payload)
+                });
+                if(r.ok) showOk("Configurações salvas!"); else showErr("Falha ao salvar.");
+            }catch(e){ console.error(e); showErr("Falha ao salvar."); }
+        };
+
+        btnToggle.onclick = async () => {
+            estadoAtivo = !estadoAtivo;
+            setAtivoLabel(estadoAtivo);
+            try{
+                await fetch(`${API_BASE}/configuracao/${estabId}/ativo`, {
+                    method:'PATCH',
+                    headers:{'Content-Type':'application/json'},
+                    body: JSON.stringify({ativo: estadoAtivo})
+                });
+            }catch(e){ console.error(e); showErr("Falha ao atualizar status"); }
+        };
+
+        $('btn-recarregar').onclick = loadConfiguracao;
+
+        loadEstabId();
     </script>
 </body>
 </html>
