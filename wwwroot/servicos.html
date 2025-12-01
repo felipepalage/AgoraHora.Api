@@ -427,162 +427,203 @@
 
     </main>
 
-    <script>
-        /* ================= VALIDAÇÃO TOKEN ================= */
-        const t = localStorage.getItem('ah_token');
-        if (!t) location.replace('login.html');
-        document.getElementById('logout').onclick = () => location.href = 'index.html';
+ <script>
+/* SCRIPT CORRIGIDO - cole no lugar do <script> atual */
+const API_BASE = window.API_BASE || 'http://179.0.176.111:5000/api'; // ajuste se preciso
+const token = localStorage.getItem('ah_token');
+if (!token) location.replace('login.html');
+document.getElementById('logout').onclick = () => location.href = 'index.html';
 
-        const estabId = Number(localStorage.getItem('ah_estabelecimentoId') || 1);
-        const tbody = document.getElementById('tbody');
-        const msg = document.getElementById('msg');
-        const msgText = msg.querySelector('span');
-        let cache = [];
-        let editingId = null;
+const estabId = Number(localStorage.getItem('ah_estabelecimentoId') || localStorage.getItem('ah_estab') || 1);
+const tbody = document.getElementById('tbody');
+const msg = document.getElementById('msg');
+const msgText = msg.querySelector('span');
+let cache = [];
+let editingId = null;
 
-        /* ================= API ================= */
-        async function api(path, opts = {}) {
-            const h = {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + t
-            };
-            const r = await fetch('/api' + path, {
-                method: opts.method || 'GET',
-                headers: h,
-                body: opts.body ? JSON.stringify(opts.body) : undefined
-            });
-            if (!r.ok) throw new Error(await r.text());
-            return r.headers.get('content-type')?.includes('json') ? r.json() : r.text();
+function safeNum(v, fallback = 0){ const n = Number(String(v).replace(',', '.')); return Number.isFinite(n) ? n : fallback; }
+const brl = v => {
+    const n = safeNum(v, 0);
+    return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+};
+
+/* wrapper fetch que retorna json (normaliza erros) */
+async function api(path, opts = {}) {
+    const url = (path.startsWith('http') ? path : API_BASE.replace(/\/$/,'') + (path.startsWith('/') ? path : '/' + path.replace(/^\//,'')));
+    const headers = Object.assign({}, opts.headers || {});
+    if (token) headers['Authorization'] = 'Bearer ' + token;
+    // don't force Content-Type on GET if no body
+    if (opts.body && !headers['Content-Type']) headers['Content-Type'] = 'application/json';
+
+    const res = await fetch(url, { method: opts.method || 'GET', headers, body: opts.body ? JSON.stringify(opts.body) : undefined, cache: 'no-store' });
+    const ct = res.headers.get('content-type') || '';
+    const txt = await res.text().catch(()=>'');
+
+    if (!res.ok) {
+        // tenta extrair mensagem JSON se houver
+        try { const j = JSON.parse(txt); throw new Error(j?.message || JSON.stringify(j)); } catch { throw new Error(txt || res.statusText || `HTTP ${res.status}`); }
+    }
+    try { return ct.includes('json') ? JSON.parse(txt) : txt; } catch { return txt; }
+}
+
+/* Normalize service object -> { id, nome, preco, duracao } */
+function normalizeService(s) {
+    if (!s) return null;
+    const id = s.id ?? s.Id ?? s.ID ?? s.ID_SERVICO ?? s.IdServico ?? s.ID_SERVICO;
+    const nome = s.nome ?? s.Nome ?? s.NM_SERVICO ?? s.NM_SERVICO ?? s.servico ?? '';
+    // possíveis campos de preço
+    const preco = s.preco ?? s.Preco ?? s.VL_PRECO ?? s.Valor ?? s.VALOR ?? s.vl_preco ?? 0;
+    // possíveis campos de duração
+    const duracao = s.duracao ?? s.DuracaoMin ?? s.Duracao ?? s.DS_DURACAO ?? s.duracaoMin ?? 60;
+    return { id: Number(id || 0), nome: String(nome || ''), preco: safeNum(preco,0), duracao: Number(duracao || 0) };
+}
+
+/* render helpers */
+function rowInputs(s) {
+    // usa campos normalizados
+    return `
+      <td><input id="edit-nome" value="${escapeHtml(s.nome)}"></td>
+      <td><input id="edit-preco" type="number" step="0.01" value="${s.preco}"></td>
+      <td><input id="edit-dur" type="number" value="${s.duracao}"></td>
+      <td>
+        <div class="row-actions">
+          <button class="btn-ghost" data-action="save" data-id="${s.id}">
+            <i class="fas fa-save"></i> Salvar
+          </button>
+          <button class="btn-ghost" data-action="cancel" data-id="${s.id}">
+            <i class="fas fa-times"></i> Cancelar
+          </button>
+        </div>
+      </td>`;
+}
+
+function rowRead(s) {
+    return `
+      <td>${escapeHtml(s.nome)}</td>
+      <td>${brl(s.preco)}</td>
+      <td>${s.duracao} min</td>
+      <td>
+        <div class="row-actions">
+          <button class="btn-ghost" data-action="edit" data-id="${s.id}">
+            <i class="fas fa-edit"></i> Editar
+          </button>
+          <button class="btn-danger" data-action="delete" data-id="${s.id}">
+            <i class="fas fa-trash"></i> Apagar
+          </button>
+        </div>
+      </td>`;
+}
+
+function escapeHtml(s){ return String(s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;'); }
+
+function render(list) {
+    if (!Array.isArray(list) || !list.length) {
+        tbody.innerHTML = `<tr><td class="empty" colspan="4"><i class="fas fa-inbox"></i> Sem serviços cadastrados…</td></tr>`;
+        cache = [];
+        return;
+    }
+    cache = list.slice();
+    tbody.innerHTML = list.map(s => {
+        return `<tr data-id="${s.id}">${editingId === s.id ? rowInputs(s) : rowRead(s)}</tr>`;
+    }).join('');
+}
+
+/* carregar: normaliza resposta seja array ou wrapper { data: [...] } */
+async function carregar() {
+    try {
+        const raw = await api(`/servicos/${estabId}`);
+        // raw pode ser array ou { data: [...] } ou { data: { items: [...] } } etc
+        let items = [];
+        if (Array.isArray(raw)) items = raw;
+        else if (Array.isArray(raw.data)) items = raw.data;
+        else if (Array.isArray(raw.items)) items = raw.items;
+        else if (raw && typeof raw === 'object' && Array.isArray(raw.data?.items)) items = raw.data.items;
+        else {
+            // fallback: se recebeu object único transformamos em array
+            items = raw ? (Array.isArray(raw) ? raw : [raw]) : [];
         }
+        // normaliza campos de cada serviço
+        const normalized = items.map(normalizeService).filter(Boolean);
+        editingId = null;
+        render(normalized);
+    } catch (err) {
+        console.error('Erro carregar servicos:', err);
+        tbody.innerHTML = `<tr><td class="empty" colspan="4"><i class="fas fa-exclamation-triangle"></i> Erro ao carregar serviços: ${escapeHtml(err.message || String(err))}</td></tr>`;
+    }
+}
 
-        const brl = v => Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+/* criar */
+document.getElementById('btn-salvar').onclick = async () => {
+    const nome = document.getElementById('nome').value.trim();
+    const preco = safeNum(document.getElementById('preco').value);
+    const dur = parseInt(document.getElementById('duracao').value, 10);
+    if (!nome || isNaN(preco) || isNaN(dur)) { alert('Preencha corretamente.'); return; }
 
-        /* ================= RENDER TABLE ================= */
-        function rowInputs(s) {
-            return `
-            <td><input id="edit-nome" value="${s.nome}"></td>
-            <td><input id="edit-preco" type="number" step="0.01" value="${s.preco}"></td>
-            <td><input id="edit-dur" type="number" value="${s.duracao}"></td>
-            <td>
-                <div class="row-actions">
-                    <button class="btn-ghost" data-action="save" data-id="${s.id}">
-                        <i class="fas fa-save"></i> Salvar
-                    </button>
-                    <button class="btn-ghost" data-action="cancel" data-id="${s.id}">
-                        <i class="fas fa-times"></i> Cancelar
-                    </button>
-                </div>
-            </td>
-        `;
+    try {
+        await api('/servicos', { method: 'POST', body: { EstabelecimentoId: estabId, Nome: nome, DuracaoMin: dur, Preco: preco }});
+        msgText.textContent = 'Serviço salvo com sucesso!';
+        msg.style.display = 'flex';
+        setTimeout(()=> msg.style.display='none', 2000);
+        document.getElementById('nome').value = '';
+        document.getElementById('preco').value = '';
+        document.getElementById('duracao').value = '';
+        await carregar();
+    } catch (err) {
+        alert('Erro ao salvar: ' + (err.message || err));
+        console.error(err);
+    }
+};
+
+/* editar / deletar */
+tbody.addEventListener('click', async (e) => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    const action = btn.dataset.action;
+    const id = Number(btn.dataset.id);
+    const tr = tbody.querySelector(`tr[data-id="${id}"]`);
+    const s = cache.find(x => x.id === id);
+
+    if (action === 'edit') {
+        editingId = id;
+        tr.innerHTML = rowInputs(s);
+        tr.querySelector('#edit-nome').focus();
+        return;
+    }
+    if (action === 'cancel') {
+        editingId = null;
+        tr.innerHTML = rowRead(s);
+        return;
+    }
+    if (action === 'save') {
+        const nome = tr.querySelector('#edit-nome').value.trim();
+        const preco = safeNum(tr.querySelector('#edit-preco').value);
+        const dur = parseInt(tr.querySelector('#edit-dur').value, 10);
+        if (!nome || isNaN(preco) || isNaN(dur)) { alert('Preencha corretamente.'); return; }
+        try {
+            await api(`/servicos/${id}`, { method: 'PUT', body: { Nome: nome, Preco: preco, DuracaoMin: dur } });
+            await carregar();
+        } catch (err) {
+            alert('Erro ao salvar edição: ' + (err.message || err));
+            console.error(err);
         }
-
-        function rowRead(s) {
-            return `
-            <td>${s.nome}</td>
-            <td>${brl(s.preco)}</td>
-            <td>${s.duracao} min</td>
-            <td>
-                <div class="row-actions">
-                    <button class="btn-ghost" data-action="edit" data-id="${s.id}">
-                        <i class="fas fa-edit"></i> Editar
-                    </button>
-                    <button class="btn-danger" data-action="delete" data-id="${s.id}">
-                        <i class="fas fa-trash"></i> Apagar
-                    </button>
-                </div>
-            </td>
-        `;
+        return;
+    }
+    if (action === 'delete') {
+        if (!confirm('Confirmar exclusão?')) return;
+        try {
+            await api(`/servicos/${id}`, { method: 'DELETE' });
+            await carregar();
+        } catch (err) {
+            alert('Erro ao apagar: ' + (err.message || err));
+            console.error(err);
         }
+        return;
+    }
+});
 
-        function render(list) {
-            cache = list.slice();
-            if (!list.length) {
-                tbody.innerHTML = `<tr><td class="empty" colspan="4"><i class="fas fa-inbox"></i> Sem serviços cadastrados…</td></tr>`;
-                return;
-            }
-            tbody.innerHTML = list.map(s => `
-            <tr data-id="${s.id}">
-                ${editingId === s.id ? rowInputs(s) : rowRead(s)}
-            </tr>
-        `).join('');
-        }
+carregar();
+</script>
 
-        /* ================= LOAD ================= */
-        async function carregar() {
-            const r = await api(`/servicos/${estabId}`);
-            editingId = null;
-            render(r.data || []);
-        }
-
-        /* ================= CREATE ================= */
-        document.getElementById('btn-salvar').onclick = async () => {
-            const nome = document.getElementById('nome').value.trim();
-            const preco = parseFloat(String(document.getElementById('preco').value).replace(',', '.'));
-            const dur = parseInt(document.getElementById('duracao').value, 10);
-
-            if (!nome || isNaN(preco) || isNaN(dur)) {
-                alert('Preencha corretamente.');
-                return;
-            }
-            await api('/servicos', {
-                method: 'POST',
-                body: { EstabelecimentoId: estabId, Nome: nome, DuracaoMin: dur, Preco: preco }
-            });
-
-            msgText.textContent = 'Serviço salvo com sucesso!';
-            msg.style.display = 'flex';
-            setTimeout(() => msg.style.display = 'none', 2000);
-
-            document.getElementById('nome').value = '';
-            document.getElementById('preco').value = '';
-            document.getElementById('duracao').value = '';
-            carregar();
-        };
-
-        /* ================= EDIT / DELETE ================= */
-        tbody.addEventListener('click', async e => {
-            const btn = e.target.closest('button');
-            if (!btn) return;
-
-            const action = btn.dataset.action;
-            const id = Number(btn.dataset.id);
-            const tr = tbody.querySelector(`tr[data-id="${id}"]`);
-            const s = cache.find(x => x.id === id);
-
-            if (action === 'edit') {
-                editingId = id;
-                tr.innerHTML = rowInputs(s);
-                tr.querySelector('#edit-nome').focus();
-                return;
-            }
-            if (action === 'cancel') {
-                editingId = null;
-                tr.innerHTML = rowRead(s);
-                return;
-            }
-            if (action === 'save') {
-                const nome = tr.querySelector('#edit-nome').value.trim();
-                const preco = parseFloat(String(tr.querySelector('#edit-preco').value).replace(',', '.'));
-                const dur = parseInt(tr.querySelector('#edit-dur').value, 10);
-                if (!nome || isNaN(preco) || isNaN(dur)) { alert('Preencha corretamente.'); return; }
-
-                await api(`/servicos/${id}`, {
-                    method: 'PUT',
-                    body: { Nome: nome, Preco: preco, DuracaoMin: dur }
-                });
-                carregar();
-                return;
-            }
-            if (action === 'delete') {
-                if (!confirm('Confirmar exclusão?')) return;
-                await api(`/servicos/${id}`, { method: 'DELETE' });
-                carregar();
-                return;
-            }
-        });
-
-        carregar();
-    </script>
 
 </body>
 </html>

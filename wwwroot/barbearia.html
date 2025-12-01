@@ -6,137 +6,55 @@
     <title>Detalhes da Barbearia - AgoraHora</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* --- ROOT COLORS --- */
-        :root {
-            --brand-navy: #0a1933;
-            --brand-teal: #0da5a0;
-            --brand-teal-soft: #e6f9f8;
-            --brand-teal-hover: #098581;
-            --brand-purple: #6366f1;
-            --bg: #f8fafc;
-            --card: #ffffff;
-            --muted: #64748b;
-            --danger: #ef4444;
-            --danger-dark: #dc2626;
-            --warning: #f59e0b;
-            --success: #10b981;
-            --info: #3b82f6;
-            --border: #e2e8f0;
-            --radius-lg: 20px;
-            --radius-md: 14px;
-            --radius-sm: 8px;
-            --shadow-soft: 0 4px 15px rgba(10,25,51,.05);
-            --shadow-medium: 0 10px 25px rgba(10,25,51,.08);
-            --shadow-strong: 0 20px 40px rgba(10,25,51,.12);
-        }
-        * { box-sizing: border-box; margin:0; padding:0; }
-        body { min-height:100vh; background:var(--bg); color:#334155; font:500 15px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
-
-        /* --- HEADER --- */
-        header { position:sticky; top:0; z-index:20; backdrop-filter: blur(16px); background: rgba(255,255,255,.9); border-bottom: 1px solid rgba(226,232,240,.6); box-shadow: var(--shadow-soft); }
-        .top { max-width:1200px; margin:0 auto; padding:14px 20px; display:flex; align-items:center; justify-content:space-between; gap:14px; }
-        .brand { display:flex; align-items:center; gap:12px; cursor:pointer; transition: transform 0.2s ease; }
-        .brand:hover { transform:scale(1.02); }
-        .brand-icon { width:40px; height:40px; border-radius:12px; background: linear-gradient(135deg, var(--brand-teal), var(--brand-purple)); display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(13,165,160,.25);}
-        .brand-icon i { color:white; font-size:20px; }
-        .brand-title { display:flex; flex-direction:column; }
-        .brand-name { font-weight:800; font-size:22px; color:var(--brand-navy); }
-        .brand-sub { font-size:12px; color:var(--muted); }
-        .btn { border:none; border-radius: var(--radius-sm); padding:10px 18px; font-weight:600; font-size:14px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:8px; text-decoration:none; transition: all 0.2s ease; position: relative; overflow:hidden; }
-        .btn::before { content:''; position:absolute; top:0; left:-100%; width:100%; height:100%; background: rgba(255,255,255,0.2); transition:left 0.3s ease; }
-        .btn:hover::before { left:100%; }
-        .btn-primary { background: linear-gradient(135deg, var(--brand-teal), var(--brand-teal-hover)); color:#fff; box-shadow:0 4px 15px rgba(13,165,160,.25);}
-        .btn-primary:hover { transform: translateY(-2px); box-shadow:0 6px 20px rgba(13,165,160,.35); }
-        .btn-ghost { background: rgba(10,25,51,.05); color:var(--brand-navy);}
-        .btn-ghost:hover { background: rgba(10,25,51,.1); transform: translateY(-2px);}
-        .btn-danger { background:var(--danger); color:#fff; box-shadow:0 4px 15px rgba(239,68,68,.25);}
-        .btn-danger:hover { background:var(--danger-dark); transform: translateY(-2px); }
-
-        /* --- MAIN PAGE --- */
-        .page { max-width:1200px; margin:24px auto 32px; padding:0 20px 32px; }
-        .hero-card { display:grid; grid-template-columns:1fr; gap:20px; background: var(--card); border-radius:var(--radius-lg); padding:20px; border:1px solid rgba(226,232,240,.6); box-shadow: var(--shadow-medium); transition:all 0.3s ease; }
-        .hero-card:hover { box-shadow: var(--shadow-strong); }
-        .cover-container { position:relative; overflow:hidden; border-radius:var(--radius-md);}
-        .cover { width:100%; height:240px; border-radius:var(--radius-md); object-fit:cover; background:#f1f5f9; transition: transform 0.3s ease;}
-        .cover-container:hover .cover { transform: scale(1.02);}
-        .shop-head { display:flex; flex-wrap:wrap; align-items:flex-start; gap:16px; margin-bottom:10px;}
-        .shop-title { margin:0; font-size:26px; font-weight:800; color:var(--brand-navy); display:flex; align-items:center; gap:10px;}
-        .shop-title i { color:var(--brand-teal); }
-        .muted { color: var(--muted); display:flex; align-items:center; gap:6px; }
-        .muted i { color: var(--brand-teal); font-size:14px; }
-        .badge { display:inline-flex; align-items:center; justify-content:center; padding:6px 12px; border-radius: var(--radius-sm); font-size:12px; font-weight:600; letter-spacing:.02em; text-transform:uppercase; box-shadow:0 2px 5px rgba(0,0,0,0.05);}
-        .badge.open { background:#d1fae5; color:#065f46;}
-        .badge.open i { color:var(--success); margin-right:4px;}
-        .badge.off { background:#fee2e2; color:#991b1b;}
-        .badge.off i { color:var(--danger); margin-right:4px;}
-        .rating { color:#f59e0b; font-weight:700; display:flex; align-items:center; gap:4px;}
-        .grid { display:grid; gap:20px; margin-top:24px;}
-        .grid-2 { grid-template-columns:1fr;}
-        .card { background:var(--card); border-radius:var(--radius-lg); padding:20px; border:1px solid rgba(226,232,240,.6); box-shadow: var(--shadow-soft); transition:all 0.3s ease;}
-        .card:hover { box-shadow: var(--shadow-medium);}
-        h3 { margin:0 0 12px; font-size:18px; color:var(--brand-navy); display:flex; align-items:center; gap:10px;}
-        h3 i { color:var(--brand-teal);}
-        .section-sub { font-size:13px; color:var(--muted); margin-bottom:16px; padding-left:28px; }
-        label { display:block; margin:12px 0 6px; font-weight:600; color:var(--brand-navy); font-size:14px; display:flex; align-items:center; gap:6px;}
-        label i { color:var(--brand-teal); font-size:12px;}
-        input, select { width:100%; padding:12px 16px; border-radius:var(--radius-md); border:1px solid var(--border); background:#f8fafc; font-size:14px; outline:none; transition: all 0.2s ease;}
-        input:focus, select:focus { background:#ffffff; border-color:var(--brand-teal); box-shadow:0 0 0 3px rgba(13,165,160,.15);}
-        .servico-item { display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-radius:var(--radius-md); border:1px solid var(--border); margin:10px 0; background:linear-gradient(to right,#ffffff,#f8fafc); transition:all 0.2s ease;}
-        .servico-item:hover { border-color:var(--brand-teal); box-shadow:0 4px 12px rgba(13,165,160,.1); transform:translateY(-2px);}
-        .servico-item.selected { border-color:var(--brand-teal); background:var(--brand-teal-soft);}
-        .srv-title { font-weight:700; color:var(--brand-navy); font-size:15px; display:flex; align-items:center; gap:8px;}
-        .srv-title i { color:var(--brand-purple);}
-        .srv-meta { color:var(--muted); font-size:13px; margin-top:4px; display:flex; align-items:center; gap:6px;}
-        .srv-meta i { font-size:11px; color:var(--brand-teal);}
-        .legend-row { display:flex; flex-wrap:wrap; gap:12px; align-items:center; font-size:13px; color:var(--muted); margin-top:12px; padding:12px; background:#f8fafc; border-radius:var(--radius-md);}
-        .legend { display:inline-flex; align-items:center; gap:6px; font-weight:500;}
-        .dot { width:10px; height:10px; border-radius:50%; }
-        .dot.free { background:var(--success);}
-        .dot.busy { background:var(--danger);}
-        .dot.past { background:var(--muted);}
-        .slots { display:grid; grid-template-columns:repeat(auto-fit,minmax(90px,1fr)); gap:10px; margin-top:16px;}
-        .slot { padding:12px 8px; border-radius:var(--radius-sm); border:1px solid var(--border); text-align:center; cursor:pointer; background:#ffffff; font-weight:600; font-size:14px; transition:all 0.2s ease; position:relative; overflow:hidden;}
-        .slot::before { content:''; position:absolute; top:0; left:-100%; width:100%; height:100%; background:rgba(13,165,160,0.1); transition:left 0.3s ease;}
-        .slot:hover::before { left:100%;}
-        .slot:hover:not(.busy):not(.past) { border-color:var(--brand-teal); transform:translateY(-2px); box-shadow:0 4px 10px rgba(13,165,160,.15);}
-        .slot.selected { background: linear-gradient(135deg, var(--brand-teal), var(--brand-teal-hover)); color:#fff; border-color:var(--brand-teal); box-shadow:0 4px 15px rgba(13,165,160,.3); transform:translateY(-2px);}
-        .slot.busy { background:#fee2e2; color:var(--danger); border-color:#fca5a5; cursor:not-allowed;}
-        .slot.past { background:#f1f5f9; color:var(--muted); cursor:not-allowed;}
-        .summary { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:16px; padding:16px; background:#f8fafc; border-radius:var(--radius-md);}
-        .pill { border-radius:var(--radius-sm); padding:8px 14px; background:var(--brand-teal-soft); color:var(--brand-navy); font-size:13px; font-weight:600; white-space:nowrap; display:flex; align-items:center; gap:6px; box-shadow:0 2px 5px rgba(0,0,0,0.05);}
-        .pill i { color:var(--brand-teal);}
-        .actions-row { margin-top:16px; display:flex; flex-wrap:wrap; gap:12px; justify-content:flex-end;}
-        .error { margin-top:12px; color:var(--danger); font-weight:600; font-size:13px; display:none; padding:10px 14px; background:#fee2e2; border-left:4px solid var(--danger);}
-        .modal-backdrop { position:fixed; inset:0; background:rgba(10,25,51,.5); display:none; align-items:center; justify-content:center; padding:20px; z-index:50;}
-        .modal { width:min(520px,100%); background:#ffffff; border-radius:var(--radius-lg); padding:24px; box-shadow:var(--shadow-strong); animation: modalFadeIn 0.3s ease; }
-        @keyframes modalFadeIn { from{opacity:0;transform:translateY(-20px);} to{opacity:1; transform:translateY(0);} }
-        .modal h3 { margin:0 0 12px; font-size:20px; color:var(--brand-navy); display:flex; align-items:center; gap:10px;}
-        .modal h3 i { color:var(--brand-teal);}
-        .modal-actions { display:flex; flex-wrap:wrap; gap:12px; justify-content:flex-end; margin-top:20px;}
-        .ok { background:var(--brand-teal-soft); border-radius:var(--radius-md); border:1px solid var(--brand-teal); padding:12px 16px; margin-top:12px; font-size:14px; color:var(--brand-navy); display:flex; align-items:center; gap:8px;}
-        .ok i { color:var(--success);}
-        @media(min-width:900px) { .hero-card { grid-template-columns:320px 1fr; } .cover { height:100%; } .grid-2 { grid-template-columns:2fr 3fr; } }
-        @media(max-width:520px) { .top { padding-inline:14px; } .page { padding-inline:14px; } .hero-card, .card { padding-inline:16px; } .summary { flex-direction:column; align-items:flex-start;} .pill { width:100%;} }
+        /* --- estilos iguais ao seu layout anterior (resumido) --- */
+        :root{--brand-navy:#0a1933;--brand-teal:#0da5a0;--brand-teal-soft:#e6f9f8;--brand-teal-hover:#098581;--brand-purple:#6366f1;--bg:#f8fafc;--card:#fff;--muted:#64748b;--border:#e2e8f0;--radius-md:14px;--radius-sm:8px;--shadow-soft:0 4px 15px rgba(10,25,51,.05);--shadow-medium:0 10px 25px rgba(10,25,51,.08);--shadow-strong:0 20px 40px rgba(10,25,51,.12)}
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{min-height:100vh;background:var(--bg);color:#334155;font:500 15px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+        header{position:sticky;top:0;backdrop-filter:blur(16px);background:rgba(255,255,255,.9);border-bottom:1px solid rgba(226,232,240,.6);box-shadow:var(--shadow-soft)}
+        .top{max-width:1200px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+        .brand{display:flex;align-items:center;gap:12px}
+        .brand-icon{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--brand-teal),var(--brand-purple));display:flex;align-items:center;justify-content:center;color:#fff}
+        .page{max-width:1200px;margin:24px auto;padding:0 20px 32px}
+        .hero-card{display:grid;grid-template-columns:1fr;gap:20px;background:var(--card);border-radius:20px;padding:20px;border:1px solid rgba(226,232,240,.6);box-shadow:var(--shadow-medium)}
+        .cover-container{position:relative;overflow:hidden;border-radius:14px}
+        .cover{width:100%;height:240px;border-radius:14px;object-fit:cover;background:#f1f5f9}
+        .shop-head{display:flex;align-items:flex-start;gap:16px;margin-bottom:10px}
+        .shop-title{font-size:26px;font-weight:800;color:var(--brand-navy);display:flex;align-items:center;gap:10px}
+        .muted{color:var(--muted);display:flex;align-items:center;gap:6px}
+        .badge{display:inline-flex;align-items:center;justify-content:center;padding:6px 12px;border-radius:14px;font-size:12px;font-weight:600}
+        .badge.open{background:#d1fae5;color:#065f46}
+        .badge.off{background:#fee2e2;color:#991b1b}
+        .grid{display:grid;gap:20px;margin-top:24px}
+        .grid-2{grid-template-columns:1fr}
+        .card{background:var(--card);border-radius:14px;padding:20px;border:1px solid rgba(226,232,240,.6);box-shadow:var(--shadow-soft)}
+        .servico-item{display:flex;align-items:center;justify-content:space-between;padding:14px;border-radius:12px;border:1px solid var(--border);margin:10px 0}
+        .servico-item.selected{border-color:var(--brand-teal);background:var(--brand-teal-soft)}
+        .slots{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:10px;margin-top:16px}
+        .slot{padding:12px 8px;border-radius:8px;border:1px solid var(--border);text-align:center;cursor:pointer;background:#fff;font-weight:600}
+        .slot.past{background:#f1f5f9;color:var(--muted);cursor:not-allowed}
+        .slot.selected{background:linear-gradient(135deg,var(--brand-teal),var(--brand-teal-hover));color:#fff;border-color:var(--brand-teal)}
+        .summary{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:16px;padding:16px;background:#f8fafc;border-radius:12px}
+        .pill{border-radius:12px;padding:8px 14px;background:var(--brand-teal-soft);color:var(--brand-navy);font-weight:700;display:flex;align-items:center;gap:6px}
+        .modal-backdrop{position:fixed;inset:0;background:rgba(10,25,51,.5);display:none;align-items:center;justify-content:center;padding:20px;z-index:50}
+        .modal{width:min(520px,100%);background:#fff;border-radius:20px;padding:24px;box-shadow:var(--shadow-strong)}
+        .error{margin-top:12px;color:var(--danger);font-weight:600;display:none;padding:10px;background:#fee2e2;border-left:4px solid var(--danger)}
+        @media(min-width:900px){.hero-card{grid-template-columns:320px 1fr}.cover{height:100%}.grid-2{grid-template-columns:2fr 3fr}}
     </style>
 </head>
 <body>
-    <!-- --- HEADER --- -->
     <header>
         <div class="top">
             <div class="brand" aria-label="AgoraHora">
                 <div class="brand-icon"><i class="fas fa-cut"></i></div>
-                <div class="brand-title">
-                    <span class="brand-name">AgoraHora</span>
-                    <span class="brand-sub">Sua agenda premium de barbearia</span>
+                <div>
+                    <div class="shop-title">AgoraHora</div>
                 </div>
             </div>
             <a class="btn btn-ghost" href="home-cliente.html"><i class="fas fa-arrow-left"></i> Voltar</a>
         </div>
     </header>
 
-    <!-- --- MAIN --- -->
     <main class="page">
-        <!-- Hero Card -->
         <section class="hero-card">
             <div class="cover-container">
                 <img id="cover" class="cover" alt="Logo/Foto da barbearia" referrerpolicy="no-referrer" crossorigin="anonymous">
@@ -154,16 +72,13 @@
             </div>
         </section>
 
-        <!-- Grid 2 Cols -->
         <section class="grid grid-2">
-            <!-- Serviços -->
             <div class="card">
                 <h3><i class="fas fa-concierge-bell"></i> Serviços</h3>
                 <p class="section-sub">Toque em um serviço para ver os horários disponíveis.</p>
                 <div id="lista-servicos"></div>
             </div>
 
-            <!-- Agendar -->
             <div class="card">
                 <h3><i class="fas fa-calendar-check"></i> Agendar</h3>
                 <p class="section-sub">Preencha os campos abaixo e selecione um horário disponível.</p>
@@ -171,189 +86,341 @@
                 <select id="prof"></select>
                 <label for="data"><i class="fas fa-calendar"></i> Data</label>
                 <input type="date" id="data" />
-                <div class="legend-row">
-                    <span class="legend"><span class="dot free"></span>Disponível</span>
-                    <span class="legend"><span class="dot busy"></span>Ocupado</span>
-                    <span class="legend"><span class="dot past"></span>Passado</span>
+                <div class="legend-row" style="margin-top:12px">
+                    <span class="legend"><span class="dot free" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#10b981;margin-right:6px"></span>Disponível</span>
+                    <span class="legend"><span class="dot busy" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#ef4444;margin-right:6px"></span>Ocupado</span>
+                    <span class="legend"><span class="dot past" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#64748b;margin-right:6px"></span>Passado</span>
                 </div>
                 <div id="slots" class="slots"></div>
                 <div class="summary" id="resumo"></div>
                 <div class="error" id="erro-slot">Selecione um horário válido.</div>
-                <div class="actions-row">
+                <div class="actions-row" style="margin-top:12px">
                     <button id="confirmar" class="btn btn-primary">Confirmar Agendamento</button>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- --- MODAL CLIENTE --- -->
     <div class="modal-backdrop" id="modal-cliente">
         <div class="modal">
             <h3><i class="fas fa-id-badge"></i> Identificar Cliente</h3>
-            <label>Nome</label><input type="text" id="cliente-nome">
-            <label>Telefone</label><input type="text" id="cliente-tel">
-            <div class="modal-actions">
+            <label>Nome</label><input type="text" id="cliente-nome" style="width:100%;padding:8px;margin-top:8px"/>
+            <label style="margin-top:10px">Telefone</label><input type="text" id="cliente-tel" style="width:100%;padding:8px;margin-top:8px"/>
+            <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
                 <button id="cliente-ok" class="btn btn-primary">Confirmar</button>
                 <button id="cliente-cancel" class="btn btn-ghost">Cancelar</button>
             </div>
         </div>
     </div>
 
-    <!-- --- MODAL SUCESSO --- -->
     <div class="modal-backdrop" id="modal-sucesso">
         <div class="modal">
             <h3><i class="fas fa-check-circle"></i> Agendamento Confirmado</h3>
             <p>Seu horário foi agendado com sucesso!</p>
-            <div class="modal-actions">
-                <button class="ok" id="ok-sucesso">OK</button>
+            <div style="display:flex;justify-content:flex-end;margin-top:16px">
+                <button id="ok-sucesso" class="pill"><i class="fas fa-check-circle"></i> OK</button>
             </div>
         </div>
     </div>
 
-    <!-- --- JS --- -->
-    <script>
-        const API_BASE = 'http://179.0.176.111:5000/api';
-        const $ = document.querySelector.bind(document);
-        const $$ = document.querySelectorAll.bind(document);
+<script>
+/*
+  Página corrigida.
+  Ajuste API_BASE se necessário.
+*/
+const API_BASE = 'http://179.0.176.111:5000/api';
+const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => Array.from(document.querySelectorAll(sel));
 
-        let estabelecimentoId = 1; // ID fictício, ajustar conforme sua rota
-        let servicos = [], profs = [], slotsData = [], slotSelecionado = null, servicoSelecionado = null;
+let estabelecimentoId = null;
+let servicos = [], profs = [], servicoSelecionado = null, slotSelecionado = null;
 
-        // --- UTILIDADES ---
-        const toHM = (minutes) => {
-            const h = Math.floor(minutes / 60);
-            const m = minutes % 60;
-            return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}`;
-        };
+/* ---------- utilidades ---------- */
+function safeText(el, value){ if(!el) return; el.textContent = value ?? ''; }
+function safeSrc(el, url){ if(!el) return; el.src = url ?? ''; }
 
-        const atualizarResumo = (hora) => {
-            const resumoEl = $("#resumo");
-            resumoEl.innerHTML = "";
-            if(!servicoSelecionado || !hora) return;
-            const pill = document.createElement("div");
-            pill.className = "pill";
-            pill.innerHTML = `<i class="fas fa-cut"></i>${servicoSelecionado.NM_SERVICO} às ${hora}`;
-            resumoEl.appendChild(pill);
-        };
+function pad(n){ return String(n).padStart(2,'0'); }
+function minToHHmm(m){ if (m==null || Number.isNaN(Number(m))) return ''; return `${pad(Math.floor(m/60))}:${pad(m%60)}`; }
+function hhmmToMin(hhmm){ if(!hhmm) return null; const [h,m]=hhmm.split(':').map(Number); if(Number.isNaN(h)||Number.isNaN(m)) return null; return h*60+m; }
 
-        const fecharModal = (id) => $(id).style.display = "none";
-        const abrirModal = (id) => $(id).style.display = "flex";
+function atualizarResumo(hora){
+    const resumoEl = document.getElementById('resumo');
+    resumoEl.innerHTML = '';
+    if(!servicoSelecionado || !hora) return;
+    const nomeSvc = servicoSelecionado.NM_SERVICO ?? servicoSelecionado.Nome ?? servicoSelecionado.nome ?? servicoSelecionado.servico ?? 'Serviço';
+    const pill = document.createElement('div');
+    pill.className = 'pill';
+    pill.innerHTML = `<i class="fas fa-cut"></i> ${nomeSvc} às ${hora}`;
+    resumoEl.appendChild(pill);
+}
 
-        // --- LOAD CONFIG ---
-        async function loadConfig() {
-            try {
-                const r = await fetch(`${API_BASE}/configuracao/${estabelecimentoId}`);
-                const config = await r.json();
-                $("#cover").src = config.IMAGEM || "";
-                $("#shop-name").textContent = config.NM_ESTABELECIMENTO || "Barbearia";
-                $("#shop-address").textContent = config.DS_ENDERECO || "Endereço";
-                $("#shop-rating").textContent = config.RATING || "—";
-                $("#shop-open").textContent = config.OPEN ? "Aberto" : "Fechado";
-                $("#shop-open").className = "badge " + (config.OPEN ? "open" : "off");
-            } catch(e) { console.error("Erro ao carregar configuração", e); }
+/* ---------- resolve estabelecimentoId ---------- */
+async function resolveEstabId(){
+    // 1) querystring ?estab=
+    const q = new URLSearchParams(location.search);
+    const qEst = q.get('estab');
+    if (qEst && Number(qEst)) return Number(qEst);
+
+    // 2) localStorage (convenção usada em outras páginas)
+    const ls = localStorage.getItem('ah_estab') || localStorage.getItem('ah_estabelecimentoId');
+    if (ls && Number(ls)) return Number(ls);
+
+    // 3) if there's a token, try /usuarios/me/estabelecimentos or /usuarios/me
+    const token = localStorage.getItem('ah_token');
+    if (!token) return null;
+    const headers = { 'Authorization': 'Bearer ' + token, 'Accept': 'application/json' };
+    const base = API_BASE.replace(/\/$/,'');
+    try {
+        const r = await fetch(base + '/usuarios/me/estabelecimentos', { headers, cache:'no-store' });
+        if (r.ok){
+            const arr = await r.json();
+            if (Array.isArray(arr) && arr.length) return arr[0].estabelecimentoId ?? arr[0].EstabelecimentoId ?? null;
         }
-
-        // --- LOAD SERVICOS & PROF ---
-        async function loadServicos() {
-            try {
-                const r = await fetch(`${API_BASE}/servicos/${estabelecimentoId}`);
-                servicos = await r.json();
-                const lista = $("#lista-servicos");
-                lista.innerHTML = "";
-                servicos.forEach(s => {
-                    const div = document.createElement("div");
-                    div.className = "servico-item";
-                    div.innerHTML = `<div class="srv-title"><i class="fas fa-cut"></i>${s.NM_SERVICO}</div><div class="srv-meta">${s.DS_DURACAO} min</div>`;
-                    div.onclick = () => {
-                        servicos.forEach(x => x.selected=false);
-                        servicoSelecionado = s;
-                        s.selected = true;
-                        $$(".servico-item").forEach(el => el.classList.remove("selected"));
-                        div.classList.add("selected");
-                        gerarSlots();
-                        atualizarResumo(slotSelecionado);
-                    };
-                    lista.appendChild(div);
-                });
-            } catch(e){ console.error(e); }
+    } catch(e){ console.warn('me/estabelecimentos failed', e); }
+    try {
+        const r2 = await fetch(base + '/usuarios/me', { headers, cache:'no-store' });
+        if (r2.ok){
+            const me = await r2.json();
+            return me?.estabelecimentoId ?? me?.estabId ?? null;
         }
+    } catch(e){ console.warn('usuarios/me failed', e); }
+    return null;
+}
 
-        async function loadProfs() {
-            try {
-                const r = await fetch(`${API_BASE}/profissionais/${estabelecimentoId}`);
-                profs = await r.json();
-                const sel = $("#prof");
-                sel.innerHTML = '<option value="">Selecione</option>';
-                profs.forEach(p => sel.innerHTML += `<option value="${p.ID_PROFISSIONAL}">${p.NM_PROFISSIONAL}</option>`);
-            } catch(e){ console.error(e); }
-        }
-
-        // --- SLOTS ---
-        function gerarSlots() {
-            if(!servicoSelecionado) return;
-            const slotsEl = $("#slots");
-            slotsEl.innerHTML = "";
-            // gerar exemplo de slots
-            const now = new Date();
-            for(let h=9; h<18; h++) {
-                const slotDiv = document.createElement("div");
-                slotDiv.className = "slot";
-                const hora = `${h.toString().padStart(2,'0')}:00`;
-                const slotDate = new Date();
-                slotDate.setHours(h,0,0,0);
-                if(slotDate<now) slotDiv.classList.add("past");
-                slotDiv.textContent = hora;
-                slotDiv.onclick = () => {
-                    if(slotDiv.classList.contains("past")) return;
-                    $$(".slot.selected").forEach(s => s.classList.remove("selected"));
-                    slotDiv.classList.add("selected");
-                    slotSelecionado = hora;
-                    atualizarResumo(hora);
-                    $("#erro-slot").style.display = "none";
-                };
-                slotsEl.appendChild(slotDiv);
+/* ---------- load configuration (GET /api/configuracao/{id}) ---------- */
+async function loadConfig(){
+    if (!estabelecimentoId) return;
+    const coverEl = document.getElementById('cover');
+    try {
+        const url = `${API_BASE.replace(/\/$/,'')}/configuracao/${encodeURIComponent(estabelecimentoId)}`;
+        const r = await fetch(url, {cache:'no-store'});
+        if (!r.ok) {
+            console.warn('config fetch status', r.status);
+            // se 404 -> usar fallback (tentativa de /estabelecimentos/{id})
+            if (r.status === 404) {
+                // tentamos buscar /estabelecimentos/{id} caso exista no backend
+                try {
+                    const r2 = await fetch(`${API_BASE.replace(/\/$/,'')}/estabelecimentos/${encodeURIComponent(estabelecimentoId)}`, {cache:'no-store'});
+                    if (r2.ok){
+                        const est = await r2.json();
+                        // normaliza se veio wrapper
+                        const e = est?.data ?? est;
+                        safeSrc(coverEl, e?.ImagemUrl ?? e?.IMAGEM ?? '');
+                        safeText(document.getElementById('shop-name'), e?.Nome ?? e?.NM_ESTABELECIMENTO ?? 'Barbearia');
+                        safeText(document.getElementById('shop-address'), e?.Endereco ?? e?.DS_ENDERECO ?? 'Endereço');
+                        safeText(document.getElementById('shop-rating'), e?.AvaliacaoMedia ?? '—');
+                        const open = e?.Ativo ?? true;
+                        const openEl = document.getElementById('shop-open');
+                        safeText(openEl, open ? 'Aberto' : 'Fechado');
+                        openEl.className = 'badge ' + (open ? 'open' : 'off');
+                        return;
+                    }
+                } catch(e){ console.warn('estabelecimentos fallback failed', e); }
             }
+            // 404 or other error: set defaults and return
+            safeSrc(coverEl, '');
+            safeText(document.getElementById('shop-name'), 'Barbearia');
+            safeText(document.getElementById('shop-address'), 'Endereço');
+            safeText(document.getElementById('shop-rating'), '—');
+            const openEl = document.getElementById('shop-open');
+            safeText(openEl, '—'); openEl.className = 'badge';
+            return;
         }
 
-        // --- CONFIRMAR AGENDAMENTO ---
-        $("#confirmar").onclick = () => {
-            if(!slotSelecionado) { $("#erro-slot").style.display = "block"; return; }
-            abrirModal("#modal-cliente");
+        const j = await r.json().catch(()=>null);
+        const cfg = j?.data?.configuracao ?? j?.configuracao ?? j?.data ?? j;
+        const est = j?.data?.estabelecimento ?? j?.estabelecimento ?? j;
+        // safe assign
+        const cover = cfg?.ImagemUrl ?? cfg?.IMAGEM ?? est?.ImagemUrl ?? est?.IMAGEM ?? '';
+        safeSrc(coverEl, cover);
+        safeText(document.getElementById('shop-name'), est?.Nome ?? est?.NM_ESTABELECIMENTO ?? cfg?.NomeEstabelecimento ?? 'Barbearia');
+        safeText(document.getElementById('shop-address'), cfg?.Endereco ?? est?.Endereco ?? est?.DS_ENDERECO ?? 'Endereço');
+        safeText(document.getElementById('shop-rating'), est?.AvaliacaoMedia ?? cfg?.RATING ?? '—');
+        const open = est?.Ativo ?? cfg?.Ativo ?? cfg?.OPEN ?? true;
+        const openEl = document.getElementById('shop-open');
+        safeText(openEl, open ? 'Aberto' : 'Fechado');
+        openEl.className = 'badge ' + (open ? 'open' : 'off');
+
+    } catch (e) {
+        console.error('Erro ao carregar configuração', e);
+        // defaults
+        safeSrc(document.getElementById('cover'), '');
+        safeText(document.getElementById('shop-name'), 'Barbearia');
+        safeText(document.getElementById('shop-address'), 'Endereço');
+        safeText(document.getElementById('shop-rating'), '—');
+        const openEl = document.getElementById('shop-open');
+        safeText(openEl, '—'); openEl.className = 'badge';
+    }
+}
+
+/* ---------- load serviços ---------- */
+async function loadServicos(){
+    if (!estabelecimentoId) return;
+    try {
+        const url = `${API_BASE.replace(/\/$/,'')}/servicos/${encodeURIComponent(estabelecimentoId)}`;
+        const r = await fetch(url, {cache:'no-store'});
+        if (!r.ok) { console.warn('servicos fetch failed', r.status); return; }
+        const data = await r.json();
+        servicos = Array.isArray(data) ? data : (data.data ?? data);
+        const lista = document.getElementById('lista-servicos');
+        lista.innerHTML = '';
+        servicos.forEach((s,i) => {
+            const nome = s.NM_SERVICO ?? s.Nome ?? s.nome ?? s.servico ?? `Serviço ${i+1}`;
+            const dur = s.DS_DURACAO ?? s.DuracaoMin ?? s.duracao ?? s.Duracao ?? '60';
+            const div = document.createElement('div');
+            div.className = 'servico-item';
+            div.innerHTML = `<div style="display:flex;flex-direction:column"><strong>${nome}</strong><small style="color:var(--muted)">${dur} min</small></div>`;
+            div.onclick = () => {
+                servicos.forEach(x=>x.selected=false);
+                servicoSelecionado = s;
+                s.selected = true;
+                $$('.servico-item').forEach(el=>el.classList.remove('selected'));
+                div.classList.add('selected');
+                gerarSlots();
+                atualizarResumo(slotSelecionado);
+            };
+            lista.appendChild(div);
+        });
+    } catch(e){ console.error('loadServicos', e); }
+}
+
+/* ---------- load profissionais ---------- */
+async function loadProfs(){
+    if (!estabelecimentoId) return;
+    try {
+        const url = `${API_BASE.replace(/\/$/,'')}/profissionais/${encodeURIComponent(estabelecimentoId)}`;
+        const r = await fetch(url, {cache:'no-store'});
+        if (!r.ok) { console.warn('profissionais fetch failed', r.status); return; }
+        const data = await r.json();
+        profs = Array.isArray(data) ? data : (data.data ?? data);
+        const sel = document.getElementById('prof');
+        sel.innerHTML = '<option value="">Selecione</option>';
+        profs.forEach(p => {
+            const id = p.ID_PROFISSIONAL ?? p.Id ?? p.id ?? p.IdProfissional;
+            const nome = p.NM_PROFISSIONAL ?? p.Nome ?? p.nome ?? 'Profissional';
+            sel.innerHTML += `<option value="${id}">${nome}</option>`;
+        });
+    } catch(e){ console.error('loadProfs', e); }
+}
+
+/* ---------- gerar slots (mock) ---------- */
+function gerarSlots(){
+    const slotsEl = document.getElementById('slots');
+    slotsEl.innerHTML = '';
+    if (!servicoSelecionado){
+        slotsEl.innerHTML = '<div class="muted">Selecione um serviço</div>';
+        return;
+    }
+    const durMin = Number(servicoSelecionado.DS_DURACAO ?? servicoSelecionado.DuracaoMin ?? servicoSelecionado.Duracao ?? 60);
+    const step = Math.max(15, durMin); // heurística
+    const dataInput = document.getElementById('data');
+    const datePart = dataInput.value || new Date().toISOString().slice(0,10);
+    const baseDate = new Date(datePart + 'T00:00:00');
+
+    const now = new Date();
+    for (let m = 9*60; m < 18*60; m += step){
+        const hh = Math.floor(m/60), mm = m%60;
+        const hora = `${pad(hh)}:${pad(mm)}`;
+        const slotDate = new Date(baseDate);
+        slotDate.setHours(hh, mm, 0, 0);
+        const div = document.createElement('div');
+        div.className = 'slot';
+        if (slotDate < now) div.classList.add('past');
+        div.textContent = hora;
+        div.onclick = () => {
+            if (div.classList.contains('past') || div.classList.contains('busy')) return;
+            $$('.slot.selected').forEach(s => s.classList.remove('selected'));
+            div.classList.add('selected');
+            slotSelecionado = hora;
+            document.getElementById('erro-slot').style.display = 'none';
+            atualizarResumo(hora);
         };
+        slotsEl.appendChild(div);
+    }
+}
 
-        $("#cliente-ok").onclick = async () => {
-            const nome = $("#cliente-nome").value.trim();
-            const tel = $("#cliente-tel").value.trim();
-            if(!nome || !tel) return alert("Preencha todos os campos.");
-            // exemplo POST
-            try {
-                await fetch(`${API_BASE}/agendamentos`, {
-                    method:"POST",
-                    headers:{"Content-Type":"application/json"},
-                    body: JSON.stringify({
-                        ID_ESTABELECIMENTO: estabelecimentoId,
-                        ID_SERVICO: servicoSelecionado.ID_SERVICO,
-                        ID_PROFISSIONAL: $("#prof").value,
-                        DT_AGENDAMENTO: $("#data").value,
-                        HR_INICIO: slotSelecionado,
-                        NM_CLIENTE: nome,
-                        NM_TELEFONE: tel
-                    })
-                });
-                fecharModal("#modal-cliente");
-                abrirModal("#modal-sucesso");
-            } catch(e){ console.error(e); alert("Erro ao agendar."); }
-        };
+/* ---------- confirmar agendamento ---------- */
+document.getElementById('confirmar').onclick = () => {
+    if (!slotSelecionado) { document.getElementById('erro-slot').style.display = 'block'; return; }
+    document.getElementById('modal-cliente').style.display = 'flex';
+};
 
-        $("#cliente-cancel").onclick = () => fecharModal("#modal-cliente");
-        $("#ok-sucesso").onclick = () => fecharModal("#modal-sucesso");
+document.getElementById('cliente-cancel').onclick = () => {
+    document.getElementById('modal-cliente').style.display = 'none';
+};
 
-        $("#data").onchange = gerarSlots;
+document.getElementById('cliente-ok').onclick = async () => {
+    const nome = document.getElementById('cliente-nome').value.trim();
+    const tel = document.getElementById('cliente-tel').value.trim();
+    if(!nome || !tel) return alert('Preencha nome e telefone do cliente.');
 
-        // --- INIT ---
-        loadConfig();
-        loadServicos();
-        loadProfs();
-    </script>
+    // montar payload conforme DTO do backend: AgendamentoCreateDto(EstabelecimentoId, ClienteId, ProfissionalId, ServicoId, DateTime DtInicio)
+    // Se o backend exigir ClienteId você deve criar o cliente antes e usar seu id.
+    // Aqui tentamos postar sem ClienteId (se seu backend criar cliente por nome, ok). Caso contrário, ajuste conforme backend.
+    const profId = document.getElementById('prof').value;
+    const servId = servicoSelecionado?.ID_SERVICO ?? servicoSelecionado?.Id ?? servicoSelecionado?.id;
+    if(!profId || !servId) { alert('Selecione profissional e serviço.'); return; }
+
+    const dt = (document.getElementById('data').value || new Date().toISOString().slice(0,10)) + 'T' + slotSelecionado + ':00';
+    // tentativa: enviar ClienteId se houver em localStorage (não garantido). Preferência: backend deve aceitar criar cliente.
+    const maybeClienteId = Number(localStorage.getItem('ah_cliente_id') || 0) || null;
+
+    const payload = {
+        EstabelecimentoId: estabelecimentoId,
+        ProfissionalId: Number(profId),
+        ServicoId: Number(servId),
+        DtInicio: dt
+    };
+
+    // se houver cliente conhecido, inclua
+    if (maybeClienteId) payload.ClienteId = maybeClienteId;
+
+    // Informação adicional enviada em campos opcionais (backend pode ignorar)
+    payload.ClienteNome = nome;
+    payload.ClienteTelefone = tel;
+
+    try {
+        const r = await fetch(`${API_BASE.replace(/\/$/,'')}/agendamentos`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        if (!r.ok) {
+            const txt = await r.text().catch(()=>r.statusText);
+            throw new Error(txt || `HTTP ${r.status}`);
+        }
+        document.getElementById('modal-cliente').style.display = 'none';
+        document.getElementById('modal-sucesso').style.display = 'flex';
+    } catch(e){
+        console.error('Erro ao agendar', e);
+        alert('Erro ao agendar: ' + (e.message || e));
+    }
+};
+
+document.getElementById('ok-sucesso').onclick = () => {
+    document.getElementById('modal-sucesso').style.display = 'none';
+};
+
+/* ---------- eventos ---------- */
+document.getElementById('data').addEventListener('change', gerarSlots);
+
+/* ---------- init ---------- */
+document.addEventListener('DOMContentLoaded', async () => {
+    estabelecimentoId = await resolveEstabId();
+    if (!estabelecimentoId) {
+        // fallback: tentar localStorage numeric
+        const fb = Number(localStorage.getItem('ah_estab') || localStorage.getItem('ah_estabelecimentoId') || 0) || null;
+        estabelecimentoId = fb;
+    }
+    if (!estabelecimentoId) {
+        console.warn('Estabelecimento indefinido. Use ?estab=ID ou faça login para resolver.');
+        // opcional: se quiser forçar 1 para testes, descomente:
+        // estabelecimentoId = 1;
+    }
+    await loadConfig();
+    await loadServicos();
+    await loadProfs();
+});
+</script>
 </body>
 </html>

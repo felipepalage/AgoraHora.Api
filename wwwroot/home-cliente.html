@@ -558,175 +558,261 @@
         </div>
     </main>
 
-    <script>
-        const lista = document.getElementById('lista-barbearias');
-        const search = document.getElementById('search');
-        const filterOrder = document.getElementById('filterOrder');
-        const chips = document.getElementById('chips');
+  <script>
+/* Script atualizado — substitua por completo a tag <script> existente */
+const API_BASE = window.API_BASE || 'http://179.0.176.111:5000/api';
+const lista = document.getElementById('lista-barbearias');
+const search = document.getElementById('search');
+const filterOrder = document.getElementById('filterOrder');
+const chips = document.getElementById('chips');
 
-        const favKey = 'ah_favs';
-        const favs = new Set(JSON.parse(localStorage.getItem(favKey) || '[]'));
-        const saveFavs = () => localStorage.setItem(favKey, JSON.stringify([...favs]));
+const favKey = 'ah_favs';
+const favs = new Set(JSON.parse(localStorage.getItem(favKey) || '[]'));
+const saveFavs = () => localStorage.setItem(favKey, JSON.stringify([...favs]));
 
-        const LOGO_URL = 'https://i.ibb.co/qMsd2zN4/barbershop-logo-barber-pole-razor-600nw-2535695609.webp';
-        const FALLBACK_IMG = 'data:image/svg+xml;utf8,' + encodeURIComponent(
-            `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360">
-              <rect width="100%" height="100%" fill="#f1f5f9"/>
-              <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
-                    font-family="Inter, Arial, sans-serif" font-size="24" fill="#0a1933">
-                <tspan x="50%" dy="-10">AgoraHora</tspan>
-                <tspan x="50%" dy="30">Barbearia</tspan>
-              </text>
-            </svg>`
-        );
+const LOGO_URL = 'https://i.ibb.co/qMsd2zN4/barbershop-logo-barber-pole-razor-600nw-2535695609.webp';
+const FALLBACK_IMG = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360">
+      <rect width="100%" height="100%" fill="#f1f5f9"/>
+      <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+            font-family="Inter, Arial, sans-serif" font-size="24" fill="#0a1933">
+        <tspan x="50%" dy="-10">AgoraHora</tspan>
+        <tspan x="50%" dy="30">Barbearia</tspan>
+      </text>
+    </svg>`
+);
 
-        const logoKey = id => `logo_estab_${id}`;
+const logoKey = id => `logo_estab_${id}`;
 
-        async function api(path) {
-            const url = '/api' + path + (path.includes('?') ? '&' : '?') + '_ts=' + Date.now();
-            const r = await fetch(url, { cache: 'no-store' });
-            if (!r.ok) throw new Error('HTTP ' + r.status);
-            return r.json();
+/* ---- helper: safe fetch to API_BASE ---- */
+async function apiFetch(path, opts = {}) {
+    const token = localStorage.getItem('ah_token');
+    const base = API_BASE.replace(/\/$/,'');
+    // allow path with or without leading slash
+    const clean = path.startsWith('/') ? path : '/' + path;
+    // add timestamp to avoid cache
+    const sep = clean.includes('?') ? '&' : '?';
+    const url = base + clean + sep + '_ts=' + Date.now();
+    const headers = Object.assign({}, opts.headers || {});
+    if (token) headers['Authorization'] = 'Bearer ' + token;
+    if (opts.body && !headers['Content-Type']) headers['Content-Type'] = 'application/json';
+
+    const res = await fetch(url, { method: opts.method || 'GET', headers, body: opts.body ? JSON.stringify(opts.body) : undefined, cache: 'no-store' });
+    if (!res.ok) {
+        let text;
+        try { text = await res.text(); } catch { text = res.statusText || `HTTP ${res.status}`; }
+        throw new Error(text || `HTTP ${res.status}`);
+    }
+    const ct = res.headers.get('content-type') || '';
+    if (ct.includes('json')) return res.json();
+    try { return JSON.parse(await res.text()); } catch { return await res.text(); }
+}
+
+
+function escapeHtml(str) {
+    if (str == null) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function safeNum(v, fallback=0){ const n = Number(String(v ?? '').replace(',', '.')); return Number.isFinite(n) ? n : fallback; }
+
+/* ---- normalize backend item to expected shape ---- */
+function normalizeItem(raw) {
+    if (!raw || typeof raw !== 'object') return null;
+
+    // optional chaining + nullish coalescing até o final; garante fallback 0
+    const rawId = raw?.id ?? raw?.Id ?? raw?.ID ?? raw?.ID_ESTABELECIMENTO ?? raw?.ID_ESTAB ?? raw?.estabelecimentoId ?? raw?.EstabelecimentoId ?? 0;
+    const id = Number(rawId) || 0;
+
+    const nome = raw?.nome ?? raw?.Nome ?? raw?.NM_ESTABELECIMENTO ?? raw?.NM_ESTAB ?? raw?.NM ?? '';
+    const endereco = raw?.endereco ?? raw?.Endereco ?? raw?.DS_ENDERECO ?? raw?.address ?? '';
+    const avaliacao = safeNum(raw?.avaliacao ?? raw?.AvaliacaoMedia ?? raw?.RATING ?? raw?.rating ?? 0, 0);
+
+    const abreRaw = raw?.abreMin ?? raw?.AbreMin ?? raw?.Abre ?? raw?.openFrom ?? raw?.open_from;
+    const fechaRaw = raw?.fechaMin ?? raw?.FechaMin ?? raw?.Fecha ?? raw?.openTo ?? raw?.open_to;
+    const abreMin = Number.isFinite(Number(abreRaw)) ? Number(abreRaw) : null;
+    const fechaMin = Number.isFinite(Number(fechaRaw)) ? Number(fechaRaw) : null;
+
+    const img = raw?.ImagemUrl ?? raw?.imagem ?? raw?.Img ?? raw?.IMAGEM ?? raw?.imgUrl ?? raw?.img_url ?? null;
+
+    return { id, nome, endereco, avaliacao, abreMin, fechaMin, img };
+}
+
+function safeNum(v, fallback=0){ const n = Number(String(v ?? '').replace(',', '.')); return Number.isFinite(n) ? n : fallback; }
+
+/* ---- normalize image URL and encode safely ---- */
+function normalizeImageUrl(u) {
+    if (!u) return LOGO_URL;
+    try {
+        u = String(u).trim();
+        if (u.startsWith('//')) return location.protocol + u;
+        if (/^https?:\/\//i.test(u)) {
+            // ensure path segments are encoded but keep origin intact
+            const url = new URL(u);
+            url.pathname = url.pathname.split('/').map(segment => encodeURIComponent(decodeURIComponent(segment))).join('/');
+            return url.toString();
         }
+        return LOGO_URL;
+    } catch {
+        return LOGO_URL;
+    }
+}
 
-        function normalizeImageUrl(u) {
-            try {
-                if (!u) return LOGO_URL;
-                u = String(u).trim();
-                if (u.startsWith('//')) return location.protocol + u;
-                if (/^https?:/i.test(u)) {
-                    const url = new URL(u);
-                    url.pathname = url.pathname.split('/').map(encodeURIComponent).join('/');
-                    return url.toString();
-                }
-                return LOGO_URL;
-            } catch { return LOGO_URL; }
-        }
+/* ---- open/closed local calculation (handles midnight wrap) ---- */
+function isOpenLocal(abreMin, fechaMin) {
+    if (!Number.isFinite(abreMin) || !Number.isFinite(fechaMin)) return false;
+    const now = new Date();
+    const nowMin = now.getHours()*60 + now.getMinutes();
+    return abreMin < fechaMin
+        ? (nowMin >= abreMin && nowMin < fechaMin)
+        : (nowMin >= abreMin || nowMin < fechaMin);
+}
 
-        // Aberta local: lida com faixa cruzando 00:00
-        function isOpenLocal(abreMin, fechaMin) {
-            if (typeof abreMin !== 'number' || typeof fechaMin !== 'number') return false;
-            const now = new Date();
-            const nowMin = now.getHours() * 60 + now.getMinutes();
-            return abreMin < fechaMin
-                ? nowMin >= abreMin && nowMin < fechaMin
-                : nowMin >= abreMin || nowMin < fechaMin;
-        }
+/* ---- card HTML (uses normalized fields) ---- */
+function cardHTML(b) {
+    const id = Number(b.id);
+    const href = `barbearia.html?id=${encodeURIComponent(id)}`;
+    const customLogo = localStorage.getItem(logoKey(id));
+    const imgUrl = customLogo || normalizeImageUrl(b.img);
+    const aberta = (b.abreMin != null && b.fechaMin != null) ? isOpenLocal(b.abreMin, b.fechaMin) : !!b.aberta;
+    const rating = Number.isFinite(Number(b.avaliacao)) ? Number(b.avaliacao).toFixed(1) : '—';
 
-        function cardHTML(b) {
-            const href = `barbearia.html?id=${b.id}`;
-            const customLogo = localStorage.getItem(logoKey(b.id));
-            const imgUrl = customLogo || normalizeImageUrl(b.img || LOGO_URL);
+    return `
+      <div class="card" data-id="${id}">
+        <div class="thumb-container">
+          <img class="thumb" loading="lazy" src="${imgUrl}" alt="Foto da ${escapeHtml(b.nome)}"
+               onerror="this.onerror=null;this.src='${FALLBACK_IMG}'">
+        </div>
+        <div class="card-body">
+          <div>
+            <div class="barbearia-nome"><i class="fas fa-store"></i> ${escapeHtml(b.nome)}</div>
+            <div class="barbearia-endereco"><i class="fas fa-map-marker-alt"></i> ${escapeHtml(b.endereco || '')}</div>
+            <div class="meta">
+              <div class="rating"><i class="fas fa-star"></i> ${rating}</div>
+              <span class="badge ${aberta ? 'open' : 'off'}">
+                <i class="fas fa-${aberta ? 'check-circle' : 'times-circle'}"></i>
+                ${aberta ? 'Aberta agora' : 'Fechada'}
+              </span>
+            </div>
+          </div>
+          <div class="card-footer">
+            <a class="btn" href="${href}"><i class="fas fa-eye"></i> Ver detalhes</a>
+            <button class="fav-btn ${favs.has(id) ? 'active' : ''}" aria-pressed="${favs.has(id)}" title="Favoritar" data-id="${id}">
+              ${favs.has(id) ? '❤️' : '🤍'}
+            </button>
+          </div>
+        </div>
+      </div>`;
+}
 
-            // usa cálculo local se possível; fallback no campo vindo do backend
-            const abertaLocal = isOpenLocal(b.abreMin, b.fechaMin);
-            const aberta = Number.isFinite(b.abreMin) && Number.isFinite(b.fechaMin) ? abertaLocal : !!b.aberta;
+/* ---- bind favorite buttons after render ---- */
+function bindFavs() {
+    lista.querySelectorAll('.fav-btn').forEach(btn => {
+        btn.onclick = (e) => {
+            e.preventDefault(); e.stopPropagation();
+            const id = Number(btn.dataset.id);
+            const active = !btn.classList.contains('active');
+            btn.classList.toggle('active', active);
+            btn.textContent = active ? '❤️' : '🤍';
+            btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+            if (active) favs.add(id); else favs.delete(id);
+            saveFavs();
+        };
+    });
+}
 
-            return `
-              <div class="card">
-                <div class="thumb-container">
-                  <img class="thumb" loading="lazy" src="${imgUrl}" alt="Foto da ${b.nome}"
-                       onerror="this.onerror=null;this.src='${FALLBACK_IMG}'">
-                </div>
-                <div class="card-body">
-                  <div>
-                    <div class="barbearia-nome"><i class="fas fa-store"></i> ${b.nome}</div>
-                    <div class="barbearia-endereco"><i class="fas fa-map-marker-alt"></i> ${b.endereco || ''}</div>
-                    <div class="meta">
-                      <div class="rating"><i class="fas fa-star"></i> ${Number(b.avaliacao ?? 0).toFixed(1)}</div>
-                      <span class="badge ${aberta ? 'open' : 'off'}">
-                        <i class="fas fa-${aberta ? 'check-circle' : 'times-circle'}"></i>
-                        ${aberta ? 'Aberta agora' : 'Fechada'}
-                      </span>
-                    </div>
-                  </div>
-                  <div class="card-footer">
-                    <a class="btn" href="${href}"><i class="fas fa-eye"></i> Ver detalhes</a>
-                    <button class="fav-btn ${favs.has(b.id) ? 'active' : ''}" aria-pressed="${favs.has(b.id)}" title="Favoritar" data-id="${b.id}">
-                      ${favs.has(b.id) ? '❤️' : '🤍'}
-                    </button>
-                  </div>
-                </div>
-              </div>`;
-        }
+/* ---- fetch data with params; normalizes response shape to array of normalized items ---- */
+async function fetchEstabelecimentos({ q = '', order = '', abertas = '' } = {}) {
+    // build query string safely
+    const params = new URLSearchParams();
+    if (q) params.set('q', q);
+    if (order) params.set('order', order);
+    if (abertas) params.set('abertas', abertas);
+    // call backend
+    const resp = await apiFetch(`/estabelecimentos?${params.toString()}`);
+    // backend may return array or { data: [...] } or { data: { items: [...] } }
+    let items = [];
+    if (Array.isArray(resp)) items = resp;
+    else if (Array.isArray(resp.data)) items = resp.data;
+    else if (Array.isArray(resp.items)) items = resp.items;
+    else if (Array.isArray(resp.data?.items)) items = resp.data.items;
+    else if (resp && typeof resp === 'object') {
+        // maybe single object
+        items = [resp];
+    } else items = [];
 
-        function bindFavs() {
-            lista.querySelectorAll('.fav-btn').forEach(btn => {
-                const id = Number(btn.dataset.id);
-                btn.addEventListener('click', e => {
-                    e.preventDefault(); e.stopPropagation();
-                    const active = btn.classList.toggle('active');
-                    btn.textContent = active ? '❤️' : '🤍';
-                    btn.setAttribute('aria-pressed', active ? 'true' : 'false');
-                    if (active) favs.add(id); else favs.delete(id);
-                    saveFavs();
-                });
-            });
-        }
+    return items.map(normalizeItem).filter(Boolean);
+}
 
-        async function carregar() {
-            const chip = chips.querySelector('.chip.active')?.dataset?.chip || 'todas';
-            const abertasParam = chip === 'abertas' ? 'true' : '';
-            const order = filterOrder.value || (chip === 'top' ? 'avaliacao' : '');
-            const q = encodeURIComponent(search.value.trim());
-            const resp = await api(`/estabelecimentos?q=${q}&order=${order}&abertas=${abertasParam}`);
-            let data = resp.data ?? [];
+/* ---- rendering pipeline ---- */
+async function applyFilters() {
+    try {
+        const chip = chips.querySelector('.chip.active')?.dataset?.chip || 'todas';
+        const abertasParam = chip === 'abertas' ? 'true' : '';
+        const order = filterOrder.value || (chip === 'top' ? 'avaliacao' : '');
+        const q = search.value.trim();
+        let data = await fetchEstabelecimentos({ q, order, abertas: abertasParam });
 
-            // Recalcula abertura local em todos os cards
-            data = data.map(d => ({ ...d, aberta: isOpenLocal(d.abreMin, d.fechaMin) }));
+        // ensure booleans/numbers consistent
+        data = data.map(d => ({ ...d, aberta: (d.abreMin != null && d.fechaMin != null) ? isOpenLocal(d.abreMin, d.fechaMin) : !!d.aberta }));
 
-            // Se chip "abertas" escolhido mas o backend filtrou errado por fuso, filtra no cliente
-            if (chip === 'abertas') data = data.filter(d => d.aberta === true);
+        if (chip === 'abertas') data = data.filter(d => d.aberta);
 
-            return data;
-        }
+        // if ordering by rating on client (backend may do it already)
+        if (order === 'avaliacao') data.sort((a,b) => (b.avaliacao||0) - (a.avaliacao||0));
 
-        function render(data) {
-            if (!data.length) {
-                lista.innerHTML = `
-                    <div class="empty-wrap">
-                        <i class="fas fa-search"></i>
-                        <h3>Nenhuma barbearia encontrada</h3>
-                        <p>Tente limpar os filtros ou usar termos diferentes.</p>
-                    </div>`;
-                return;
-            }
-            lista.innerHTML = data.map(cardHTML).join('');
-            bindFavs();
-        }
+        render(data);
+    } catch (err) {
+        console.error('Erro carregar estabelecimentos', err);
+        lista.innerHTML = `
+            <div class="empty-wrap">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Erro ao carregar</h3>
+                <p>Não foi possível carregar as barbearias no momento. Verifique o backend/API e CORS.</p>
+            </div>`;
+    }
+}
 
-        async function applyFilters() {
-            try { render(await carregar()); }
-            catch {
-                lista.innerHTML = `
-                    <div class="empty-wrap">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <h3>Erro ao carregar</h3>
-                        <p>Não foi possível carregar as barbearias no momento. Tente novamente mais tarde.</p>
-                    </div>`;
-            }
-        }
+function render(data) {
+    if (!Array.isArray(data) || data.length === 0) {
+        lista.innerHTML = `
+            <div class="empty-wrap">
+                <i class="fas fa-search"></i>
+                <h3>Nenhuma barbearia encontrada</h3>
+                <p>Tente limpar os filtros ou usar termos diferentes.</p>
+            </div>`;
+        return;
+    }
+    lista.innerHTML = data.map(cardHTML).join('');
+    bindFavs();
+}
 
-        chips.addEventListener('click', e => {
-            const btn = e.target.closest('.chip'); if (!btn) return;
-            chips.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-            btn.classList.add('active');
-            applyFilters();
-        });
+/* ---- UI events ---- */
+chips.addEventListener('click', (e) => {
+    const btn = e.target.closest('.chip'); if (!btn) return;
+    chips.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    applyFilters();
+});
 
-        let t;
-        search.addEventListener('input', () => {
-            clearTimeout(t); t = setTimeout(applyFilters, 160);
-        });
-        filterOrder.addEventListener('change', applyFilters);
+let debounce;
+search.addEventListener('input', () => { clearTimeout(debounce); debounce = setTimeout(applyFilters, 160); });
+filterOrder.addEventListener('change', applyFilters);
 
-        applyFilters();
+/* refresh when other tabs change logo/local data */
+window.addEventListener('storage', ev => {
+    if (!ev.key) return;
+    if (ev.key.startsWith('logo_estab_') || ev.key.startsWith('estab_')) applyFilters();
+});
 
-        // Recarrega quando Configurações salva nome/endereço/logo
-        window.addEventListener('storage', ev => {
-            if (!ev.key) return;
-            if (ev.key.startsWith('logo_estab_') || ev.key.startsWith('estab_')) applyFilters();
-        });
-    </script>
+/* start */
+applyFilters();
+</script>
+
 </body>
 </html>
