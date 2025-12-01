@@ -346,134 +346,258 @@
 </main>
 
 <script>
-    const token = localStorage.getItem('ah_token');
-    if (!token) location.replace('login.html');
+/* Dashboard script - usa /api/relatorios/resumo e /api/relatorios/profissional,
+   com fallback para /api/agendamentos/profissional quando necessário. */
 
-    document.getElementById('logout').onclick = () => {
-        localStorage.removeItem('ah_token');
-        localStorage.removeItem('ah_estabelecimentoId');
-        localStorage.removeItem('ah_user_name');
-        location.href = 'login.html';
-    };
+const API_BASE = window.API_BASE || "http://179.0.176.111:5000/api";
+const token = localStorage.getItem('ah_token');
+if (!token) location.replace('login.html');
 
-    async function api(path) {
-        const r = await fetch('/api'+path, { headers:{ Authorization:'Bearer '+token }});
-        if(!r.ok) throw new Error('HTTP '+r.status);
-        return r.json();
+/* elementos UI */
+const kHoje = document.getElementById('kpi-hoje');
+const kAtendidos = document.getElementById('kpi-atendidos');
+const kCancelados = document.getElementById('kpi-cancelados');
+const tbody = document.getElementById('tbody-agendamentos');
+const mobileCards = document.getElementById('mobile-cards');
+const erro = document.getElementById('erro');
+const filtroData = document.getElementById('filtro-data');
+const filtroStatus = document.getElementById('filtro-status');
+
+document.getElementById('logout').onclick = () => {
+    localStorage.removeItem('ah_token');
+    localStorage.removeItem('ah_estab');
+    localStorage.removeItem('ah_estabelecimentoId');
+    localStorage.removeItem('ah_user_name');
+    location.href = 'login.html';
+};
+
+/* util headers */
+function authHeaders() {
+    return { 'Accept': 'application/json', 'Authorization': 'Bearer ' + token };
+}
+
+/* util date range (yyyy-mm-ddTHH:MM:SS) */
+function dayRangeIso(day) {
+    const d = day || new Date().toISOString().slice(0,10);
+    return { ini: d + 'T00:00:00', fim: d + 'T23:59:59' };
+}
+
+/* normalize status */
+function normalizeStatus(s) {
+    if (s == null) return 'PENDENTE';
+    if (typeof s === 'string') return s.toUpperCase().replace('Ó','O').replace('Ú','U').replace('Í','I');
+    const map = { 0: 'PENDENTE', 1: 'CONFIRMADO', 2: 'CANCELADO', 3: 'CONCLUIDO' };
+    return map[s] ?? String(s).toUpperCase();
+}
+
+/* criar badge */
+function criaStatusBadge(status){
+    let cls = 'b-gray', dot = 'd-gray';
+    switch(String(status).toUpperCase()){
+        case 'PENDENTE': cls='b-gray'; dot='d-gray'; break;
+        case 'CONFIRMADO': cls='b-green'; dot='d-green'; break;
+        case 'CONCLUIDO': cls='b-green'; dot='d-green'; break;
+        case 'CANCELADO': cls='b-red'; dot='d-red'; break;
     }
+    return `<span class="badge ${cls}"><span class="dot ${dot}"></span>${status}</span>`;
+}
 
-    async function apiPatch(path, body){
-        const r = await fetch('/api'+path, { method:'PATCH', headers:{ 'Content-Type':'application/json', Authorization:'Bearer '+token }, body:JSON.stringify(body) });
-        if(!r.ok) throw new Error('HTTP '+r.status);
-    }
-
-    const PROFISSIONAL_ID = 1;
-    const fmtData = d => new Date(d).toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit' });
-    const fmtHora = d => new Date(d).toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
-
-    const kHoje = document.getElementById('kpi-hoje');
-    const kAtendidos = document.getElementById('kpi-atendidos');
-    const kCancelados = document.getElementById('kpi-cancelados');
-    const tbody = document.getElementById('tbody-agendamentos');
-    const mobileCards = document.getElementById('mobile-cards');
-    const erro = document.getElementById('erro');
-    const filtroData = document.getElementById('filtro-data');
-    const filtroStatus = document.getElementById('filtro-status');
-
-    function criaStatusBadge(status){
-        let cls = 'b-gray', dot = 'd-gray';
-        switch(status){
-            case 'PENDENTE': cls='b-gray'; dot='d-gray'; break;
-            case 'CONFIRMADO': cls='b-green'; dot='d-green'; break;
-            case 'CONCLUIDO': cls='b-teal'; dot='d-green'; break;
-            case 'CANCELADO': cls='b-red'; dot='d-red'; break;
-        }
-        return `<span class="badge ${cls}"><span class="dot ${dot}"></span>${status}</span>`;
-    }
-
-    function criaLinha(a){
-        return `<tr data-id="${a.id}">
-            <td>${a.cliente}</td>
-            <td>${a.servico}</td>
-            <td>${a.profissional}</td>
-            <td>${fmtData(a.data)}</td>
-            <td>${fmtHora(a.data)}</td>
-            <td>
-                <div class="status-wrap">
-                    <div class="status-btn">${criaStatusBadge(a.status)}<span class="chev"><i class="fas fa-chevron-down"></i></span></div>
-                    <div class="status-menu">
-                        <div class="status-item" data-role="set" data-status="PENDENTE">${criaStatusBadge('PENDENTE')}</div>
-                        <div class="status-item" data-role="set" data-status="CONFIRMADO">${criaStatusBadge('CONFIRMADO')}</div>
-                        <div class="status-item" data-role="set" data-status="CONCLUIDO">${criaStatusBadge('CONCLUIDO')}</div>
-                        <div class="status-item" data-role="set" data-status="CANCELADO">${criaStatusBadge('CANCELADO')}</div>
-                    </div>
+/* templates */
+function criaLinha(a){
+    return `<tr data-id="${a.id}">
+        <td>${escapeHtml(a.cliente)}</td>
+        <td>${escapeHtml(a.servico)}</td>
+        <td>${escapeHtml(a.profissional)}</td>
+        <td>${fmtData(a.data)}</td>
+        <td>${fmtHora(a.data)}</td>
+        <td>
+            <div class="status-wrap">
+                <div class="status-btn">${criaStatusBadge(a.status)}<span class="chev"><i class="fas fa-chevron-down"></i></span></div>
+                <div class="status-menu">
+                    <div class="status-item" data-role="set" data-status="PENDENTE">${criaStatusBadge('PENDENTE')}</div>
+                    <div class="status-item" data-role="set" data-status="CONFIRMADO">${criaStatusBadge('CONFIRMADO')}</div>
+                    <div class="status-item" data-role="set" data-status="CONCLUIDO">${criaStatusBadge('CONCLUIDO')}</div>
+                    <div class="status-item" data-role="set" data-status="CANCELADO">${criaStatusBadge('CANCELADO')}</div>
                 </div>
-            </td>
-        </tr>`;
+            </div>
+        </td>
+    </tr>`;
+}
+
+function criaCard(a){
+    return `<div class="card" data-id="${a.id}">
+        <div><strong>${escapeHtml(a.cliente)}</strong></div>
+        <div>${escapeHtml(a.servico)}</div>
+        <div>${escapeHtml(a.profissional)}</div>
+        <div>${fmtData(a.data)} ${fmtHora(a.data)}</div>
+        <div>${criaStatusBadge(a.status)}</div>
+    </div>`;
+}
+
+/* small helpers */
+function fmtData(d){
+    try{ return new Date(d).toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit' }); }
+    catch { return String(d); }
+}
+function fmtHora(d){
+    try{ return new Date(d).toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' }); }
+    catch { return ''; }
+}
+function escapeHtml(s){ return String(s ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+
+/* fetch wrappers */
+async function fetchJson(url, opts = {}) {
+    const headers = Object.assign({}, authHeaders(), opts.headers || {});
+    const r = await fetch(url, Object.assign({}, opts, { headers }));
+    if (r.status === 401) { localStorage.removeItem('ah_token'); location.href='login.html'; throw new Error('Não autorizado'); }
+    const txt = await r.text();
+    try { return JSON.parse(txt); } catch { return txt; }
+}
+
+async function patchJson(url, body) {
+    const r = await fetch(url, { method: 'PATCH', headers: Object.assign({ 'Content-Type':'application/json' }, authHeaders()), body: JSON.stringify(body) });
+    if (r.status === 401) { localStorage.removeItem('ah_token'); location.href='login.html'; throw new Error('Não autorizado'); }
+    if (!r.ok) {
+        const txt = await r.text().catch(()=> '');
+        throw new Error(`HTTP ${r.status} - ${txt || r.statusText}`);
     }
+}
 
-    function criaCard(a){
-        return `<div class="card" data-id="${a.id}">
-            <div><strong>${a.cliente}</strong></div>
-            <div>${a.servico}</div>
-            <div>${a.profissional}</div>
-            <div>${fmtData(a.data)} ${fmtHora(a.data)}</div>
-            <div>${criaStatusBadge(a.status)}</div>
-        </div>`;
-    }
+/* principal: carrega KPIs e lista */
+async function carregaAgendamentos(){
+    try {
+        erro.style.display = 'none';
+        tbody.innerHTML = '<tr><td class="empty" colspan="6">Carregando…</td></tr>';
+        mobileCards.innerHTML = '<div class="empty">Carregando…</div>';
 
-    async function carregaAgendamentos(){
-        try {
-            erro.style.display='none';
-            const data = filtroData.value ? `?data=${filtroData.value}` : '';
-            const status = filtroStatus.value ? `&status=${filtroStatus.value}` : '';
-            const res = await api(`/agendamentos${data}${status}`);
-            kHoje.textContent=res.filter(a=>a.status==='PENDENTE').length;
-            kAtendidos.textContent=res.filter(a=>a.status==='CONCLUIDO').length;
-            kCancelados.textContent=res.filter(a=>a.status==='CANCELADO').length;
-            tbody.innerHTML = res.length ? res.map(criaLinha).join('') : '<tr><td class="empty" colspan="6">Nenhum agendamento</td></tr>';
-            mobileCards.innerHTML = res.length ? res.map(criaCard).join('') : '<div class="empty">Nenhum agendamento</div>';
-        } catch(e){
-            erro.style.display='flex';
-            tbody.innerHTML = '<tr><td class="empty" colspan="6">Erro ao carregar</td></tr>';
-            mobileCards.innerHTML = '<div class="empty">Erro ao carregar</div>';
-        }
-    }
+        const dia = filtroData.value || new Date().toISOString().slice(0,10);
+        const { ini, fim } = dayRangeIso(dia);
 
-    document.getElementById('btn-filtrar').onclick = carregaAgendamentos;
+        // estabelecimento (tenta ah_estab ou ah_estabelecimentoId)
+        const estabId = Number(localStorage.getItem('ah_estab') || localStorage.getItem('ah_estabelecimentoId') || 0);
 
-    document.addEventListener('click', async e => {
-        // toggle menu
-        if(e.target.closest('.status-btn')){
-            const wrap = e.target.closest('.status-wrap');
-            const menu = wrap.querySelector('.status-menu');
-            menu.style.display = menu.style.display==='block'?'none':'block';
-            return;
-        }
-
-        // selecionar status
-        const item = e.target.closest('.status-item[data-role="set"]');
-        if(item){
-            const wrap = item.closest('.status-wrap');
-            const id = wrap.closest('tr, .card').dataset.id;
-            const novoStatus = item.dataset.status;
+        // 1) KPIs via relatorios/resumo (se estabelecim. disponível)
+        if (estabId) {
+            const urlResumo = `${API_BASE.replace(/\/$/,'')}/relatorios/resumo?estabelecimentoId=${encodeURIComponent(estabId)}&ini=${encodeURIComponent(ini)}&fim=${encodeURIComponent(fim)}`;
             try {
-                await apiPatch(`/agendamentos/${id}/status`, { status: novoStatus });
-                // atualizar visual
-                wrap.querySelector('.status-btn').innerHTML = criaStatusBadge(novoStatus) + '<span class="chev"><i class="fas fa-chevron-down"></i></span>';
-                wrap.querySelector('.status-menu').style.display='none';
-            } catch(err){
-                alert('Erro ao atualizar status');
+                const respResumo = await fetchJson(urlResumo);
+                const resumo = respResumo?.data ?? {};
+                kHoje.textContent = resumo?.agendados ?? '–';
+                kAtendidos.textContent = resumo?.concluidos ?? resumo?.confirmados ?? '–';
+                kCancelados.textContent = resumo?.cancelados ?? '–';
+            } catch (e) {
+                console.warn('resumo failed', e);
+                // deixar KPIs como estavam ou marcar com traço
+                kHoje.textContent = kHoje.textContent || '–';
+                kAtendidos.textContent = kAtendidos.textContent || '–';
+                kCancelados.textContent = kCancelados.textContent || '–';
             }
         }
 
-        // fechar menus se clicar fora
-        if(!e.target.closest('.status-wrap')){
-            document.querySelectorAll('.status-menu').forEach(m=>m.style.display='none');
-        }
-    });
+        // 2) itens recentes - preferir relatorios/profissional
+        const profissionalId = Number(localStorage.getItem('ah_profissional') || window.PROFISSIONAL_ID || 0);
+        let lista = [];
 
-    window.addEventListener('load', carregaAgendamentos);
+        if (profissionalId) {
+            const urlProf = `${API_BASE.replace(/\/$/,'')}/relatorios/profissional?profissionalId=${encodeURIComponent(profissionalId)}&ini=${encodeURIComponent(ini)}&fim=${encodeURIComponent(fim)}`;
+            const resp = await fetchJson(urlProf);
+            const itens = resp?.data?.itens ?? resp?.data ?? [];
+            lista = itens.map(x => ({
+                id: x.Id ?? x.id,
+                cliente: x.cliente ?? x.Cliente ?? x.cliente,
+                servico: x.servico ?? x.Servico ?? x.servico,
+                profissional: x.cliente ? x.cliente : (x.profissional ?? x.Profissional ?? '—'),
+                data: x.DtInicio ?? x.dtInicio ?? x.DtInicio,
+                status: normalizeStatus(x.Status ?? x.status)
+            }));
+        } else {
+            // fallback: tentar /agendamentos/profissional com PROFESSIONAL_ID padrão (1)
+            const pid = window.PROFISSIONAL_ID || 1;
+            const url = `${API_BASE.replace(/\/$/,'')}/agendamentos/profissional?profissionalId=${encodeURIComponent(pid)}&ini=${encodeURIComponent(ini)}&fim=${encodeURIComponent(fim)}`;
+            const resp = await fetchJson(url);
+            const raw = resp?.data ?? resp ?? [];
+            lista = raw.map(x => ({
+                id: x.Id ?? x.id,
+                cliente: x.cliente ?? x.Cliente,
+                servico: x.servico ?? x.Servico,
+                profissional: x.profissional ?? x.Profissional ?? '—',
+                data: x.dtInicio ?? x.DtInicio ?? x.dtInicio,
+                status: normalizeStatus(x.status ?? x.Status)
+            }));
+        }
+
+        // aplicar filtro de status (se selecionado)
+        if (filtroStatus.value) {
+            const wanted = String(filtroStatus.value).toUpperCase();
+            lista = lista.filter(a => String(a.status).toUpperCase() === wanted);
+        }
+
+        // preencher KPIs caso resumo não exista
+        if (!estabId) {
+            kHoje.textContent = lista.filter(a => a.status === 'PENDENTE').length;
+            kAtendidos.textContent = lista.filter(a => a.status === 'CONCLUIDO' || a.status === 'CONCLUÍDO' || a.status === 'CONFIRMADO').length;
+            kCancelados.textContent = lista.filter(a => a.status === 'CANCELADO').length;
+        }
+
+        // render
+        tbody.innerHTML = lista.length ? lista.map(criaLinha).join('') : '<tr><td class="empty" colspan="6">Nenhum agendamento</td></tr>';
+        mobileCards.innerHTML = lista.length ? lista.map(criaCard).join('') : '<div class="empty">Nenhum agendamento</div>';
+    } catch (e) {
+        console.error('carregaAgendamentos error', e);
+        erro.style.display = 'flex';
+        erro.textContent = 'Erro ao carregar: ' + (e?.message || e);
+        tbody.innerHTML = '<tr><td class="empty" colspan="6">Erro ao carregar</td></tr>';
+        mobileCards.innerHTML = '<div class="empty">Erro ao carregar</div>';
+    }
+}
+
+/* status update flow */
+document.addEventListener('click', async e => {
+    // toggle menu
+    if (e.target.closest('.status-btn')) {
+        const wrap = e.target.closest('.status-wrap');
+        const menu = wrap.querySelector('.status-menu');
+        document.querySelectorAll('.status-menu').forEach(m => { if (m !== menu) m.style.display = 'none'; });
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        return;
+    }
+
+    // selecionar novo status
+    const item = e.target.closest('.status-item[data-role="set"]');
+    if (item) {
+        const wrap = item.closest('.status-wrap');
+        const parent = wrap.closest('tr, .card');
+        const id = parent?.dataset?.id;
+        const novoStatus = item.dataset.status;
+        if (!id) return alert('ID do agendamento não encontrado.');
+        try {
+            await patchJson(`${API_BASE.replace(/\/$/,'')}/agendamentos/${encodeURIComponent(id)}/status`, { Status: novoStatus });
+            // atualizar UI
+            wrap.querySelector('.status-btn').innerHTML = criaStatusBadge(novoStatus) + '<span class="chev"><i class="fas fa-chevron-down"></i></span>';
+            wrap.querySelector('.status-menu').style.display = 'none';
+        } catch (err) {
+            console.error('patch status failed', err);
+            alert('Erro ao atualizar status: ' + (err?.message || 'unknown'));
+        }
+        return;
+    }
+
+    // fechar menus se clicar fora
+    if (!e.target.closest('.status-wrap')) {
+        document.querySelectorAll('.status-menu').forEach(m => m.style.display = 'none');
+    }
+});
+
+/* filtros */
+document.getElementById('btn-filtrar').onclick = carregaAgendamentos;
+
+/* inicialização */
+window.addEventListener('load', () => {
+    // preenche data com hoje
+    if (!filtroData.value) filtroData.value = new Date().toISOString().slice(0,10);
+    carregaAgendamentos();
+});
 </script>
+
 </body>
 </html>
