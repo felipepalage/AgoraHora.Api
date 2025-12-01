@@ -98,16 +98,28 @@
     </main>
 
 <script>
-/*
-  Ajustes front-end:
-  - configure API_BASE via window.API_BASE antes de incluir o arquivo ou deixe o IP padrão abaixo.
-  - este script evita usar "localhost" e trata erros de conexão/CORS mostrando mensagens úteis.
-*/
-
+/* ===========================
+   CONFIGURAÇÃO GLOBAL
+=========================== */
 const API_BASE = window.API_BASE || "http://179.0.176.111:5000/api";
 console.info("API_BASE =", API_BASE);
 
-/* elementos */
+/* ===========================
+   GUARD DE AUTENTICAÇÃO
+=========================== */
+(function authGuard() {
+    const token = localStorage.getItem("ah_token");
+    const estab = localStorage.getItem("ah_estab");
+
+    if (!token || !estab) {
+        window.location.href = "login.html";
+        return;
+    }
+})();
+
+/* ===========================
+   ELEMENTOS
+=========================== */
 const selProf = document.getElementById("profissional");
 const filtroData = document.getElementById("filtro-data");
 const filtroStatus = document.getElementById("filtro-status");
@@ -122,6 +134,9 @@ document.getElementById("voltar").onclick = () => {
     else window.location.href = "index.html";
 };
 
+/* ===========================
+   UTILIDADES
+=========================== */
 function hojeIso(){ return new Date().toISOString().slice(0,10); }
 filtroData.value = hojeIso();
 
@@ -142,7 +157,9 @@ function fmtData(dt){
     }catch{ return String(dt); }
 }
 
-/* fetch wrapper com tratamento de erros do body e timeout simples */
+/* ===========================
+   FETCH SEGURO
+=========================== */
 async function fetchWithTimeout(resource, options = {}) {
     const { timeout = 10000 } = options;
     const controller = new AbortController();
@@ -158,8 +175,7 @@ async function fetchWithTimeout(resource, options = {}) {
 }
 
 async function getJson(url) {
-    // garante que estamos usando API_BASE (evita caminhos relativos)
-    if (!/^https?:\/\//i.test(url) && !url.startsWith(API_BASE)) {
+    if (!/^https?:\/\//i.test(url)) {
         url = API_BASE.replace(/\/$/, '') + '/' + url.replace(/^\/+/, '');
     }
 
@@ -167,145 +183,183 @@ async function getJson(url) {
     const token = localStorage.getItem('ah_token');
     if (token) headers['Authorization'] = 'Bearer ' + token;
 
-    console.debug('fetch GET', url);
     try {
         const r = await fetchWithTimeout(url, { headers, cache: 'no-store', timeout: 12000 });
-        // se response não for json, tenta extrair texto
         const ct = r.headers.get('content-type') || '';
+
         if (!r.ok) {
             let bodyText = '';
             try {
-                bodyText = ct.includes('application/json') ? JSON.stringify(await r.json()) : await r.text();
-            } catch(e) { bodyText = await r.text().catch(()=>''); }
+                bodyText = ct.includes('json') ? JSON.stringify(await r.json()) : await r.text();
+            } catch { bodyText = ''; }
+
             throw new Error(`HTTP ${r.status} - ${bodyText || r.statusText}`);
         }
-        if (ct.includes('application/json')) return r.json();
-        // tentar tratar texto com JSON interno
+
+        if (ct.includes('json')) return r.json();
+
         const txt = await r.text();
         try { return JSON.parse(txt); } catch { return txt; }
+
     } catch (err) {
-        // normaliza AbortError
         if (err.name === 'AbortError') throw new Error('Request timeout');
         throw err;
     }
 }
 
-/* tenta obter estabelecimento do usuário logado (rota opcional) */
+/* ===========================
+   RESOLVE ESTAB PELO LOGIN
+   (igual no login.html)
+=========================== */
 async function resolveEstabId(){
     try{
         const token = localStorage.getItem('ah_token');
         const headers = token ? { 'Authorization': 'Bearer ' + token } : undefined;
-        const r = await fetchWithTimeout(`${API_BASE.replace(/\/$/, '')}/usuario/logado`, { headers, cache:'no-store', timeout:8000 });
+
+        const url = `${API_BASE.replace(/\/$/, '')}/usuarios/me/estabelecimentos`;
+
+        const r = await fetchWithTimeout(url, { headers, cache:'no-store', timeout:8000 });
         if (!r.ok) return null;
-        const j = await r.json();
-        console.debug('usuario.logado ->', j);
-        return j?.estabelecimentoId ?? j?.estabId ?? null;
-    } catch (ex) {
-        console.warn('resolveEstabId failed:', ex && ex.message ? ex.message : ex);
+
+        const data = await r.json();
+
+        if (Array.isArray(data) && data.length > 0)
+            return data[0].estabelecimentoId ?? data[0].EstabelecimentoId;
+
+        return null;
+    } catch {
         return null;
     }
 }
 
-/* carrega profissionais e popula select */
+/* ===========================
+   CARREGAR PROFISSIONAIS
+=========================== */
 async function carregarProfissionais() {
     selProf.innerHTML = `<option value="">Carregando...</option>`;
+
     try {
-        const estabId = await resolveEstabId();
-        const finalEstab = estabId ?? 1; // fallback para dev: 1
+        const estabSaved = Number(localStorage.getItem("ah_estab"));
+        const estabResolved = await resolveEstabId();
+        const finalEstab = estabSaved || estabResolved || 1;
+
         const url = `${API_BASE.replace(/\/$/, '')}/profissionais/${finalEstab}`;
         const js = await getJson(url);
-        const profs = (js?.data && Array.isArray(js.data)) ? js.data : (Array.isArray(js) ? js : []);
-        if (!profs.length) {
+
+        const profs = js?.data ?? js;
+
+        if (!Array.isArray(profs) || !profs.length) {
             selProf.innerHTML = `<option value="">Nenhum profissional disponível</option>`;
-            profHelp.textContent = 'Não existem profissionais cadastrados para este estabelecimento.';
             return;
         }
-        selProf.innerHTML = `<option value="">-- Selecionar profissional --</option>` +
+
+        selProf.innerHTML =
+            `<option value="">-- Selecionar profissional --</option>` +
             profs.map(p => {
-                const id = p.id ?? p.Id ?? p.ID ?? p.ID_PROFISSIONAL ?? p.IdProfissional;
-                const nome = p.nome ?? p.Nome ?? p.NM_PROFISSIONAL ?? p.NomeProfissional ?? "Sem nome";
+                const id =
+                    p.id ?? p.Id ?? p.ID ?? p.ID_PROFISSIONAL ?? p.IdProfissional;
+                const nome =
+                    p.nome ?? p.Nome ?? p.NM_PROFISSIONAL ?? p.NomeProfissional;
                 return `<option value="${id}">${nome}</option>`;
             }).join('');
-        profHelp.textContent = '';
+
     } catch (e) {
-        console.error('carregarProfissionais:', e);
-        selProf.innerHTML = `<option value="">Erro ao carregar (ver console)</option>`;
-        profHelp.textContent = 'Falha ao carregar profissionais. Verifique se a API está disponível e CORS/URL corretos.';
-        throw e; // propaga para init se necessário
+        console.error("Erro carregar profissionais", e);
+        selProf.innerHTML = `<option value="">Erro ao carregar</option>`;
+        throw e;
     }
 }
 
-/* renderiza tabela */
-function render(lista) {
-    if (!lista || !lista.length) {
-        tbody.innerHTML = `<tr class="empty"><td colspan="5"><i class="fas fa-calendar-times"></i> Nenhum agendamento encontrado.</td></tr>`;
-        return;
-    }
-    tbody.innerHTML = lista.map(a => {
-        const cliente = a.cliente ?? a.Cliente ?? a.NM_CLIENTE ?? "—";
-        const servico = a.servico ?? a.Servico ?? a.NM_SERVICO ?? "—";
-        const profissional = a.profissional ?? a.Profissional ?? a.NM_PROFISSIONAL ?? "—";
-        const dtInicio = a.dtInicio ?? a.DtInicio ?? a.DT_INICIO ?? a.DT_AGENDAMENTO ?? null;
-        const st = a.status ?? a.Status ?? "Pendente";
-        const key = statusKey(st);
-        return `<tr>
-            <td>${escapeHtml(cliente)}</td>
-            <td>${escapeHtml(servico)}</td>
-            <td>${escapeHtml(profissional)}</td>
-            <td>${dtInicio ? escapeHtml(fmtData(dtInicio)) : "—"}</td>
-            <td><span class="badge" data-status="${key}"><span class="badge-dot"></span>${escapeHtml(st)}</span></td>
-        </tr>`;
-    }).join('');
-}
-
-/* evita XSS simples (dados vindos do backend) */
+/* ===========================
+   RENDER TABELA
+=========================== */
 function escapeHtml(s){
     return String(s ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
 }
 
-/* carregar agendamentos filtrados */
+function render(lista) {
+    if (!lista || !lista.length) {
+        tbody.innerHTML =
+            `<tr class="empty"><td colspan="5">Nenhum agendamento encontrado.</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = lista.map(a => {
+        const cliente = a.cliente ?? a.Cliente ?? a.NM_CLIENTE;
+        const servico = a.servico ?? a.Servico ?? a.NM_SERVICO;
+        const profissional = a.profissional ?? a.Profissional ?? a.NM_PROFISSIONAL;
+
+        const dtInicio = a.dtInicio ?? a.DtInicio ?? a.DT_AGENDAMENTO;
+
+        const st = a.status ?? a.Status ?? "Pendente";
+        const key = statusKey(st);
+
+        return `
+        <tr>
+            <td>${escapeHtml(cliente)}</td>
+            <td>${escapeHtml(servico)}</td>
+            <td>${escapeHtml(profissional)}</td>
+            <td>${escapeHtml(fmtData(dtInicio))}</td>
+            <td><span class="badge" data-status="${key}">${escapeHtml(st)}</span></td>
+        </tr>`;
+    }).join('');
+}
+
+/* ===========================
+   CARREGAR AGENDAMENTOS
+=========================== */
 async function carregar(){
     erro.style.display = 'none';
-    tbody.innerHTML = `<tr class="empty"><td colspan="5"><i class="fas fa-spinner fa-spin"></i> Carregando agendamentos…</td></tr>`;
+    tbody.innerHTML =
+        `<tr class="empty"><td colspan="5">Carregando…</td></tr>`;
 
     const profId = selProf.value;
     if (!profId) {
-        tbody.innerHTML = `<tr class="empty"><td colspan="5"><i class="fas fa-user-tie"></i> Selecione um profissional para visualizar.</td></tr>`;
+        tbody.innerHTML =
+            `<tr class="empty"><td colspan="5">Selecione um profissional.</td></tr>`;
         return;
     }
 
     const dia = filtroData.value || hojeIso();
-    const ini = encodeURIComponent(`${dia}T00:00:00`);
-    const fim = encodeURIComponent(`${dia}T23:59:59`);
-    let url = `${API_BASE.replace(/\/$/, '')}/agendamentos/profissional?profissionalId=${encodeURIComponent(profId)}&ini=${ini}&fim=${fim}`;
-    if (filtroStatus.value) url += `&status=${encodeURIComponent(filtroStatus.value)}`;
+    const ini = `${dia}T00:00:00`;
+    const fim = `${dia}T23:59:59`;
+
+    let url =
+        `${API_BASE}/agendamentos/profissional` +
+        `?profissionalId=${profId}` +
+        `&ini=${encodeURIComponent(ini)}` +
+        `&fim=${encodeURIComponent(fim)}`;
+
+    if (filtroStatus.value)
+        url += `&status=${encodeURIComponent(filtroStatus.value)}`;
 
     try {
         const js = await getJson(url);
-        // possibilidade: backend retorna { message: "...", data: [...] } ou somente array
-        const lista = (js?.data && Array.isArray(js.data)) ? js.data : (Array.isArray(js) ? js : []);
+        const lista = js?.data ?? js;
         render(lista);
     } catch (e) {
-        console.error('carregar:', e);
+        console.error("Erro carregar agendamentos", e);
         erro.style.display = 'flex';
-        erro.innerHTML = `<i class="fas fa-exclamation-circle"></i> Erro ao carregar agendamentos: ${escapeHtml(e.message || 'unknown')}`;
-        tbody.innerHTML = `<tr class="empty"><td colspan="5"><i class="fas fa-exclamation-triangle"></i> Erro ao carregar agendamentos. Veja detalhes acima.</td></tr>`;
+        erro.textContent = "Erro ao carregar: " + e.message;
     }
 }
 
-/* init */
+/* ===========================
+   INIT
+=========================== */
 (async function init(){
     try {
         await carregarProfissionais();
-        // não chama carregar() automaticamente se não há profissional selecionado
-        // chamamos carregar() para a seleção atual (se houver)
-        if (selProf.value) await carregar();
+
+        if (selProf.value)
+            await carregar();
+
     } catch (e) {
-        console.error('init error:', e);
         erro.style.display = 'flex';
-        erro.innerHTML = `<i class="fas fa-exclamation-circle"></i> Falha na inicialização: ${escapeHtml(e.message || 'Ver console')}`;
+        erro.textContent = "Falha ao iniciar: " + e.message;
     }
 })();
 </script>
+
 </body>
 </html>
