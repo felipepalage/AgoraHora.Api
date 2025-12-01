@@ -106,12 +106,12 @@ console.info("API_BASE =", API_BASE);
 
 /* ===========================
    GUARD DE AUTENTICAÇÃO
+   (só exige token; estab pode vir do backend)
 =========================== */
 (function authGuard() {
     const token = localStorage.getItem("ah_token");
-    const estab = localStorage.getItem("ah_estab");
-
-    if (!token || !estab) {
+    if (!token) {
+        // se não houver token, volta para login
         window.location.href = "login.html";
         return;
     }
@@ -188,6 +188,14 @@ async function getJson(url) {
         const ct = r.headers.get('content-type') || '';
 
         if (!r.ok) {
+            // trata 401: token inválido/expirado
+            if (r.status === 401) {
+                localStorage.removeItem('ah_token');
+                localStorage.removeItem('ah_estab');
+                window.location.href = 'login.html';
+                throw new Error('Não autorizado (401)');
+            }
+
             let bodyText = '';
             try {
                 bodyText = ct.includes('json') ? JSON.stringify(await r.json()) : await r.text();
@@ -209,27 +217,47 @@ async function getJson(url) {
 
 /* ===========================
    RESOLVE ESTAB PELO LOGIN
-   (igual no login.html)
+   tenta /usuarios/me/estabelecimentos e /usuarios/me
 =========================== */
 async function resolveEstabId(){
-    try{
-        const token = localStorage.getItem('ah_token');
-        const headers = token ? { 'Authorization': 'Bearer ' + token } : undefined;
+    const token = localStorage.getItem('ah_token');
+    if (!token) return null;
+    const headers = { 'Accept': 'application/json', 'Authorization': 'Bearer ' + token };
+    const base = API_BASE.replace(/\/$/, '');
 
-        const url = `${API_BASE.replace(/\/$/, '')}/usuarios/me/estabelecimentos`;
-
-        const r = await fetchWithTimeout(url, { headers, cache:'no-store', timeout:8000 });
-        if (!r.ok) return null;
-
-        const data = await r.json();
-
-        if (Array.isArray(data) && data.length > 0)
-            return data[0].estabelecimentoId ?? data[0].EstabelecimentoId;
-
-        return null;
-    } catch {
-        return null;
+    // 1) tentar /usuarios/me/estabelecimentos
+    try {
+        const r1 = await fetchWithTimeout(`${base}/usuarios/me/estabelecimentos`, { headers, cache:'no-store', timeout:8000 });
+        if (r1.ok) {
+            const data = await r1.json();
+            if (Array.isArray(data) && data.length > 0) {
+                return data[0].estabelecimentoId ?? data[0].EstabelecimentoId ?? null;
+            }
+        } else if (r1.status === 401) {
+            localStorage.removeItem('ah_token');
+            window.location.href = 'login.html';
+            return null;
+        }
+    } catch (err) {
+        console.warn('resolveEstabId: /usuarios/me/estabelecimentos failed:', err && err.message ? err.message : err);
     }
+
+    // 2) tentar /usuarios/me
+    try {
+        const r2 = await fetchWithTimeout(`${base}/usuarios/me`, { headers, cache:'no-store', timeout:8000 });
+        if (r2.ok) {
+            const j = await r2.json();
+            return j?.estabelecimentoId ?? j?.estabId ?? j?.estabelecimento?.id ?? null;
+        } else if (r2.status === 401) {
+            localStorage.removeItem('ah_token');
+            window.location.href = 'login.html';
+            return null;
+        }
+    } catch (err) {
+        console.warn('resolveEstabId: /usuarios/me failed:', err && err.message ? err.message : err);
+    }
+
+    return null;
 }
 
 /* ===========================
@@ -239,7 +267,7 @@ async function carregarProfissionais() {
     selProf.innerHTML = `<option value="">Carregando...</option>`;
 
     try {
-        const estabSaved = Number(localStorage.getItem("ah_estab"));
+        const estabSaved = Number(localStorage.getItem("ah_estab")) || null;
         const estabResolved = await resolveEstabId();
         const finalEstab = estabSaved || estabResolved || 1;
 
@@ -250,6 +278,7 @@ async function carregarProfissionais() {
 
         if (!Array.isArray(profs) || !profs.length) {
             selProf.innerHTML = `<option value="">Nenhum profissional disponível</option>`;
+            profHelp.textContent = 'Não existem profissionais cadastrados para este estabelecimento.';
             return;
         }
 
@@ -259,13 +288,15 @@ async function carregarProfissionais() {
                 const id =
                     p.id ?? p.Id ?? p.ID ?? p.ID_PROFISSIONAL ?? p.IdProfissional;
                 const nome =
-                    p.nome ?? p.Nome ?? p.NM_PROFISSIONAL ?? p.NomeProfissional;
+                    p.nome ?? p.Nome ?? p.NM_PROFISSIONAL ?? p.NomeProfissional ?? 'Sem nome';
                 return `<option value="${id}">${nome}</option>`;
             }).join('');
 
+        profHelp.textContent = '';
     } catch (e) {
         console.error("Erro carregar profissionais", e);
         selProf.innerHTML = `<option value="">Erro ao carregar</option>`;
+        profHelp.textContent = 'Falha ao carregar profissionais. Verifique se a API está disponível e CORS/URL corretos.';
         throw e;
     }
 }
@@ -285,12 +316,10 @@ function render(lista) {
     }
 
     tbody.innerHTML = lista.map(a => {
-        const cliente = a.cliente ?? a.Cliente ?? a.NM_CLIENTE;
-        const servico = a.servico ?? a.Servico ?? a.NM_SERVICO;
-        const profissional = a.profissional ?? a.Profissional ?? a.NM_PROFISSIONAL;
-
-        const dtInicio = a.dtInicio ?? a.DtInicio ?? a.DT_AGENDAMENTO;
-
+        const cliente = a.cliente ?? a.Cliente ?? a.NM_CLIENTE ?? "—";
+        const servico = a.servico ?? a.Servico ?? a.NM_SERVICO ?? "—";
+        const profissional = a.profissional ?? a.Profissional ?? a.NM_PROFISSIONAL ?? "—";
+        const dtInicio = a.dtInicio ?? a.DtInicio ?? a.DT_AGENDAMENTO ?? null;
         const st = a.status ?? a.Status ?? "Pendente";
         const key = statusKey(st);
 
@@ -299,7 +328,7 @@ function render(lista) {
             <td>${escapeHtml(cliente)}</td>
             <td>${escapeHtml(servico)}</td>
             <td>${escapeHtml(profissional)}</td>
-            <td>${escapeHtml(fmtData(dtInicio))}</td>
+            <td>${escapeHtml(dtInicio ? fmtData(dtInicio) : "—")}</td>
             <td><span class="badge" data-status="${key}">${escapeHtml(st)}</span></td>
         </tr>`;
     }).join('');
@@ -311,12 +340,12 @@ function render(lista) {
 async function carregar(){
     erro.style.display = 'none';
     tbody.innerHTML =
-        `<tr class="empty"><td colspan="5">Carregando…</td></tr>`;
+        `<tr class="empty"><td colspan="5"><i class="fas fa-spinner fa-spin"></i> Carregando…</td></tr>`;
 
     const profId = selProf.value;
     if (!profId) {
         tbody.innerHTML =
-            `<tr class="empty"><td colspan="5">Selecione um profissional.</td></tr>`;
+            `<tr class="empty"><td colspan="5"><i class="fas fa-user-tie"></i> Selecione um profissional.</td></tr>`;
         return;
     }
 
@@ -325,8 +354,8 @@ async function carregar(){
     const fim = `${dia}T23:59:59`;
 
     let url =
-        `${API_BASE}/agendamentos/profissional` +
-        `?profissionalId=${profId}` +
+        `${API_BASE.replace(/\/$/, '')}/agendamentos/profissional` +
+        `?profissionalId=${encodeURIComponent(profId)}` +
         `&ini=${encodeURIComponent(ini)}` +
         `&fim=${encodeURIComponent(fim)}`;
 
@@ -340,7 +369,8 @@ async function carregar(){
     } catch (e) {
         console.error("Erro carregar agendamentos", e);
         erro.style.display = 'flex';
-        erro.textContent = "Erro ao carregar: " + e.message;
+        erro.innerHTML = `<i class="fas fa-exclamation-circle"></i> Erro ao carregar: ${escapeHtml(e.message || 'unknown')}`;
+        tbody.innerHTML = `<tr class="empty"><td colspan="5"><i class="fas fa-exclamation-triangle"></i> Erro ao carregar agendamentos. Veja detalhes acima.</td></tr>`;
     }
 }
 
@@ -356,7 +386,7 @@ async function carregar(){
 
     } catch (e) {
         erro.style.display = 'flex';
-        erro.textContent = "Falha ao iniciar: " + e.message;
+        erro.innerHTML = `<i class="fas fa-exclamation-circle"></i> Falha na inicialização: ${escapeHtml(e.message || 'Ver console')}`;
     }
 })();
 </script>
