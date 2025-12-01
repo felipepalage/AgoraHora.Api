@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Serviços - AgoraHora</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ================== TEMA CLARO CONSISTENTE ================== */
+        :root {
+            --brand-navy: #0a1933;
+            --brand-teal: #0da5a0;
+            --brand-teal-hover: #098581;
+            --brand-teal-soft: #e6f9f8;
+            --brand-purple: #6366f1;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --danger: #ef4444;
+            --danger-dark: #dc2626;
+            --success: #10b981;
+            --info: #3b82f6;
+            --radius-lg: 20px;
+            --radius-md: 14px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 4px 15px rgba(10,25,51,.05);
+            --shadow-medium: 0 10px 25px rgba(10,25,51,.08);
+            --shadow-strong: 0 20px 40px rgba(10,25,51,.12);
+        }
+
+        /* RESET */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: #334155;
+            font: 500 15px/1.45 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+        }
+
+        /* ================= HEADER ================= */
+        header {
+            background: rgba(255,255,255,.9);
+            border-bottom: 1px solid rgba(226,232,240,.6);
+            backdrop-filter: blur(16px);
+            position: sticky;
+            top: 0;
+            z-index: 20;
+        }
+
+        .top {
+            max-width: 1200px;
+            margin: auto;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+            .brand:hover {
+                transform: scale(1.02);
+            }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--brand-teal), var(--brand-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(13,165,160,.25);
+        }
+
+            .brand-icon i {
+                color: white;
+                font-size: 20px;
+            }
+
+        .brand .name {
+            font-weight: 800;
+            font-size: 20px;
+            color: var(--brand-navy);
+        }
+
+        /* ================= BUTTONS ================= */
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: var(--radius-sm);
+            background: linear-gradient(135deg, var(--brand-teal), var(--brand-teal-hover));
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(13,165,160,.25);
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .btn::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: rgba(255,255,255,0.2);
+                transition: left 0.3s ease;
+            }
+
+            .btn:hover::before {
+                left: 100%;
+            }
+
+            .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(13,165,160,.35);
+            }
+
+        .btn-ghost {
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: rgba(10,25,51,.05);
+            color: var(--brand-navy);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+            .btn-ghost:hover {
+                background: rgba(10,25,51,.1);
+                transform: translateY(-1px);
+            }
+
+        .btn-danger {
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            background: var(--danger);
+            color: #fff;
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(239,68,68,.25);
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+            .btn-danger:hover {
+                background: var(--danger-dark);
+                transform: translateY(-1px);
+            }
+
+        /* ================= LAYOUT ================= */
+        .container {
+            max-width: 1200px;
+            margin: 24px auto;
+            padding: 0 20px;
+        }
+
+        .grid {
+            display: grid;
+            gap: 20px
+        }
+
+        @media(min-width:900px) {
+            .grid-2 {
+                grid-template-columns: 1fr 2fr;
+            }
+        }
+
+        /* ================= CARD ================= */
+        .card {
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            border: 1px solid rgba(226,232,240,.6);
+            box-shadow: var(--shadow-medium);
+            transition: all 0.3s ease;
+        }
+
+            .card:hover {
+                box-shadow: var(--shadow-strong);
+            }
+
+        /* ================= FORM ================= */
+        h2 {
+            margin-top: 0;
+            color: var(--brand-navy);
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            h2 i {
+                color: var(--brand-teal);
+            }
+
+        label {
+            display: block;
+            margin: 12px 0 6px;
+            font-weight: 600;
+            color: var(--brand-navy);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+            label i {
+                color: var(--brand-teal);
+                font-size: 14px;
+            }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            background: #f8fafc;
+            color: #334155;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+            input:focus {
+                background: #ffffff;
+                border-color: var(--brand-teal);
+                box-shadow: 0 0 0 3px rgba(13,165,160,.15);
+            }
+
+        /* ================= TABLE ================= */
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            margin-top: 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+        }
+
+        th {
+            color: var(--brand-navy);
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: #f8fafc;
+        }
+
+        tbody tr {
+            transition: background 0.2s ease;
+        }
+
+            tbody tr:hover {
+                background: #f8fafc;
+            }
+
+        .empty {
+            text-align: center;
+            padding: 20px 0;
+            color: var(--muted);
+            font-style: italic;
+        }
+
+            .empty i {
+                font-size: 24px;
+                margin-bottom: 8px;
+                display: block;
+                color: var(--muted);
+            }
+
+        .row-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .td-actions {
+            width: 240px;
+        }
+
+        /* ================= SUCCESS MESSAGE ================= */
+        .success-message {
+            margin-top: 12px;
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            background: var(--brand-teal-soft);
+            border: 1px solid var(--brand-teal);
+            color: var(--brand-navy);
+            font-weight: 600;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            animation: fadeIn 0.3s ease;
+        }
+
+            .success-message i {
+                color: var(--success);
+            }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media(max-width:768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .row-actions {
+                flex-direction: column;
+            }
+
+            .td-actions {
+                width: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="top">
+            <div class="brand" aria-label="AgoraHora">
+                <div class="brand-icon">
+                    <i class="fas fa-cut"></i>
+                </div>
+                <div class="name">AgoraHora</div>
+            </div>
+            <button class="btn" id="logout">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </button>
+        </div>
+    </header>
+
+    <main class="container grid grid-2">
+
+        <!-- CADASTRO -->
+        <div class="card">
+            <h2><i class="fas fa-plus-circle"></i> Cadastrar serviço</h2>
+
+            <label for="nome"><i class="fas fa-tag"></i> Nome</label>
+            <input id="nome" placeholder="Ex.: Corte de cabelo">
+
+            <label for="preco"><i class="fas fa-dollar-sign"></i> Preço (R$)</label>
+            <input id="preco" type="number" step="0.01" placeholder="Ex.: 40,00">
+
+            <label for="duracao"><i class="fas fa-clock"></i> Duração (min)</label>
+            <input id="duracao" type="number" placeholder="Ex.: 30">
+
+            <button class="btn" id="btn-salvar" style="margin-top:12px">
+                <i class="fas fa-save"></i> Salvar
+            </button>
+
+            <div id="msg" class="success-message">
+                <i class="fas fa-check-circle"></i>
+                <span>Serviço salvo com sucesso!</span>
+            </div>
+        </div>
+
+        <!-- LISTA -->
+        <div class="card">
+            <h2><i class="fas fa-list"></i> Serviços cadastrados</h2>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Preço</th>
+                            <th>Duração</th>
+                            <th class="td-actions">Ações</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tbody">
+                        <tr>
+                            <td class="empty" colspan="4">
+                                <i class="fas fa-inbox"></i>
+                                Sem serviços cadastrados…
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        /* ================= VALIDAÇÃO TOKEN ================= */
+        const t = localStorage.getItem('ah_token');
+        if (!t) location.replace('login.html');
+        document.getElementById('logout').onclick = () => location.href = 'index.html';
+
+        const estabId = Number(localStorage.getItem('ah_estabelecimentoId') || 1);
+        const tbody = document.getElementById('tbody');
+        const msg = document.getElementById('msg');
+        const msgText = msg.querySelector('span');
+        let cache = [];
+        let editingId = null;
+
+        /* ================= API ================= */
+        async function api(path, opts = {}) {
+            const h = {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + t
+            };
+            const r = await fetch('/api' + path, {
+                method: opts.method || 'GET',
+                headers: h,
+                body: opts.body ? JSON.stringify(opts.body) : undefined
+            });
+            if (!r.ok) throw new Error(await r.text());
+            return r.headers.get('content-type')?.includes('json') ? r.json() : r.text();
+        }
+
+        const brl = v => Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+        /* ================= RENDER TABLE ================= */
+        function rowInputs(s) {
+            return `
+            <td><input id="edit-nome" value="${s.nome}"></td>
+            <td><input id="edit-preco" type="number" step="0.01" value="${s.preco}"></td>
+            <td><input id="edit-dur" type="number" value="${s.duracao}"></td>
+            <td>
+                <div class="row-actions">
+                    <button class="btn-ghost" data-action="save" data-id="${s.id}">
+                        <i class="fas fa-save"></i> Salvar
+                    </button>
+                    <button class="btn-ghost" data-action="cancel" data-id="${s.id}">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                </div>
+            </td>
+        `;
+        }
+
+        function rowRead(s) {
+            return `
+            <td>${s.nome}</td>
+            <td>${brl(s.preco)}</td>
+            <td>${s.duracao} min</td>
+            <td>
+                <div class="row-actions">
+                    <button class="btn-ghost" data-action="edit" data-id="${s.id}">
+                        <i class="fas fa-edit"></i> Editar
+                    </button>
+                    <button class="btn-danger" data-action="delete" data-id="${s.id}">
+                        <i class="fas fa-trash"></i> Apagar
+                    </button>
+                </div>
+            </td>
+        `;
+        }
+
+        function render(list) {
+            cache = list.slice();
+            if (!list.length) {
+                tbody.innerHTML = `<tr><td class="empty" colspan="4"><i class="fas fa-inbox"></i> Sem serviços cadastrados…</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = list.map(s => `
+            <tr data-id="${s.id}">
+                ${editingId === s.id ? rowInputs(s) : rowRead(s)}
+            </tr>
+        `).join('');
+        }
+
+        /* ================= LOAD ================= */
+        async function carregar() {
+            const r = await api(`/servicos/${estabId}`);
+            editingId = null;
+            render(r.data || []);
+        }
+
+        /* ================= CREATE ================= */
+        document.getElementById('btn-salvar').onclick = async () => {
+            const nome = document.getElementById('nome').value.trim();
+            const preco = parseFloat(String(document.getElementById('preco').value).replace(',', '.'));
+            const dur = parseInt(document.getElementById('duracao').value, 10);
+
+            if (!nome || isNaN(preco) || isNaN(dur)) {
+                alert('Preencha corretamente.');
+                return;
+            }
+            await api('/servicos', {
+                method: 'POST',
+                body: { EstabelecimentoId: estabId, Nome: nome, DuracaoMin: dur, Preco: preco }
+            });
+
+            msgText.textContent = 'Serviço salvo com sucesso!';
+            msg.style.display = 'flex';
+            setTimeout(() => msg.style.display = 'none', 2000);
+
+            document.getElementById('nome').value = '';
+            document.getElementById('preco').value = '';
+            document.getElementById('duracao').value = '';
+            carregar();
+        };
+
+        /* ================= EDIT / DELETE ================= */
+        tbody.addEventListener('click', async e => {
+            const btn = e.target.closest('button');
+            if (!btn) return;
+
+            const action = btn.dataset.action;
+            const id = Number(btn.dataset.id);
+            const tr = tbody.querySelector(`tr[data-id="${id}"]`);
+            const s = cache.find(x => x.id === id);
+
+            if (action === 'edit') {
+                editingId = id;
+                tr.innerHTML = rowInputs(s);
+                tr.querySelector('#edit-nome').focus();
+                return;
+            }
+            if (action === 'cancel') {
+                editingId = null;
+                tr.innerHTML = rowRead(s);
+                return;
+            }
+            if (action === 'save') {
+                const nome = tr.querySelector('#edit-nome').value.trim();
+                const preco = parseFloat(String(tr.querySelector('#edit-preco').value).replace(',', '.'));
+                const dur = parseInt(tr.querySelector('#edit-dur').value, 10);
+                if (!nome || isNaN(preco) || isNaN(dur)) { alert('Preencha corretamente.'); return; }
+
+                await api(`/servicos/${id}`, {
+                    method: 'PUT',
+                    body: { Nome: nome, Preco: preco, DuracaoMin: dur }
+                });
+                carregar();
+                return;
+            }
+            if (action === 'delete') {
+                if (!confirm('Confirmar exclusão?')) return;
+                await api(`/servicos/${id}`, { method: 'DELETE' });
+                carregar();
+                return;
+            }
+        });
+
+        carregar();
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detalhes da Barbearia - AgoraHora</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --brand-navy: #0a1933;
+            --brand-teal: #0da5a0;
+            --brand-teal-soft: #e6f9f8;
+            --brand-teal-hover: #098581;
+            --brand-purple: #6366f1;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --muted: #64748b;
+            --danger: #ef4444;
+            --danger-dark: #dc2626;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --info: #3b82f6;
+            --border: #e2e8f0;
+            --radius-lg: 20px;
+            --radius-md: 14px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 4px 15px rgba(10,25,51,.05);
+            --shadow-medium: 0 10px 25px rgba(10,25,51,.08);
+            --shadow-strong: 0 20px 40px rgba(10,25,51,.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: #334155;
+            font: 500 15px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            backdrop-filter: blur(16px);
+            background: rgba(255,255,255,.9);
+            border-bottom: 1px solid rgba(226,232,240,.6);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .top {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+            .brand:hover {
+                transform: scale(1.02);
+            }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--brand-teal), var(--brand-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(13,165,160,.25);
+        }
+
+            .brand-icon i {
+                color: white;
+                font-size: 20px;
+            }
+
+        .brand-title {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-name {
+            font-weight: 800;
+            font-size: 22px;
+            letter-spacing: .03em;
+            color: var(--brand-navy);
+        }
+
+        .brand-sub {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .btn {
+            border: none;
+            border-radius: var(--radius-sm);
+            padding: 10px 18px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .btn::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: rgba(255,255,255,0.2);
+                transition: left 0.3s ease;
+            }
+
+            .btn:hover::before {
+                left: 100%;
+            }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--brand-teal), var(--brand-teal-hover));
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(13,165,160,.25);
+        }
+
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(13,165,160,.35);
+            }
+
+        .btn-ghost {
+            background: rgba(10,25,51,.05);
+            color: var(--brand-navy);
+        }
+
+            .btn-ghost:hover {
+                background: rgba(10,25,51,.1);
+                transform: translateY(-2px);
+            }
+
+        .btn-danger {
+            background: var(--danger);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(239,68,68,.25);
+        }
+
+            .btn-danger:hover {
+                background: var(--danger-dark);
+                transform: translateY(-2px);
+            }
+
+        .page {
+            max-width: 1200px;
+            margin: 24px auto 32px;
+            padding: 0 20px 32px;
+        }
+
+        .hero-card {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            border: 1px solid rgba(226,232,240,.6);
+            box-shadow: var(--shadow-medium);
+            transition: all 0.3s ease;
+        }
+
+            .hero-card:hover {
+                box-shadow: var(--shadow-strong);
+            }
+
+        .cover-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: var(--radius-md);
+        }
+
+        .cover {
+            width: 100%;
+            height: 240px;
+            border-radius: var(--radius-md);
+            object-fit: cover;
+            background: #f1f5f9;
+            transition: transform 0.3s ease;
+        }
+
+        .cover-container:hover .cover {
+            transform: scale(1.02);
+        }
+
+        .shop-head {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 10px;
+        }
+
+        .shop-title {
+            margin: 0;
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--brand-navy);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .shop-title i {
+                color: var(--brand-teal);
+            }
+
+        .muted {
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+            .muted i {
+                color: var(--brand-teal);
+                font-size: 14px;
+            }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: .02em;
+            text-transform: uppercase;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+            .badge.open {
+                background: #d1fae5;
+                color: #065f46;
+            }
+
+                .badge.open i {
+                    color: var(--success);
+                    margin-right: 4px;
+                }
+
+            .badge.off {
+                background: #fee2e2;
+                color: #991b1b;
+            }
+
+                .badge.off i {
+                    color: var(--danger);
+                    margin-right: 4px;
+                }
+
+        .rating {
+            color: #f59e0b;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .grid {
+            display: grid;
+            gap: 20px;
+            margin-top: 24px;
+        }
+
+        .grid-2 {
+            grid-template-columns: 1fr;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            border: 1px solid rgba(226,232,240,.6);
+            box-shadow: var(--shadow-soft);
+            transition: all 0.3s ease;
+        }
+
+            .card:hover {
+                box-shadow: var(--shadow-medium);
+            }
+
+        h3 {
+            margin: 0 0 12px;
+            font-size: 18px;
+            color: var(--brand-navy);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            h3 i {
+                color: var(--brand-teal);
+            }
+
+        .section-sub {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 16px;
+            padding-left: 28px;
+        }
+
+        label {
+            display: block;
+            margin: 12px 0 6px;
+            font-weight: 600;
+            color: var(--brand-navy);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+            label i {
+                color: var(--brand-teal);
+                font-size: 12px;
+            }
+
+        input, select {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            background: #f8fafc;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+            input:focus, select:focus {
+                background: #ffffff;
+                border-color: var(--brand-teal);
+                box-shadow: 0 0 0 3px rgba(13,165,160,.15);
+            }
+
+        .servico-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            margin: 10px 0;
+            background: linear-gradient(to right,#ffffff,#f8fafc);
+            transition: all 0.2s ease;
+        }
+
+            .servico-item:hover {
+                border-color: var(--brand-teal);
+                box-shadow: 0 4px 12px rgba(13,165,160,.1);
+                transform: translateY(-2px);
+            }
+
+            .servico-item.selected {
+                border-color: var(--brand-teal);
+                background: var(--brand-teal-soft);
+            }
+
+        .srv-title {
+            font-weight: 700;
+            color: var(--brand-navy);
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .srv-title i {
+                color: var(--brand-purple);
+            }
+
+        .srv-meta {
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+            .srv-meta i {
+                font-size: 11px;
+                color: var(--brand-teal);
+            }
+
+        .legend-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            font-size: 13px;
+            color: var(--muted);
+            margin-top: 12px;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: var(--radius-md);
+        }
+
+        .legend {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+            .dot.free {
+                background: var(--success);
+            }
+
+            .dot.busy {
+                background: var(--danger);
+            }
+
+            .dot.past {
+                background: var(--muted);
+            }
+
+        .slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fit,minmax(90px,1fr));
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .slot {
+            padding: 12px 8px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            text-align: center;
+            cursor: pointer;
+            background: #ffffff;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .slot::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: rgba(13,165,160,0.1);
+                transition: left 0.3s ease;
+            }
+
+            .slot:hover::before {
+                left: 100%;
+            }
+
+            .slot:hover:not(.busy):not(.past) {
+                border-color: var(--brand-teal);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 10px rgba(13,165,160,.15);
+            }
+
+            .slot.selected {
+                background: linear-gradient(135deg, var(--brand-teal), var(--brand-teal-hover));
+                color: #ffffff;
+                border-color: var(--brand-teal);
+                box-shadow: 0 4px 15px rgba(13,165,160,.3);
+                transform: translateY(-2px);
+            }
+
+            .slot.busy {
+                background: #fee2e2;
+                color: var(--danger);
+                border-color: #fca5a5;
+                cursor: not-allowed;
+            }
+
+            .slot.past {
+                background: #f1f5f9;
+                color: var(--muted);
+                cursor: not-allowed;
+            }
+
+        .summary {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            margin-top: 16px;
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: var(--radius-md);
+        }
+
+        .pill {
+            border-radius: var(--radius-sm);
+            padding: 8px 14px;
+            background: var(--brand-teal-soft);
+            color: var(--brand-navy);
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+            .pill i {
+                color: var(--brand-teal);
+            }
+
+        .actions-row {
+            margin-top: 16px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .error {
+            margin-top: 12px;
+            color: var(--danger);
+            font-weight: 600;
+            font-size: 13px;
+            display: none;
+            padding: 10px 14px;
+            background: #fee2e2;
+            border-radius: var(--radius-sm);
+            border-left: 4px solid var(--danger);
+        }
+
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(10,25,51,.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 50;
+        }
+
+        .modal {
+            width: min(520px,100%);
+            background: #ffffff;
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-strong);
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal h3 {
+            margin: 0 0 12px;
+            font-size: 20px;
+            color: var(--brand-navy);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .modal h3 i {
+                color: var(--brand-teal);
+            }
+
+        .modal-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .ok {
+            background: var(--brand-teal-soft);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--brand-teal);
+            padding: 12px 16px;
+            margin-top: 12px;
+            font-size: 14px;
+            color: var(--brand-navy);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .ok i {
+                color: var(--success);
+            }
+
+        @media(min-width:900px) {
+            .hero-card {
+                grid-template-columns: 320px 1fr;
+            }
+
+            .cover {
+                height: 100%;
+            }
+
+            .grid-2 {
+                grid-template-columns: 2fr 3fr;
+            }
+        }
+
+        @media(max-width:520px) {
+            .top {
+                padding-inline: 14px;
+            }
+
+            .page {
+                padding-inline: 14px;
+            }
+
+            .hero-card, .card {
+                padding-inline: 16px;
+            }
+
+            .summary {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .pill {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="top">
+            <div class="brand" aria-label="AgoraHora">
+                <div class="brand-icon">
+                    <i class="fas fa-cut"></i>
+                </div>
+                <div class="brand-title">
+                    <span class="brand-name">AgoraHora</span>
+                    <span class="brand-sub">Sua agenda premium de barbearia</span>
+                </div>
+            </div>
+            <a class="btn btn-ghost" href="home-cliente.html">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </a>
+        </div>
+    </header>
+
+    <main class="page">
+        <section class="hero-card">
+            <div class="cover-container">
+                <img id="cover" class="cover" alt="Logo/Foto da barbearia" referrerpolicy="no-referrer" crossorigin="anonymous">
+            </div>
+            <div>
+                <div class="shop-head">
+                    <div>
+                        <h2 id="shop-name" class="shop-title">
+                            <i class="fas fa-store"></i>
+                            Barbearia
+                        </h2>
+                        <div id="shop-address" class="muted">
+                            <i class="fas fa-map-marker-alt"></i>
+                            Endereço
+                        </div>
+                        <div class="muted">
+                            <i class="fas fa-star"></i>
+                            Avaliação: <span id="shop-rating" class="rating">—</span>
+                        </div>
+                    </div>
+                    <div style="margin-left:auto">
+                        <span id="shop-open" class="badge">—</span>
+                    </div>
+                </div>
+                <p class="muted" style="margin-top:12px">
+                    Escolha um serviço, o profissional, selecione a data e confirme seu horário em poucos cliques.
+                </p>
+            </div>
+        </section>
+
+        <section class="grid grid-2">
+            <div class="card">
+                <h3><i class="fas fa-concierge-bell"></i> Serviços</h3>
+                <p class="section-sub">Toque em um serviço para ver os horários disponíveis.</p>
+                <div id="lista-servicos"></div>
+            </div>
+
+            <div class="card">
+                <h3><i class="fas fa-calendar-check"></i> Agendar</h3>
+                <p class="section-sub">Preencha os campos abaixo e selecione um horário disponível.</p>
+
+                <label for="prof"><i class="fas fa-user-tie"></i> Profissional</label>
+                <select id="prof"></select>
+
+                <label for="data"><i class="fas fa-calendar"></i> Data</label>
+                <input type="date" id="data" />
+
+                <div class="legend-row">
+                    <span class="legend"><span class="dot free"></span>Disponível</span>
+                    <span class="legend"><span class="dot busy"></span>Indisponível</span>
+                    <span class="legend"><span class="dot past"></span>Passado</span>
+                </div>
+
+                <div id="slots" class="slots"></div>
+
+                <div class="summary">
+                    <span id="sum-servico" class="pill"><i class="fas fa-cut"></i> Serviço: —</span>
+                    <span id="sum-prof" class="pill"><i class="fas fa-user-tie"></i> Prof.: —</span>
+                    <span id="sum-data" class="pill"><i class="fas fa-calendar"></i> Data: —</span>
+                    <span id="sum-hora" class="pill"><i class="fas fa-clock"></i> Hora: —</span>
+                </div>
+
+                <div id="erro" class="error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    Selecione serviço, profissional, data e horário.
+                </div>
+
+                <div class="actions-row">
+                    <button class="btn btn-ghost" onclick="limparSelecao()">
+                        <i class="fas fa-redo"></i> Limpar
+                    </button>
+                    <button class="btn btn-danger" id="btn-cancelar">
+                        <i class="fas fa-times-circle"></i> Cancelar agendamento
+                    </button>
+                    <button class="btn btn-primary" id="btn-confirmar">
+                        <i class="fas fa-check-circle"></i> Confirmar agendamento
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="modalCliente" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="mc-title">
+        <div class="modal">
+            <h3 id="mc-title"><i class="fas fa-user-circle"></i> Identifique-se</h3>
+            <p class="muted" style="margin:0 0 12px">Precisamos de seus dados para confirmar o agendamento.</p>
+            <label for="cliNome"><i class="fas fa-user"></i> Nome</label>
+            <input id="cliNome" placeholder="Seu nome completo" />
+            <label for="cliEmail"><i class="fas fa-envelope"></i> Email</label>
+            <input id="cliEmail" type="email" placeholder="voce@exemplo.com" />
+            <label for="cliTel"><i class="fas fa-phone"></i> Telefone</label>
+            <input id="cliTel" placeholder="(11) 99999-9999" />
+            <div id="mc-err" class="error" style="display:none"></div>
+            <div class="modal-actions">
+                <button class="btn btn-ghost" id="mc-cancel">
+                    <i class="fas fa-times"></i> Cancelar
+                </button>
+                <button class="btn btn-primary" id="mc-save">
+                    <i class="fas fa-check"></i> Continuar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalCancel" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="cx-title">
+        <div class="modal">
+            <h3 id="cx-title"><i class="fas fa-calendar-times"></i> Cancelar agendamento</h3>
+            <p class="muted" style="margin:0 0 12px">Informe seus dados e o horário para localizar e cancelar.</p>
+            <div id="cx-fast" class="ok" style="display:none">
+                <i class="fas fa-info-circle"></i>
+                Encontramos seu último agendamento. Você pode cancelar direto.
+            </div>
+            <label for="cxEmail"><i class="fas fa-envelope"></i> Email</label>
+            <input id="cxEmail" type="email" placeholder="voce@exemplo.com" />
+            <label for="cxTel"><i class="fas fa-phone"></i> Telefone</label>
+            <input id="cxTel" placeholder="(11) 99999-9999" />
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                <div>
+                    <label for="cxData"><i class="fas fa-calendar"></i> Data</label>
+                    <input id="cxData" type="date" />
+                </div>
+                <div>
+                    <label for="cxHora"><i class="fas fa-clock"></i> Hora</label>
+                    <input id="cxHora" type="time" />
+                </div>
+            </div>
+            <div id="cx-err" class="error" style="display:none"></div>
+            <div class="modal-actions">
+                <button class="btn btn-ghost" id="cx-cancel">
+                    <i class="fas fa-times"></i> Fechar
+                </button>
+                <button class="btn btn-danger" id="cx-delete-last" style="display:none">
+                    <i class="fas fa-trash"></i> Cancelar último agendamento
+                </button>
+                <button class="btn btn-danger" id="cx-send">
+                    <i class="fas fa-trash"></i> Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalOk" class="modal-backdrop" role="alertdialog" aria-modal="true" aria-labelledby="ok-title">
+        <div class="modal">
+            <h3 id="ok-title"><i class="fas fa-check-circle"></i> Tudo certo</h3>
+            <div id="ok-msg" class="ok">
+                <i class="fas fa-check"></i>
+                Operação concluída.
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-primary" id="ok-close">
+                    <i class="fas fa-check"></i> Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API = "/api";
+        const estabelecimentoId = Number(new URLSearchParams(location.search).get("id") || 1);
+        const LS_CLIENTE_KEY = `ah_cliente_${estabelecimentoId}`;
+        const LS_LAST_AG_KEY = `ah_last_ag_${estabelecimentoId}`;
+        const LS_LOGO_KEY = `logo_estab_${estabelecimentoId}`;
+
+        const $ = s => document.querySelector(s);
+        const $$ = s => document.querySelectorAll(s);
+
+        const fmtBR = d => new Date(d).toLocaleDateString("pt-BR", { weekday: "short", day: "2-digit", month: "2-digit" });
+        const pad2 = v => String(v).padStart(2, "0");
+        const toHM = d => `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+        const overlapHM = (aI, aF, bI, bF) => aI < bF && bI < aF;
+        const getClienteLS = () => JSON.parse(localStorage.getItem(LS_CLIENTE_KEY) || "null");
+        const setClienteLS = c => localStorage.setItem(LS_CLIENTE_KEY, JSON.stringify(c));
+        const getLastAg = () => JSON.parse(localStorage.getItem(LS_LAST_AG_KEY) || "null");
+        const setLastAg = id => localStorage.setItem(LS_LAST_AG_KEY, JSON.stringify(id));
+
+        function normalizeImageUrl(u) {
+            try {
+                if (!u) return "";
+                u = String(u).trim();
+                if (/^data:image\//i.test(u)) return u;
+                if (u.startsWith("//")) return location.protocol + u;
+                if (/^https?:/i.test(u)) {
+                    const url = new URL(u);
+                    url.pathname = url.pathname.split("/").map(encodeURIComponent).join("/");
+                    return url.toString();
+                }
+                return u;
+            } catch { return ""; }
+        }
+
+        async function loadConfig() {
+            const r = await fetch(`${API}/configuracao/${estabelecimentoId}`);
+            if (!r.ok) return null;
+            const j = await r.json();
+            return j?.data || null;
+        }
+
+        async function loadEstab() {
+            const r = await fetch(`${API}/estabelecimentos/${estabelecimentoId}`);
+            if (!r.ok) throw new Error("estab");
+            const j = await r.json();
+            return j.data ?? j;
+        }
+
+        async function loadServicos() {
+            const r = await fetch(`${API}/servicos/${estabelecimentoId}`);
+            const j = await r.json();
+            return j.data ?? [];
+        }
+
+        async function loadProfissionais() {
+            const r = await fetch(`${API}/profissionais/${estabelecimentoId}`);
+            const j = await r.json();
+            return j.data ?? j;
+        }
+
+        async function loadAgendamentosDia(profId, dataISO) {
+            const ini = `${dataISO}T00:00:00`, fim = `${dataISO}T23:59:59`;
+            const r = await fetch(`${API}/agendamentos/profissional?profissionalId=${profId}&ini=${encodeURIComponent(ini)}&fim=${encodeURIComponent(fim)}`);
+            const j = await r.json();
+            return (j.data ?? []).map(a => ({ dtInicio: new Date(a.dtInicio), dtFim: new Date(a.dtFim), status: a.status }));
+        }
+
+        const listaServ = $("#lista-servicos");
+        const selProf = $("#prof");
+        const inputData = $("#data");
+        const slotsEl = $("#slots");
+        const erroEl = $("#erro");
+        const btnConfirmar = $("#btn-confirmar");
+
+        let servicos = [];
+        let servicoSelecionado = null;
+        let slotSelecionado = null;
+        let abreMin = 9 * 60, fechaMin = 18 * 60;
+
+        function atualizarResumo(hora = "") {
+            $("#sum-servico").innerHTML = `<i class="fas fa-cut"></i> Serviço: ${servicoSelecionado ? servicoSelecionado.nome : "—"}`;
+            const profNome = selProf.options[selProf.selectedIndex]?.textContent || "—";
+            $("#sum-prof").innerHTML = `<i class="fas fa-user-tie"></i> Prof.: ${profNome}`;
+            $("#sum-data").innerHTML = `<i class="fas fa-calendar"></i> Data: ${fmtBR(inputData.value || new Date().toISOString().slice(0, 10))}`;
+            $("#sum-hora").innerHTML = `<i class="fas fa-clock"></i> Hora: ${hora || "—"}`;
+        }
+
+        function isCancelado(st) {
+            if (typeof st === "number") return st === 3;
+            if (typeof st === "string") return st.toUpperCase() === "CANCELADO";
+            return false;
+        }
+
+        async function gerarSlots() {
+            slotsEl.innerHTML = "";
+            slotSelecionado = null;
+            atualizarResumo("");
+            if (!selProf.value) {
+                slotsEl.innerHTML = '<div class="muted"><i class="fas fa-info-circle"></i> Escolha um profissional.</div>';
+                return;
+            }
+
+            const dur = servicoSelecionado?.duracao ?? 60;
+            const profId = Number(selProf.value);
+            const dataISO = inputData.value;
+            const ags = await loadAgendamentosDia(profId, dataISO);
+            const busy = ags.filter(a => !isCancelado(a.status)).map(a => ({ ini: toHM(a.dtInicio), fim: toHM(a.dtFim) }));
+
+            const start = new Date(`${dataISO}T${pad2(Math.floor(abreMin / 60))}:${pad2(abreMin % 60)}:00`);
+            const end = new Date(`${dataISO}T${pad2(Math.floor(fechaMin / 60))}:${pad2(fechaMin % 60)}:00`);
+            const now = new Date();
+
+            for (let t = new Date(start); t < end; t = new Date(t.getTime() + dur * 60000)) {
+                const iniHM = toHM(t);
+                const fimHM = toHM(new Date(t.getTime() + dur * 60000));
+                if (new Date(`${dataISO}T${fimHM}:00`) > end) break;
+
+                const isPast = new Date(`${dataISO}T${iniHM}:00`) < now;
+                const isBusy = busy.some(b => overlapHM(iniHM, fimHM, b.ini, b.fim));
+
+                const btn = document.createElement("button");
+                btn.className = "slot" + (isBusy ? " busy" : isPast ? " past" : "");
+                btn.textContent = iniHM;
+                btn.disabled = isBusy || isPast;
+                btn.onclick = () => {
+                    $$("#slots .slot.selected").forEach(s => s.classList.remove("selected"));
+                    btn.classList.add("selected");
+                    slotSelecionado = iniHM;
+                    erroEl.style.display = "none";
+                    atualizarResumo(iniHM);
+                };
+                slotsEl.appendChild(btn);
+            }
+
+            if (!slotsEl.children.length) {
+                slotsEl.innerHTML = '<div class="muted"><i class="fas fa-info-circle"></i> Sem horários disponíveis.</div>';
+            }
+        }
+
+        function limparSelecao() {
+            servicoSelecionado = null;
+            slotSelecionado = null;
+            $$("#lista-servicos .servico-item").forEach(i => i.classList.remove("selected"));
+            atualizarResumo("");
+            gerarSlots();
+        }
+        window.limparSelecao = limparSelecao;
+
+        const modal = $("#modalCliente");
+        const mcErr = $("#mc-err");
+
+        const openModal = () => {
+            const c = getClienteLS();
+            if (c) {
+                $("#cliNome").value = c.nome || "";
+                $("#cliEmail").value = c.email || "";
+                $("#cliTel").value = c.telefone || "";
+            }
+            mcErr.style.display = "none";
+            modal.style.display = "flex";
+            $("#cliNome").focus();
+        };
+
+        const closeModal = () => { modal.style.display = "none"; };
+        $("#mc-cancel").onclick = closeModal;
+
+        $("#mc-save").onclick = async () => {
+            const nome = $("#cliNome").value.trim();
+            const email = $("#cliEmail").value.trim();
+            const telefone = $("#cliTel").value.replace(/\D+/g, "").trim();
+            if (!nome || (!email && !telefone)) {
+                mcErr.innerHTML = '<i class="fas fa-exclamation-circle"></i> Informe nome e email ou telefone.';
+                mcErr.style.display = "block";
+                return;
+            }
+            try {
+                const r = await fetch(`${API}/clientes/ensure`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ estabelecimentoId, nome, email, telefone })
+                });
+                const j = await r.json();
+                if (!r.ok) throw new Error(j.message || `HTTP ${r.status}`);
+                const cli = j.data || j;
+                setClienteLS({ id: cli.id, nome: cli.nome, email: cli.email, telefone: cli.telefone });
+                closeModal();
+                confirmarAgendamento();
+            } catch (e) {
+                mcErr.innerHTML = `<i class="fas fa-exclamation-circle"></i> Erro: ${e.message}`;
+                mcErr.style.display = "block";
+            }
+        };
+
+        const cancelModal = $("#modalCancel");
+        const cxErr = $("#cx-err");
+        const cxFast = $("#cx-fast");
+        const btnCancel = $("#btn-cancelar");
+        const btnDeleteLast = $("#cx-delete-last");
+
+        function openCancelModal() {
+            cxErr.style.display = "none";
+            $("#cxEmail").value = getClienteLS()?.email || "";
+            $("#cxTel").value = getClienteLS()?.telefone || "";
+            $("#cxData").value = inputData.value || new Date().toISOString().slice(0, 10);
+            $("#cxHora").value = slotSelecionado || "";
+            const last = getLastAg();
+            if (last) {
+                cxFast.style.display = "block";
+                btnDeleteLast.style.display = "inline-block";
+            } else {
+                cxFast.style.display = "none";
+                btnDeleteLast.style.display = "none";
+            }
+            cancelModal.style.display = "flex";
+        }
+
+        function closeCancelModal() { cancelModal.style.display = "none"; }
+        $("#cx-cancel").onclick = closeCancelModal;
+
+        btnDeleteLast.onclick = async () => {
+            const id = getLastAg();
+            if (!id) return;
+            try {
+                const r = await fetch(`${API}/agendamentos/${id}`, { method: "DELETE" });
+                const j = await r.json().catch(() => ({}));
+                if (!r.ok) throw new Error(j.message || `HTTP ${r.status}`);
+                localStorage.removeItem(LS_LAST_AG_KEY);
+                closeCancelModal();
+                $("#ok-msg").innerHTML = '<i class="fas fa-check"></i> Agendamento cancelado.';
+                $("#ok-title").innerHTML = '<i class="fas fa-check-circle"></i> Cancelado';
+                $("#modalOk").style.display = "flex";
+                gerarSlots();
+            } catch (e) {
+                cxErr.innerHTML = `<i class="fas fa-exclamation-circle"></i> Falha ao cancelar: ${e.message}`;
+                cxErr.style.display = "block";
+            }
+        };
+
+        $("#cx-send").onclick = async () => {
+            const email = $("#cxEmail").value.trim();
+            const telefone = $("#cxTel").value.replace(/\D+/g, "").trim();
+            const data = $("#cxData").value;
+            const hora = $("#cxHora").value;
+            if ((!email && !telefone) || !data || !hora) {
+                cxErr.innerHTML = '<i class="fas fa-exclamation-circle"></i> Preencha email ou telefone, data e hora.';
+                cxErr.style.display = "block";
+                return;
+            }
+            try {
+                const r = await fetch(`${API}/agendamentos/cancelar-publico`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ estabelecimentoId, email, telefone, data, hora })
+                });
+                const j = await r.json().catch(() => ({}));
+                if (!r.ok) throw new Error(j.message || `HTTP ${r.status}`);
+                closeCancelModal();
+                $("#ok-msg").innerHTML = '<i class="fas fa-check"></i> Agendamento cancelado e o salão foi avisado.';
+                $("#ok-title").innerHTML = '<i class="fas fa-check-circle"></i> Cancelado';
+                $("#modalOk").style.display = "flex";
+                gerarSlots();
+            } catch (e) {
+                cxErr.innerHTML = `<i class="fas fa-exclamation-circle"></i> Falha ao cancelar: ${e.message}`;
+                cxErr.style.display = "block";
+            }
+        };
+
+        btnCancel.onclick = openCancelModal;
+
+        const okModal = $("#modalOk");
+        const okMsg = $("#ok-msg");
+        const openOk = msg => { okMsg.innerHTML = msg; okModal.style.display = "flex"; };
+        const closeOk = () => { okModal.style.display = "none"; };
+        $("#ok-close").onclick = closeOk;
+
+        async function confirmarAgendamento() {
+            const c = getClienteLS();
+            const payload = {
+                estabelecimentoId,
+                clienteId: c.id,
+                profissionalId: Number(selProf.value),
+                servicoId: servicoSelecionado.id,
+                dtInicio: `${inputData.value}T${slotSelecionado}:00`
+            };
+            try {
+                const r = await fetch(`${API}/agendamentos`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+                const j = await r.json().catch(() => ({}));
+                if (!r.ok) throw new Error(j.message || `HTTP ${r.status}`);
+                const novoId = j.data?.id ?? j.id;
+                if (novoId) setLastAg(novoId);
+                openOk(`<i class="fas fa-check"></i> Horário reservado para ${fmtBR(inputData.value)} às ${slotSelecionado}.`);
+                gerarSlots();
+            } catch (e) {
+                erroEl.innerHTML = `<i class="fas fa-exclamation-circle"></i> Falha ao agendar: ${e.message}`;
+                erroEl.style.display = "block";
+            }
+        }
+
+        $("#btn-confirmar").onclick = () => {
+            if (!servicoSelecionado || !selProf.value || !inputData.value || !slotSelecionado) {
+                erroEl.style.display = "block";
+                return;
+            }
+            openModal();
+        };
+
+        (async function init() {
+            const hojeISO = new Date().toISOString().slice(0, 10);
+            inputData.value = hojeISO;
+            inputData.min = hojeISO;
+
+            try {
+                const [cfg, e] = await Promise.all([loadConfig(), loadEstab()]);
+                $("#shop-name").innerHTML = `<i class="fas fa-store"></i> ${e.nome || `Estabelecimento #${estabelecimentoId}`}`;
+                $("#shop-address").innerHTML = `<i class="fas fa-map-marker-alt"></i> ${e.endereco || "—"}`;
+                $("#shop-rating").innerHTML = e.avaliacao ? `<i class="fas fa-star"></i> ${Number(e.avaliacao).toFixed(1)}` : "<i class="fas fa - star"></i> —";
+                const badgeEl = $("#shop-open");
+                if (e.aberta) {
+                    badgeEl.innerHTML = '<i class="fas fa-check-circle"></i> Aberta agora';
+                    badgeEl.className = "badge open";
+                } else {
+                    badgeEl.innerHTML = '<i class="fas fa-times-circle"></i> Fechada';
+                    badgeEl.className = "badge off";
+                }
+
+                if (typeof e.abreMin === "number") abreMin = e.abreMin;
+                if (typeof e.fechaMin === "number") fechaMin = e.fechaMin;
+
+                const localLogo = localStorage.getItem(LS_LOGO_KEY);
+                const logo = normalizeImageUrl(localLogo || cfg?.logoUrl || e.imagemUrl || "");
+                const cover = $("#cover");
+                if (logo) {
+                    cover.src = logo;
+                } else {
+                    cover.src = "data:image/svg+xml;utf8," + encodeURIComponent(
+                        `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360">
+                 <rect width="100%" height="100%" fill="#f1f5f9"/>
+                 <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                       font-family="Inter, Arial, sans-serif" font-size="24" fill="#0a1933">
+                   <tspan x="50%" dy="-10">AgoraHora</tspan>
+                   <tspan x="50%" dy="30">Barbearia</tspan>
+                 </text>
+               </svg>`
+                    );
+                }
+            } catch { }
+
+            servicos = await loadServicos();
+            listaServ.innerHTML = "";
+            servicos.forEach(s => {
+                const el = document.createElement("div");
+                el.className = "servico-item";
+                el.innerHTML = `
+            <div>
+              <div class="srv-title"><i class="fas fa-cut"></i> ${s.nome}</div>
+              <div class="srv-meta"><i class="fas fa-clock"></i> ${s.duracao} min • <i class="fas fa-tag"></i> R$ ${Number(s.preco).toFixed(2).replace(".", ",")}</div>
+            </div>
+            <button class="btn btn-ghost"><i class="fas fa-check"></i> Escolher</button>`;
+                el.querySelector("button").onclick = () => {
+                    servicoSelecionado = s;
+                    $$("#lista-servicos .servico-item").forEach(i => i.classList.remove("selected"));
+                    el.classList.add("selected");
+                    atualizarResumo();
+                    gerarSlots();
+                };
+                listaServ.appendChild(el);
+            });
+
+            const profs = await loadProfissionais();
+            selProf.innerHTML = "";
+            if (!profs || !profs.length) {
+                const o = document.createElement("option");
+                o.value = "";
+                o.textContent = "Nenhum profissional disponível";
+                selProf.appendChild(o);
+                selProf.disabled = true;
+                btnConfirmar.disabled = true;
+                slotsEl.innerHTML = '<div class="muted"><i class="fas fa-info-circle"></i> Nenhum profissional disponível.</div>';
+            } else {
+                selProf.disabled = false;
+                btnConfirmar.disabled = false;
+                profs.forEach(p => {
+                    const o = document.createElement("option");
+                    o.value = p.id;
+                    o.textContent = p.nome;
+                    selProf.appendChild(o);
+                });
+            }
+
+            selProf.addEventListener("change", gerarSlots);
+            inputData.addEventListener("change", gerarSlots);
+
+            window.addEventListener("storage", ev => {
+                if (ev.key === LS_LOGO_KEY) {
+                    const v = localStorage.getItem(LS_LOGO_KEY);
+                    const cover = $("#cover");
+                    cover.src = normalizeImageUrl(v) || cover.src;
+                }
+            });
+
+            atualizarResumo();
+            gerarSlots();
+        })();
+    </script>
+</body>
+</html>

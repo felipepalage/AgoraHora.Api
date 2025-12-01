@@ -94,7 +94,7 @@ public class UsuariosController : ControllerBase
         await tx.CommitAsync();
         return Created($"/api/usuarios/{user.Id}", new { userId = user.Id });
     }
-
+     
     // 3) Login
     [HttpPost("login")]
     [AllowAnonymous]

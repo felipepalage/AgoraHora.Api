@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - AgoraHora</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --brand-navy: #0a1933;
+            --brand-teal: #0da5a0;
+            --brand-teal-hover: #098581;
+            --brand-teal-soft: #e6f9f8;
+            --brand-purple: #6366f1;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --danger: #ef4444;
+            --danger-dark: #dc2626;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --radius-lg: 24px;
+            --radius-md: 14px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 4px 15px rgba(10,25,51,.05);
+            --shadow-medium: 0 10px 25px rgba(10,25,51,.08);
+            --shadow-strong: 0 20px 40px rgba(10,25,51,.12);
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: #334155;
+            font: 500 16px/1.4 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            min-height: 100dvh;
+            display: grid;
+            place-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+            body::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: radial-gradient(circle, rgba(13,165,160,0.05) 0%, transparent 70%);
+                z-index: -1;
+            }
+
+        .card {
+            width: 100%;
+            max-width: 420px;
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            padding: 36px 28px;
+            box-shadow: var(--shadow-strong);
+            border: 1px solid rgba(226,232,240,.6);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+            .card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 4px;
+                background: linear-gradient(90deg, var(--brand-teal), var(--brand-purple));
+            }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 16px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+            .brand:hover {
+                transform: scale(1.05);
+            }
+
+        .brand-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--brand-teal), var(--brand-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(13,165,160,.25);
+        }
+
+            .brand-icon i {
+                color: white;
+                font-size: 24px;
+            }
+
+        .brand .name {
+            font-weight: 800;
+            font-size: 32px;
+            letter-spacing: .2px;
+            color: var(--brand-navy)
+        }
+
+        h1 {
+            margin: 8px 0 24px;
+            text-align: center;
+            font-size: 28px;
+            color: var(--brand-navy);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+            h1 i {
+                color: var(--brand-teal);
+            }
+
+        label {
+            display: block;
+            font-size: 14px;
+            color: var(--brand-navy);
+            margin: 16px 0 8px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+            label i {
+                color: var(--brand-teal);
+                font-size: 14px;
+            }
+
+        .input-group {
+            position: relative;
+        }
+
+            .input-group i {
+                position: absolute;
+                left: 14px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--muted);
+            }
+
+        .input {
+            width: 100%;
+            padding: 14px 16px 14px 44px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: #f8fafc;
+            color: #334155;
+            font-size: 16px;
+            transition: all 0.2s ease;
+        }
+
+            .input:focus {
+                background: #ffffff;
+                border-color: var(--brand-teal);
+                box-shadow: 0 0 0 3px rgba(13,165,160,.15);
+                outline: 0;
+            }
+
+        .btn {
+            width: 100%;
+            margin-top: 20px;
+            border: 0;
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
+            font-weight: 700;
+            color: #fff;
+            background: linear-gradient(135deg, var(--brand-teal), var(--brand-teal-hover));
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+            .btn::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: rgba(255,255,255,0.2);
+                transition: left 0.3s ease;
+            }
+
+            .btn:hover::before {
+                left: 100%;
+            }
+
+            .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(13,165,160,.35);
+            }
+
+            .btn:active {
+                transform: translateY(0);
+            }
+
+        .error {
+            margin-top: 16px;
+            text-align: center;
+            color: var(--danger);
+            font-weight: 600;
+            display: none;
+            padding: 12px 16px;
+            background: #fee2e2;
+            border-radius: var(--radius-sm);
+            border-left: 4px solid var(--danger);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: shake 0.5s ease;
+        }
+
+            .error i {
+                color: var(--danger);
+            }
+
+        @keyframes shake {
+            0%, 100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
+        }
+
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(10,25,51,.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal {
+            width: min(92vw,420px);
+            background: #fff;
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-strong);
+            border: 1px solid rgba(226,232,240,.6);
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal h2 {
+            margin: 0 0 16px;
+            color: var(--brand-navy);
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .modal h2 i {
+                color: var(--brand-teal);
+            }
+
+        .list {
+            margin: 16px 0 0;
+            display: grid;
+            gap: 12px
+        }
+
+        .opt {
+            width: 100%;
+            text-align: left;
+            padding: 14px 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            background: #f8fafc;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .opt i {
+                color: var(--brand-teal);
+            }
+
+            .opt:hover {
+                background: #ffffff;
+                border-color: var(--brand-teal);
+                box-shadow: 0 0 0 3px rgba(13,165,160,.15);
+                transform: translateY(-2px);
+            }
+
+        .footer {
+            margin-top: 24px;
+            text-align: center;
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+            .footer a {
+                color: var(--brand-teal);
+                text-decoration: none;
+                font-weight: 600;
+                transition: color 0.2s ease;
+            }
+
+                .footer a:hover {
+                    color: var(--brand-teal-hover);
+                    text-decoration: underline;
+                }
+
+        @media(max-width:480px) {
+            .card {
+                margin: 20px;
+                padding: 24px 20px;
+            }
+
+            .brand .name {
+                font-size: 28px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="card">
+        <div class="brand" aria-label="AgoraHora">
+            <div class="brand-icon">
+                <i class="fas fa-cut"></i>
+            </div>
+            <div class="name">AgoraHora</div>
+        </div>
+
+        <h1><i class="fas fa-sign-in-alt"></i> Login</h1>
+
+        <form id="form-login" novalidate>
+            <label for="email"><i class="fas fa-envelope"></i> E-mail</label>
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input id="email" name="email" type="email" class="input" placeholder="E-mail" autocomplete="username" required />
+            </div>
+
+            <label for="senha"><i class="fas fa-lock"></i> Senha</label>
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input id="senha" name="senha" type="password" class="input" placeholder="Senha" autocomplete="current-password" required minlength="3" />
+            </div>
+
+            <button class="btn" type="submit">
+                <i class="fas fa-sign-in-alt"></i>
+                Entrar
+            </button>
+            <div id="erro" class="error">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>Credenciais inválidas.</span>
+            </div>
+        </form>
+
+        <div class="footer">
+            <p>Esqueceu sua senha? <a href="#">Recuperar</a></p>
+        </div>
+    </main>
+
+    <!-- seletor de estabelecimento -->
+    <div id="sel-overlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="sel-title">
+        <div class="modal">
+            <h2 id="sel-title"><i class="fas fa-store"></i> Escolha o estabelecimento</h2>
+            <div id="sel-list" class="list"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api'; // mesma origem
+
+        // já logado
+        (function () {
+            const t = localStorage.getItem('ah_token');
+            const e = localStorage.getItem('ah_estab');
+            if (t && e) location.href = 'index.html';
+        })();
+
+        const form = document.getElementById('form-login');
+        const erro = document.getElementById('erro');
+        const erroText = erro.querySelector('span');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault(); erro.style.display = 'none';
+
+            const email = document.getElementById('email').value.trim();
+            const senha = document.getElementById('senha').value;
+
+            if (!email || !senha) { return showError('Informe e-mail e senha.'); }
+
+            try {
+                // 1) login
+                const resp = await fetch(`${API_BASE}/usuarios/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, senha })
+                });
+
+                if (!resp.ok) { return showError(await safeMsg(resp, 'Credenciais inválidas.')); }
+
+                const { token } = await resp.json();
+                if (!token) { return showError('Token ausente.'); }
+                localStorage.setItem('ah_token', token);
+                localStorage.setItem('ah_user_name', email.split('@')[0] || 'Usuário');
+
+                // 2) estabelecimentos do usuário
+                const me = await fetch(`${API_BASE}/usuarios/me/estabelecimentos`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!me.ok) { return showError(await safeMsg(me, 'Falha ao obter estabelecimentos.')); }
+
+                const estabs = await me.json();
+                if (!Array.isArray(estabs) || estabs.length === 0) { return showError('Usuário sem estabelecimento vinculado.'); }
+
+                if (estabs.length === 1) {
+                    const estabId = estabs[0].estabelecimentoId ?? estabs[0].EstabelecimentoId;
+                    localStorage.setItem('ah_estab', String(estabId));
+                    return location.href = 'index.html';
+                }
+
+                // 3) escolher quando houver mais de um
+                openEstabSelector(estabs, (chosenId) => {
+                    localStorage.setItem('ah_estab', String(chosenId));
+                    location.href = 'index.html';
+                });
+
+            } catch (err) {
+                console.error(err);
+                showError('Falha de comunicação com a API.');
+            }
+        });
+
+        function showError(msg) {
+            erroText.textContent = msg;
+            erro.style.display = 'flex';
+        }
+
+        async function safeMsg(resp, fallback) {
+            try { const j = await resp.json(); return j?.message || fallback; }
+            catch { return fallback; }
+        }
+
+        function openEstabSelector(estabs, onChoose) {
+            const overlay = document.getElementById('sel-overlay');
+            const list = document.getElementById('sel-list');
+            list.innerHTML = '';
+
+            estabs.forEach(e => {
+                const id = e.estabelecimentoId ?? e.EstabelecimentoId;
+                const papel = e.papel ?? e.Papel ?? '';
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'opt';
+                btn.innerHTML = `
+              <i class="fas fa-store"></i>
+              <div>
+                <div>Estabelecimento ${id}</div>
+                ${papel ? `<small>${papel}</small>` : ''}
+              </div>
+            `;
+                btn.addEventListener('click', () => { overlay.style.display = 'none'; onChoose(id); });
+                list.appendChild(btn);
+            });
+
+            overlay.style.display = 'flex';
+        }
+    </script>
+</body>
+</html>

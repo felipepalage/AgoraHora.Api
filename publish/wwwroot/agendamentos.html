@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agendamentos - AgoraHora</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --brand-navy: #0a1933;
+            --brand-teal: #0da5a0;
+            --brand-teal-soft: #e6f9f8;
+            --brand-teal-hover: #098581;
+            --brand-purple: #6366f1;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --border: #e2e8f0;
+            --muted: #64748b;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --info: #3b82f6;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-elevated: 0 10px 25px rgba(10,25,51,.08);
+            --shadow-card: 0 4px 15px rgba(10,25,51,.05);
+            --shadow-hover: 0 8px 25px rgba(10,25,51,.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: #334155;
+            font: 500 15px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .page-header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            backdrop-filter: blur(16px);
+            background: rgba(255,255,255,.9);
+            border-bottom: 1px solid rgba(226,232,240,.6);
+            box-shadow: var(--shadow-card);
+        }
+
+        .page-header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+            .brand:hover {
+                transform: scale(1.02);
+            }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--brand-teal), var(--brand-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(13,165,160,.25);
+        }
+
+            .brand-icon svg {
+                width: 24px;
+                height: 24px;
+                color: white;
+            }
+
+        .brand-title {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-name {
+            font-weight: 800;
+            font-size: 22px;
+            letter-spacing: .03em;
+            color: var(--brand-navy);
+        }
+
+        .brand-sub {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .btn {
+            border: none;
+            border-radius: var(--radius-sm);
+            padding: 10px 20px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .btn::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: rgba(255,255,255,0.2);
+                transition: left 0.3s ease;
+            }
+
+            .btn:hover::before {
+                left: 100%;
+            }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--brand-teal), var(--brand-teal-hover));
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(13,165,160,.25);
+        }
+
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(13,165,160,.35);
+            }
+
+        .btn-ghost {
+            background: rgba(10,25,51,.05);
+            color: var(--brand-navy);
+        }
+
+            .btn-ghost:hover {
+                background: rgba(10,25,51,.1);
+                transform: translateY(-2px);
+            }
+
+        .page {
+            max-width: 1200px;
+            margin: 24px auto 32px;
+            padding: 0 20px 32px;
+        }
+
+        .page-heading {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding: 20px;
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-card);
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--brand-navy);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+            .page-title i {
+                color: var(--brand-teal);
+            }
+
+        .page-subtitle {
+            font-size: 14px;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        .page-chips {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .chip {
+            border-radius: var(--radius-sm);
+            padding: 8px 14px;
+            background: var(--brand-teal-soft);
+            font-size: 13px;
+            color: var(--brand-navy);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(13,165,160,.1);
+            transition: all 0.2s ease;
+        }
+
+            .chip:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(13,165,160,.15);
+            }
+
+        .chip-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--brand-teal);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(13,165,160,0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(13,165,160,0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(13,165,160,0);
+            }
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-card);
+            border: 1px solid rgba(226,232,240,.6);
+            transition: all 0.3s ease;
+        }
+
+            .card:hover {
+                box-shadow: var(--shadow-hover);
+            }
+
+        .card-header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--brand-navy);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .card-title i {
+                color: var(--brand-teal);
+            }
+
+        .card-caption {
+            font-size: 13px;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(1,minmax(0,1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .field-label {
+            font-weight: 600;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+            .field-label i {
+                color: var(--brand-teal);
+                font-size: 12px;
+            }
+
+        .field-control {
+            position: relative;
+        }
+
+            .field-control input,
+            .field-control select {
+                width: 100%;
+                padding: 12px 16px;
+                border-radius: var(--radius-md);
+                border: 1px solid var(--border);
+                background: #fafbff;
+                font-size: 14px;
+                outline: none;
+                transition: all 0.2s ease;
+            }
+
+                .field-control input:focus,
+                .field-control select:focus {
+                    background: #ffffff;
+                    border-color: var(--brand-teal);
+                    box-shadow: 0 0 0 3px rgba(13,165,160,.15);
+                }
+
+        .filters-actions {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+            .filters-actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            background: var(--card);
+            box-shadow: var(--shadow-card);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 640px;
+        }
+
+        thead {
+            background: linear-gradient(to right, #f8fafc, #f1f5f9);
+        }
+
+        th, td {
+            padding: 14px 16px;
+            font-size: 14px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            font-weight: 700;
+            color: #334155;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        tbody tr {
+            transition: all 0.2s ease;
+        }
+
+            tbody tr:nth-child(even) {
+                background: #f8fafc;
+            }
+
+            tbody tr:hover {
+                background: #f1f5f9;
+                transform: scale(1.01);
+                box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            }
+
+        td:first-child,
+        th:first-child {
+            padding-left: 20px;
+        }
+
+        td:last-child,
+        th:last-child {
+            padding-right: 20px;
+        }
+
+        .cell-client {
+            font-weight: 600;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .cell-client::before {
+                content: '\f007';
+                font-family: 'Font Awesome 6 Free';
+                font-weight: 900;
+                color: var(--brand-teal);
+            }
+
+        .cell-service {
+            color: #475569;
+        }
+
+        .cell-prof {
+            color: #475569;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .cell-prof::before {
+                content: '\f0ae';
+                font-family: 'Font Awesome 6 Free';
+                font-weight: 900;
+                color: var(--brand-purple);
+            }
+
+        .cell-date {
+            font-feature-settings: "tnum" 1,"lnum" 1;
+            font-variant-numeric: tabular-nums;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .cell-date::before {
+                content: '\f073';
+                font-family: 'Font Awesome 6 Free';
+                font-weight: 900;
+                color: var(--brand-teal);
+            }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: .02em;
+            text-transform: uppercase;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .badge-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .badge[data-status="pendente"] {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+            .badge[data-status="pendente"] .badge-dot {
+                background: #f59e0b;
+            }
+
+        .badge[data-status="confirmado"] {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+            .badge[data-status="confirmado"] .badge-dot {
+                background: #10b981;
+            }
+
+        .badge[data-status="cancelado"] {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+            .badge[data-status="cancelado"] .badge-dot {
+                background: #ef4444;
+            }
+
+        .badge[data-status="concluido"],
+        .badge[data-status="concluído"] {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+            .badge[data-status="concluido"] .badge-dot,
+            .badge[data-status="concluído"] .badge-dot {
+                background: #3b82f6;
+            }
+
+        .row-empty td {
+            text-align: center;
+            padding: 40px 12px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .row-empty i {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: var(--muted);
+        }
+
+        .error {
+            margin-top: 16px;
+            padding: 12px 16px;
+            font-size: 14px;
+            color: var(--danger);
+            font-weight: 600;
+            display: none;
+            background: #fee2e2;
+            border-radius: var(--radius-md);
+            border-left: 4px solid var(--danger);
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(13,165,160,.3);
+            border-radius: 50%;
+            border-top-color: var(--brand-teal);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media(min-width:720px) {
+            .filters {
+                grid-template-columns: 2fr 1.2fr 1.2fr auto;
+                align-items: flex-end;
+            }
+
+            .filters-actions .btn {
+                width: auto;
+                padding-inline: 20px;
+            }
+        }
+
+        @media(max-width:480px) {
+            .page-header-inner {
+                padding: 12px 14px;
+            }
+
+            .page {
+                padding-inline: 14px;
+            }
+
+            .card {
+                padding-inline: 16px;
+            }
+
+            .page-heading {
+                padding: 16px;
+            }
+
+            .page-title {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="page-header">
+        <div class="page-header-inner">
+            <div class="brand" aria-label="AgoraHora">
+                <div class="brand-icon">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="brand-title">
+                    <span class="brand-name">AgoraHora</span>
+                    <span class="brand-sub">Painel de agendamentos em tempo real</span>
+                </div>
+            </div>
+            <button class="btn btn-ghost" id="voltar">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </button>
+        </div>
+    </header>
+
+    <main class="page">
+        <section class="page-heading">
+            <div>
+                <h1 class="page-title">
+                    <i class="fas fa-calendar-alt"></i>
+                    Agendamentos
+                </h1>
+                <p id="resumo" class="page-subtitle">Carregando dados do dia…</p>
+            </div>
+            <div class="page-chips">
+                <div class="chip">
+                    <span class="chip-dot"></span>
+                    <span id="chip-dia">Hoje</span>
+                </div>
+                <div class="chip">
+                    <i class="fas fa-list"></i>
+                    Total: <span id="chip-total">0</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <div class="card-header">
+                <div>
+                    <div class="card-title">
+                        <i class="fas fa-filter"></i>
+                        Filtrar agendamentos
+                    </div>
+                    <div class="card-caption">Selecione o profissional, dia e status para visualizar os horários.</div>
+                </div>
+                <button class="btn btn-primary" id="btn-hoje">
+                    <i class="fas fa-calendar-day"></i>
+                    Hoje
+                </button>
+            </div>
+
+            <div class="filters">
+                <div class="field">
+                    <span class="field-label">
+                        <i class="fas fa-user-tie"></i>
+                        Profissional
+                    </span>
+                    <div class="field-control">
+                        <select id="profissional"></select>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <span class="field-label">
+                        <i class="fas fa-calendar"></i>
+                        Data
+                    </span>
+                    <div class="field-control">
+                        <input id="filtro-data" type="date" />
+                    </div>
+                </div>
+
+                <div class="field">
+                    <span class="field-label">
+                        <i class="fas fa-info-circle"></i>
+                        Status
+                    </span>
+                    <div class="field-control">
+                        <select id="filtro-status">
+                            <option value="">Todos</option>
+                            <option value="Pendente">Pendente</option>
+                            <option value="Confirmado">Confirmado</option>
+                            <option value="Cancelado">Cancelado</option>
+                            <option value="Concluido">Concluído</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="filters-actions">
+                    <button class="btn btn-primary" id="btn-filtrar">
+                        <i class="fas fa-search"></i>
+                        Aplicar filtros
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Serviço</th>
+                            <th>Profissional</th>
+                            <th>Data e horário</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody">
+                        <tr class="row-empty">
+                            <td colspan="5">
+                                <div>
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                    <div>Carregando agendamentos…</div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="erro" class="error">
+                <i class="fas fa-exclamation-circle"></i>
+                Não foi possível carregar os agendamentos. Tente novamente em instantes.
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const API_BASE = "http://localhost:7050/api";
+        const qs = new URLSearchParams(location.search);
+        const estabelecimentoId = Number(qs.get("estabelecimentoId") || 1);
+
+        const selProf = document.getElementById("profissional");
+        const filtroData = document.getElementById("filtro-data");
+        const filtroStatus = document.getElementById("filtro-status");
+        const tbody = document.getElementById("tbody");
+        const erro = document.getElementById("erro");
+        const resumo = document.getElementById("resumo");
+        const chipDia = document.getElementById("chip-dia");
+        const chipTotal = document.getElementById("chip-total");
+        const btnHoje = document.getElementById("btn-hoje");
+
+        document.getElementById("voltar").onclick = () => {
+            if (document.referrer && document.referrer !== location.href) {
+                history.back();
+            } else {
+                window.location.href = "index.html";
+            }
+        };
+
+        function hojeIso() {
+            return new Date().toISOString().slice(0, 10);
+        }
+
+        filtroData.value = hojeIso();
+
+        document.getElementById("btn-filtrar").onclick = carregar;
+        selProf.onchange = carregar;
+
+        btnHoje.onclick = () => {
+            filtroData.value = hojeIso();
+            carregar();
+        };
+
+        function fmtData(dataStr) {
+            return new Date(dataStr).toLocaleString("pt-BR", {
+                day: "2-digit",
+                month: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit"
+            });
+        }
+
+        async function getJson(url) {
+            const r = await fetch(url);
+            if (!r.ok) {
+                throw new Error("HTTP " + r.status);
+            }
+            return r.json();
+        }
+
+        async function carregarProfissionais() {
+            const url = `${API_BASE}/profissionais/${estabelecimentoId}`;
+            const js = await getJson(url);
+            const profs = js.data ?? js;
+            selProf.innerHTML = profs
+                .map(p => `<option value="${p.id}">${p.nome}</option>`)
+                .join("");
+        }
+
+        function statusKey(status) {
+            if (!status) return "pendente";
+            const s = status.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            return s.toLowerCase();
+        }
+
+        function atualizarResumo(lista, dia) {
+            const total = lista.length;
+            chipTotal.textContent = total.toString();
+            const dataBr = new Date(dia + "T00:00:00").toLocaleDateString("pt-BR", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric"
+            });
+            chipDia.textContent = dataBr;
+            if (!total) {
+                resumo.textContent = `Nenhum agendamento encontrado para ${dataBr}.`;
+            } else if (total === 1) {
+                resumo.textContent = `1 agendamento encontrado para ${dataBr}.`;
+            } else {
+                resumo.textContent = `${total} agendamentos encontrados para ${dataBr}.`;
+            }
+        }
+
+        async function carregar() {
+            erro.style.display = "none";
+            tbody.innerHTML = `
+          <tr class="row-empty">
+            <td colspan="5">
+              <div>
+                <i class="fas fa-spinner fa-spin"></i>
+                <div>Carregando agendamentos…</div>
+              </div>
+            </td>
+          </tr>`;
+
+            const dia = filtroData.value || hojeIso();
+            const ini = `${dia}T00:00:00`;
+            const fim = `${dia}T23:59:59`;
+            const profId = selProf.value;
+
+            if (!profId) {
+                tbody.innerHTML = `
+            <tr class="row-empty">
+              <td colspan="5">
+                <div>
+                  <i class="fas fa-user-tie"></i>
+                  <div>Selecione um profissional para visualizar os agendamentos.</div>
+                </div>
+              </td>
+            </tr>`;
+                atualizarResumo([], dia);
+                return;
+            }
+
+            let url = `${API_BASE}/agendamentos/profissional?profissionalId=${encodeURIComponent(
+                profId
+            )}&ini=${encodeURIComponent(ini)}&fim=${encodeURIComponent(fim)}`;
+
+            if (filtroStatus.value) {
+                url += `&status=${encodeURIComponent(filtroStatus.value)}`;
+            }
+
+            try {
+                const js = await getJson(url);
+                const lista = js.data ?? [];
+                render(lista);
+                atualizarResumo(lista, dia);
+            } catch (e) {
+                console.error(e);
+                erro.style.display = "block";
+                tbody.innerHTML = `
+            <tr class="row-empty">
+              <td colspan="5">
+                <div>
+                  <i class="fas fa-exclamation-triangle"></i>
+                  <div>Sem dados para exibir.</div>
+                </div>
+              </td>
+            </tr>`;
+                atualizarResumo([], filtroData.value || hojeIso());
+            }
+        }
+
+        function render(lista) {
+            if (!lista.length) {
+                tbody.innerHTML = `
+            <tr class="row-empty">
+              <td colspan="5">
+                <div>
+                  <i class="fas fa-calendar-times"></i>
+                  <div>Nenhum agendamento para os filtros selecionados.</div>
+                </div>
+              </td>
+            </tr>`;
+                return;
+            }
+
+            tbody.innerHTML = lista
+                .map(a => {
+                    const st = a.status ?? "Pendente";
+                    const key = statusKey(st);
+                    return `
+            <tr>
+              <td class="cell-client">${a.cliente ?? "—"}</td>
+              <td class="cell-service">${a.servico ?? "—"}</td>
+              <td class="cell-prof">${a.profissional ?? "—"}</td>
+              <td class="cell-date">${a.dtInicio ? fmtData(a.dtInicio) : "—"}</td>
+              <td>
+                <span class="badge" data-status="${key}">
+                  <span class="badge-dot"></span>
+                  <span>${st}</span>
+                </span>
+              </td>
+            </tr>`;
+                })
+                .join("");
+        }
+
+        (async function init() {
+            try {
+                await carregarProfissionais();
+                await carregar();
+            } catch (e) {
+                console.error(e);
+                erro.style.display = "block";
+                resumo.textContent = "Não foi possível carregar os dados iniciais.";
+            }
+        })();
+    </script>
+</body>
+</html>

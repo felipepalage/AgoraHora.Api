@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profissionais - AgoraHora</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --brand-navy: #0a1933;
+            --brand-teal: #0da5a0;
+            --brand-teal-hover: #098581;
+            --brand-teal-soft: #e6f9f8;
+            --brand-purple: #6366f1;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --danger: #ef4444;
+            --danger-dark: #dc2626;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --info: #3b82f6;
+            --radius-lg: 20px;
+            --radius-md: 14px;
+            --radius-sm: 8px;
+            --shadow-soft: 0 4px 15px rgba(10,25,51,.05);
+            --shadow-medium: 0 10px 25px rgba(10,25,51,.08);
+            --shadow-strong: 0 20px 40px rgba(10,25,51,.12);
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: #334155;
+            font: 500 15px/1.45 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif
+        }
+
+        header {
+            background: rgba(255,255,255,.9);
+            border-bottom: 1px solid rgba(226,232,240,.6);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            backdrop-filter: blur(16px);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .top {
+            max-width: 1200px;
+            margin: auto;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            justify-content: space-between
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+            .brand:hover {
+                transform: scale(1.02);
+            }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--brand-teal), var(--brand-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(13,165,160,.25);
+        }
+
+            .brand-icon i {
+                color: white;
+                font-size: 20px;
+            }
+
+        .brand .name {
+            font-weight: 800;
+            font-size: 22px;
+            color: var(--brand-navy)
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: var(--radius-sm);
+            background: linear-gradient(135deg, var(--brand-teal), var(--brand-teal-hover));
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .btn::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: rgba(255,255,255,0.2);
+                transition: left 0.3s ease;
+            }
+
+            .btn:hover::before {
+                left: 100%;
+            }
+
+            .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(13,165,160,.35);
+            }
+
+        .btn-ghost {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            background: #fff;
+            color: var(--brand-navy);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+            .btn-ghost:hover {
+                background: var(--brand-teal-soft);
+                border-color: var(--brand-teal);
+                transform: translateY(-1px);
+            }
+
+        .btn-danger {
+            padding: 8px 12px;
+            border: 1px solid #fee2e2;
+            border-radius: var(--radius-sm);
+            background: #fee2e2;
+            color: var(--danger);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+            .btn-danger:hover {
+                background: var(--danger);
+                color: #fff;
+                transform: translateY(-1px);
+            }
+
+        .container {
+            max-width: 1200px;
+            margin: 24px auto;
+            padding: 0 20px
+        }
+
+        .grid {
+            display: grid;
+            gap: 20px
+        }
+
+        @media(min-width:900px) {
+            .grid-2 {
+                grid-template-columns: 1fr 2fr
+            }
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-medium);
+            border: 1px solid rgba(226,232,240,.6);
+            transition: all 0.3s ease;
+        }
+
+            .card:hover {
+                box-shadow: var(--shadow-strong);
+            }
+
+        h2 {
+            margin-top: 0;
+            color: var(--brand-navy);
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            h2 i {
+                color: var(--brand-teal);
+            }
+
+        label {
+            display: block;
+            margin: 12px 0 6px;
+            color: var(--brand-navy);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+            label i {
+                color: var(--brand-teal);
+                font-size: 14px;
+            }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            outline: none;
+            background: #f8fafc;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+            input:focus {
+                background: #ffffff;
+                border-color: var(--brand-teal);
+                box-shadow: 0 0 0 3px rgba(13,165,160,.15);
+            }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            margin-top: 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse
+        }
+
+        th, td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            text-align: left
+        }
+
+        th {
+            color: var(--brand-navy);
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: #f8fafc;
+        }
+
+        tbody tr {
+            transition: background 0.2s ease;
+        }
+
+            tbody tr:hover {
+                background: #f8fafc;
+            }
+
+        .empty {
+            color: var(--muted);
+            padding: 20px 0;
+            text-align: center;
+            font-style: italic;
+        }
+
+            .empty i {
+                font-size: 24px;
+                margin-bottom: 8px;
+                display: block;
+                color: var(--muted);
+            }
+
+        .row-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap
+        }
+
+        .td-actions {
+            width: 200px
+        }
+
+        .hint {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+            .hint i {
+                color: var(--brand-teal);
+                font-size: 11px;
+            }
+
+        .success-message {
+            margin-top: 12px;
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            background: var(--brand-teal-soft);
+            border: 1px solid var(--brand-teal);
+            color: var(--brand-navy);
+            font-weight: 600;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            animation: fadeIn 0.3s ease;
+        }
+
+            .success-message i {
+                color: var(--success);
+            }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: var(--radius-sm);
+            background: var(--brand-teal-soft);
+            color: var(--brand-navy);
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 4px;
+            margin-bottom: 4px;
+        }
+
+        .form-section {
+            margin-bottom: 20px;
+        }
+
+        .form-section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--brand-navy);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .form-section-title i {
+                color: var(--brand-teal);
+            }
+
+        @media(max-width:768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .row-actions {
+                flex-direction: column;
+            }
+
+            .td-actions {
+                width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="top">
+            <div class="brand" aria-label="AgoraHora">
+                <div class="brand-icon">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <div class="name">AgoraHora</div>
+            </div>
+            <button class="btn" id="logout">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </button>
+        </div>
+    </header>
+
+    <main class="container grid grid-2">
+        <div class="card">
+            <h2><i class="fas fa-user-plus"></i> Cadastrar profissional</h2>
+
+            <div class="form-section">
+                <div class="form-section-title">
+                    <i class="fas fa-user"></i> Informações básicas
+                </div>
+                <label for="nome"><i class="fas fa-id-card"></i> Nome</label>
+                <input id="nome" placeholder="Ex.: João Silva">
+
+                <label for="especialidade"><i class="fas fa-cut"></i> Especialidades (vírgula separa)</label>
+                <input id="especialidade" placeholder="Ex.: Barba, Corte, Infantil">
+                <div class="hint"><i class="fas fa-info-circle"></i> Use vírgula para várias especialidades.</div>
+            </div>
+
+            <button class="btn" id="btn-salvar" style="margin-top:10px">
+                <i class="fas fa-save"></i> Salvar
+            </button>
+            <div id="msg" class="success-message">
+                <i class="fas fa-check-circle"></i>
+                <span>Profissional salvo com sucesso!</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-users"></i> Profissionais</h2>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Especialidades</th>
+                            <th class="td-actions">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody">
+                        <tr>
+                            <td class="empty" colspan="3">
+                                <i class="fas fa-user-slash"></i>
+                                Sem profissionais cadastrados…
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const tbody = document.getElementById('tbody');
+        const msg = document.getElementById('msg');
+        document.getElementById('logout').onclick = () => location.href = 'index.html';
+
+        const estabId = Number(localStorage.getItem('ah_estabelecimentoId') || 1);
+        let listaCache = [];
+        let editingId = null;
+
+        async function api(path, opts = {}) {
+            const headers = { 'Content-Type': 'application/json' };
+            const token = localStorage.getItem('ah_token');
+            if (token) headers['Authorization'] = 'Bearer ' + token;
+
+            const res = await fetch('/api' + path, {
+                method: opts.method || 'GET',
+                headers,
+                body: opts.body ? JSON.stringify(opts.body) : undefined
+            });
+            if (!res.ok) throw new Error(await res.text());
+            const ct = res.headers.get('content-type') || '';
+            return ct.includes('application/json') ? res.json() : res.text();
+        }
+
+        const parseTags = (txt) =>
+            (txt || '')
+                .split(',')
+                .map(s => s.trim())
+                .filter(Boolean);
+
+        function renderTags(tags) {
+            if (!tags || !tags.length) return '—';
+            return tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+        }
+
+        function tdInputs(p) {
+            const nome = (p.nome ?? p.Nome ?? '').trim();
+            // usa array Especialidades se vier do backend; senão cai no legado
+            const list = (p.especialidades ?? p.Especialidades);
+            const espTxt = Array.isArray(list) && list.length
+                ? list.join(', ')
+                : (p.especialidade ?? p.Especialidade ?? '');
+            return `
+              <td><input id="edit-nome" value="${nome}"/></td>
+              <td><input id="edit-esp"  value="${espTxt}" placeholder="Separe por vírgulas"/></td>
+              <td class="td-actions">
+                <div class="row-actions">
+                  <button class="btn-ghost" data-action="save" data-id="${p.id ?? p.Id}">
+                    <i class="fas fa-save"></i> Salvar
+                  </button>
+                  <button class="btn-ghost" data-action="cancel" data-id="${p.id ?? p.Id}">
+                    <i class="fas fa-times"></i> Cancelar
+                  </button>
+                </div>
+              </td>`;
+        }
+
+        function tdRead(p) {
+            const id = p.id ?? p.Id;
+            const nome = p.nome ?? p.Nome ?? '';
+            const list = (p.especialidades ?? p.Especialidades);
+            const esp = Array.isArray(list) && list.length
+                ? renderTags(list)
+                : (p.especialidade ?? p.Especialidade ?? '—');
+            return `
+              <td>${nome}</td>
+              <td>${esp}</td>
+              <td class="td-actions">
+                <div class="row-actions">
+                  <button class="btn-ghost" data-action="edit" data-id="${id}">
+                    <i class="fas fa-edit"></i> Editar
+                  </button>
+                  <button class="btn-danger" data-action="delete" data-id="${id}">
+                    <i class="fas fa-trash"></i> Apagar
+                  </button>
+                </div>
+              </td>`;
+        }
+
+        function render(lista) {
+            listaCache = lista.slice();
+            if (!lista.length) {
+                tbody.innerHTML = `
+                        <tr>
+                            <td class="empty" colspan="3">
+                                <i class="fas fa-user-slash"></i>
+                                Sem profissionais cadastrados…
+                            </td>
+                        </tr>`;
+                return;
+            }
+            tbody.innerHTML = lista.map(p => {
+                const id = p.id ?? p.Id;
+                return `<tr data-id="${id}">${editingId === id ? tdInputs(p) : tdRead(p)}</tr>`;
+            }).join("");
+        }
+
+        async function carregar() {
+            const r = await api(`/profissionais/${estabId}?page=1&pageSize=50`);
+            const dados = Array.isArray(r) ? r : (r.data ?? []);
+            editingId = null;
+            render(dados);
+        }
+
+        // Criar profissional + especialidades N:N
+        document.getElementById('btn-salvar').onclick = async () => {
+            const nome = document.getElementById('nome').value.trim();
+            const espTxt = document.getElementById('especialidade').value.trim();
+            if (!nome) { alert('Informe o nome.'); return; }
+
+            // 1) cria profissional (compatível com campo legado)
+            const created = await api('/profissionais', {
+                method: 'POST',
+                body: { EstabelecimentoId: estabId, Nome: nome, Especialidade: espTxt }
+            });
+
+            // 2) grava vínculos N:N (se houver especialidades)
+            const id = created?.data?.id ?? created?.data?.Id;
+            const nomes = parseTags(espTxt);
+            if (id && nomes.length) {
+                await api(`/profissionais/id/${id}/especialidades`, {
+                    method: 'PUT',
+                    body: { nomes }
+                });
+            }
+
+            document.getElementById('nome').value = '';
+            document.getElementById('especialidade').value = '';
+            msg.style.display = 'flex';
+            setTimeout(() => msg.style.display = 'none', 1500);
+            await carregar();
+        };
+
+        // Editar/Salvar/Apagar
+        tbody.addEventListener('click', async (e) => {
+            const btn = e.target.closest('button');
+            if (!btn) return;
+            const action = btn.dataset.action;
+            const id = Number(btn.dataset.id);
+            const tr = tbody.querySelector(`tr[data-id="${id}"]`);
+            const p = listaCache.find(x => (x.id ?? x.Id) === id);
+
+            try {
+                if (action === 'edit') {
+                    editingId = id;
+                    tr.innerHTML = tdInputs(p);
+                    tr.querySelector('#edit-nome').focus();
+                }
+                if (action === 'cancel') {
+                    editingId = null;
+                    tr.innerHTML = tdRead(p);
+                }
+                if (action === 'save') {
+                    const nome = tr.querySelector('#edit-nome').value.trim();
+                    const espTxt = tr.querySelector('#edit-esp').value.trim();
+                    if (!nome) { alert('Nome é obrigatório.'); return; }
+
+                    // 1) atualiza dados básicos (mantém legado)
+                    await api(`/profissionais/${id}`, {
+                        method: 'PUT',
+                        body: { Nome: nome, Especialidade: espTxt }
+                    });
+
+                    // 2) regrava especialidades N:N
+                    const nomes = parseTags(espTxt);
+                    await api(`/profissionais/id/${id}/especialidades`, {
+                        method: 'PUT',
+                        body: { nomes }
+                    });
+
+                    await carregar();
+                }
+                if (action === 'delete') {
+                    if (!confirm('Confirmar exclusão do profissional?')) return;
+                    await api(`/profissionais/${id}`, { method: 'DELETE' });
+                    await carregar();
+                }
+            } catch (err) {
+                alert('Erro: ' + (err?.message || err));
+            }
+        });
+
+        carregar();
+    </script>
+</body>
+</html>
