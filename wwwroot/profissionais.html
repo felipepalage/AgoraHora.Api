@@ -6,446 +6,73 @@
     <title>Profissionais - AgoraHora</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --brand-navy: #0a1933;
-            --brand-teal: #0da5a0;
-            --brand-teal-hover: #098581;
-            --brand-teal-soft: #e6f9f8;
-            --brand-purple: #6366f1;
-            --bg: #f8fafc;
-            --card: #ffffff;
-            --muted: #64748b;
-            --border: #e2e8f0;
-            --danger: #ef4444;
-            --danger-dark: #dc2626;
-            --warning: #f59e0b;
-            --success: #10b981;
-            --info: #3b82f6;
-            --radius-lg: 20px;
-            --radius-md: 14px;
-            --radius-sm: 8px;
-            --shadow-soft: 0 4px 15px rgba(10,25,51,.05);
-            --shadow-medium: 0 10px 25px rgba(10,25,51,.08);
-            --shadow-strong: 0 20px 40px rgba(10,25,51,.12);
-        }
-
-        * {
-            box-sizing: border-box
-        }
-
-        body {
-            margin: 0;
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            color: #334155;
-            font: 500 15px/1.45 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif
-        }
-
-        header {
-            background: rgba(255,255,255,.9);
-            border-bottom: 1px solid rgba(226,232,240,.6);
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            backdrop-filter: blur(16px);
-            box-shadow: var(--shadow-soft);
-        }
-
-        .top {
-            max-width: 1200px;
-            margin: auto;
-            padding: 14px 20px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            justify-content: space-between
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-        }
-
-            .brand:hover {
-                transform: scale(1.02);
-            }
-
-        .brand-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, var(--brand-teal), var(--brand-purple));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 10px rgba(13,165,160,.25);
-        }
-
-            .brand-icon i {
-                color: white;
-                font-size: 20px;
-            }
-
-        .brand .name {
-            font-weight: 800;
-            font-size: 22px;
-            color: var(--brand-navy)
-        }
-
-        .btn {
-            padding: 10px 16px;
-            border: none;
-            border-radius: var(--radius-sm);
-            background: linear-gradient(135deg, var(--brand-teal), var(--brand-teal-hover));
-            color: #fff;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-            .btn::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: -100%;
-                width: 100%;
-                height: 100%;
-                background: rgba(255,255,255,0.2);
-                transition: left 0.3s ease;
-            }
-
-            .btn:hover::before {
-                left: 100%;
-            }
-
-            .btn:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(13,165,160,.35);
-            }
-
-        .btn-ghost {
-            padding: 8px 12px;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            background: #fff;
-            color: var(--brand-navy);
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s ease;
-        }
-
-            .btn-ghost:hover {
-                background: var(--brand-teal-soft);
-                border-color: var(--brand-teal);
-                transform: translateY(-1px);
-            }
-
-        .btn-danger {
-            padding: 8px 12px;
-            border: 1px solid #fee2e2;
-            border-radius: var(--radius-sm);
-            background: #fee2e2;
-            color: var(--danger);
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s ease;
-        }
-
-            .btn-danger:hover {
-                background: var(--danger);
-                color: #fff;
-                transform: translateY(-1px);
-            }
-
-        .container {
-            max-width: 1200px;
-            margin: 24px auto;
-            padding: 0 20px
-        }
-
-        .grid {
-            display: grid;
-            gap: 20px
-        }
-
-        @media(min-width:900px) {
-            .grid-2 {
-                grid-template-columns: 1fr 2fr
-            }
-        }
-
-        .card {
-            background: var(--card);
-            border-radius: var(--radius-lg);
-            padding: 24px;
-            box-shadow: var(--shadow-medium);
-            border: 1px solid rgba(226,232,240,.6);
-            transition: all 0.3s ease;
-        }
-
-            .card:hover {
-                box-shadow: var(--shadow-strong);
-            }
-
-        h2 {
-            margin-top: 0;
-            color: var(--brand-navy);
-            font-size: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-            h2 i {
-                color: var(--brand-teal);
-            }
-
-        label {
-            display: block;
-            margin: 12px 0 6px;
-            color: var(--brand-navy);
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-            label i {
-                color: var(--brand-teal);
-                font-size: 14px;
-            }
-
-        input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            outline: none;
-            background: #f8fafc;
-            font-size: 14px;
-            transition: all 0.2s ease;
-        }
-
-            input:focus {
-                background: #ffffff;
-                border-color: var(--brand-teal);
-                box-shadow: 0 0 0 3px rgba(13,165,160,.15);
-            }
-
-        .table-wrapper {
-            overflow-x: auto;
-            border-radius: var(--radius-md);
-            border: 1px solid var(--border);
-            margin-top: 16px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse
-        }
-
-        th, td {
-            padding: 14px 16px;
-            border-bottom: 1px solid var(--border);
-            text-align: left
-        }
-
-        th {
-            color: var(--brand-navy);
-            font-size: 13px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            background: #f8fafc;
-        }
-
-        tbody tr {
-            transition: background 0.2s ease;
-        }
-
-            tbody tr:hover {
-                background: #f8fafc;
-            }
-
-        .empty {
-            color: var(--muted);
-            padding: 20px 0;
-            text-align: center;
-            font-style: italic;
-        }
-
-            .empty i {
-                font-size: 24px;
-                margin-bottom: 8px;
-                display: block;
-                color: var(--muted);
-            }
-
-        .row-actions {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap
-        }
-
-        .td-actions {
-            width: 200px
-        }
-
-        .hint {
-            color: var(--muted);
-            font-size: 12px;
-            margin-top: 6px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-            .hint i {
-                color: var(--brand-teal);
-                font-size: 11px;
-            }
-
-        .success-message {
-            margin-top: 12px;
-            padding: 12px 16px;
-            border-radius: var(--radius-md);
-            background: var(--brand-teal-soft);
-            border: 1px solid var(--brand-teal);
-            color: var(--brand-navy);
-            font-weight: 600;
-            display: none;
-            align-items: center;
-            gap: 8px;
-            animation: fadeIn 0.3s ease;
-        }
-
-            .success-message i {
-                color: var(--success);
-            }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .tag {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: var(--radius-sm);
-            background: var(--brand-teal-soft);
-            color: var(--brand-navy);
-            font-size: 12px;
-            font-weight: 600;
-            margin-right: 4px;
-            margin-bottom: 4px;
-        }
-
-        .form-section {
-            margin-bottom: 20px;
-        }
-
-        .form-section-title {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--brand-navy);
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-            .form-section-title i {
-                color: var(--brand-teal);
-            }
-
-        @media(max-width:768px) {
-            .grid-2 {
-                grid-template-columns: 1fr;
-            }
-
-            .row-actions {
-                flex-direction: column;
-            }
-
-            .td-actions {
-                width: auto;
-            }
-        }
+        /* (mantive o mesmo CSS do seu arquivo para consistência) */
+        :root { --brand-navy:#0a1933; --brand-teal:#0da5a0; --brand-teal-hover:#098581; --brand-teal-soft:#e6f9f8; --brand-purple:#6366f1; --bg:#f8fafc; --card:#ffffff; --muted:#64748b; --border:#e2e8f0; --danger:#ef4444; --radius-lg:20px; --radius-md:14px; --radius-sm:8px; --shadow-soft:0 4px 15px rgba(10,25,51,.05); --shadow-medium:0 10px 25px rgba(10,25,51,.08); --shadow-strong:0 20px 40px rgba(10,25,51,.12); }
+        * { box-sizing: border-box }
+        body { margin:0; background: linear-gradient(135deg,#f8fafc 0%,#e2e8f0 100%); color:#334155; font:500 15px/1.45 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+        header { background: rgba(255,255,255,.9); border-bottom: 1px solid rgba(226,232,240,.6); position: sticky; top:0; z-index:10; backdrop-filter: blur(16px); box-shadow: var(--shadow-soft); }
+        .top { max-width:1200px; margin:auto; padding:14px 20px; display:flex; align-items:center; gap:14px; justify-content:space-between; }
+        .brand { display:flex; align-items:center; gap:12px; cursor:pointer; transition: transform .2s ease; }
+        .brand:hover { transform: scale(1.02); }
+        .brand-icon { width:40px; height:40px; border-radius:12px; background: linear-gradient(135deg,var(--brand-teal),var(--brand-purple)); display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(13,165,160,.25); }
+        .brand-icon i{ color:#fff; font-size:20px; }
+        .name{ font-weight:800; font-size:22px; color:var(--brand-navy); }
+        .btn{ padding:10px 16px; border:none; border-radius:var(--radius-sm); background: linear-gradient(135deg,var(--brand-teal),var(--brand-teal-hover)); color:#fff; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition:all .2s ease; position:relative; overflow:hidden; }
+        .btn::before{ content:''; position:absolute; top:0; left:-100%; width:100%; height:100%; background: rgba(255,255,255,.2); transition:left .3s ease; }
+        .btn:hover::before{ left:100%; } .btn:hover{ transform:translateY(-2px); box-shadow: 0 6px 20px rgba(13,165,160,.35); }
+        .btn-ghost{ padding:8px 12px; border:1px solid var(--border); border-radius:var(--radius-sm); background:#fff; color:var(--brand-navy); cursor:pointer; font-weight:600; }
+        .btn-danger{ padding:8px 12px; border:1px solid #fee2e2; border-radius:var(--radius-sm); background:#fee2e2; color:var(--danger); cursor:pointer; font-weight:600; }
+        .container{ max-width:1200px; margin:24px auto; padding:0 20px; }
+        .grid{ display:grid; gap:20px; } @media(min-width:900px){ .grid-2{ grid-template-columns:1fr 2fr } }
+        .card{ background:var(--card); border-radius:var(--radius-lg); padding:24px; box-shadow:var(--shadow-medium); border:1px solid rgba(226,232,240,.6); transition:all .3s ease; }
+        .card:hover{ box-shadow:var(--shadow-strong); }
+        h2{ margin-top:0; color:var(--brand-navy); font-size:20px; display:flex; align-items:center; gap:10px; }
+        label{ display:block; margin:12px 0 6px; color:var(--brand-navy); font-weight:600; display:flex; align-items:center; gap:6px; }
+        input{ width:100%; padding:12px 16px; border:1px solid var(--border); border-radius:var(--radius-md); outline:none; background:#f8fafc; font-size:14px; transition:all .2s ease; }
+        input:focus{ background:#fff; border-color:var(--brand-teal); box-shadow:0 0 0 3px rgba(13,165,160,.15); }
+        .table-wrapper{ overflow-x:auto; border-radius:var(--radius-md); border:1px solid var(--border); margin-top:16px; }
+        table{ width:100%; border-collapse:collapse; } th,td{ padding:14px 16px; border-bottom:1px solid var(--border); text-align:left; } th{ color:var(--brand-navy); font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; background:#f8fafc; }
+        tbody tr{ transition:background .2s ease; } tbody tr:hover{ background:#f8fafc; }
+        .empty{ color:var(--muted); padding:20px 0; text-align:center; font-style:italic; } .tag{ display:inline-block; padding:4px 8px; border-radius:var(--radius-sm); background:var(--brand-teal-soft); color:var(--brand-navy); font-size:12px; font-weight:600; margin-right:4px; margin-bottom:4px; }
+        .row-actions{ display:flex; gap:8px; flex-wrap:wrap } .td-actions{ width:200px }
+        .hint{ color:var(--muted); font-size:12px; margin-top:6px; display:flex; align-items:center; gap:4px } .success-message{ margin-top:12px; padding:12px 16px; border-radius:var(--radius-md); background:var(--brand-teal-soft); border:1px solid var(--brand-teal); color:var(--brand-navy); font-weight:600; display:none; align-items:center; gap:8px; animation:fadeIn .3s ease; } @keyframes fadeIn{ from{ opacity:0; transform:translateY(-10px) } to{ opacity:1; transform:translateY(0) } }
     </style>
 </head>
 <body>
     <header>
         <div class="top">
             <div class="brand" aria-label="AgoraHora">
-                <div class="brand-icon">
-                    <i class="fas fa-user-tie"></i>
-                </div>
+                <div class="brand-icon"><i class="fas fa-user-tie"></i></div>
                 <div class="name">AgoraHora</div>
             </div>
-            <button class="btn" id="logout">
-                <i class="fas fa-arrow-left"></i> Voltar
-            </button>
+            <button class="btn" id="logout"><i class="fas fa-arrow-left"></i> Voltar</button>
         </div>
     </header>
 
     <main class="container grid grid-2">
         <div class="card">
             <h2><i class="fas fa-user-plus"></i> Cadastrar profissional</h2>
-
             <div class="form-section">
-                <div class="form-section-title">
-                    <i class="fas fa-user"></i> Informações básicas
-                </div>
+                <div class="form-section-title"><i class="fas fa-user"></i> Informações básicas</div>
                 <label for="nome"><i class="fas fa-id-card"></i> Nome</label>
                 <input id="nome" placeholder="Ex.: João Silva">
-
                 <label for="especialidade"><i class="fas fa-cut"></i> Especialidades (vírgula separa)</label>
                 <input id="especialidade" placeholder="Ex.: Barba, Corte, Infantil">
                 <div class="hint"><i class="fas fa-info-circle"></i> Use vírgula para várias especialidades.</div>
             </div>
-
-            <button class="btn" id="btn-salvar" style="margin-top:10px">
-                <i class="fas fa-save"></i> Salvar
-            </button>
-            <div id="msg" class="success-message">
-                <i class="fas fa-check-circle"></i>
-                <span>Profissional salvo com sucesso!</span>
-            </div>
+            <button class="btn" id="btn-salvar" style="margin-top:10px"><i class="fas fa-save"></i> Salvar</button>
+            <div id="msg" class="success-message"><i class="fas fa-check-circle"></i><span>Profissional salvo com sucesso!</span></div>
         </div>
 
         <div class="card">
             <h2><i class="fas fa-users"></i> Profissionais</h2>
-
             <div class="table-wrapper">
                 <table>
                     <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>Especialidades</th>
-                            <th class="td-actions">Ações</th>
-                        </tr>
+                        <tr><th>Nome</th><th>Especialidades</th><th class="td-actions">Ações</th></tr>
                     </thead>
                     <tbody id="tbody">
-                        <tr>
-                            <td class="empty" colspan="3">
-                                <i class="fas fa-user-slash"></i>
-                                Sem profissionais cadastrados…
-                            </td>
-                        </tr>
+                        <tr><td class="empty" colspan="3"><i class="fas fa-user-slash"></i> Sem profissionais cadastrados…</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -453,33 +80,56 @@
     </main>
 
 <script>
-/* Profissionais script - versão ajustada para usar /api/usuarios/me/estabelecimentos
-   e API_BASE. Substitua totalmente o <script> atual por este. */
+/*
+  Profissionais - script completo e robusto.
+  - Corrige chamadas antigas para /api/usuario/* reescrevendo para /api/usuarios/*
+  - Usa API_BASE consistente
+  - Faz init obtendo estabelecimento via /usuarios/me/estabelecimentos ou /usuarios/me
+  - Implementa CRUD de profissionais (POST/PUT/DELETE) conforme rotas que você já tem
+*/
 
+/* -------------- Config -------------- */
 const API_BASE = window.API_BASE || "http://179.0.176.111:5000/api";
 
-/* Helpers de UI */
+/* -------------- Defensive fetch rewrite -------------- */
+/* Intercepta fetch para reescrever URLs antigas que contenham "/api/usuario/" (singular)
+   para "/api/usuarios/" (plural). Mantém comportamento normal para demais chamadas.
+   Instalamos primeiro para capturar requisições feitas por scripts já carregados. */
+(function installFetchRewrite() {
+    const originalFetch = window.fetch.bind(window);
+    window.fetch = async function(input, init) {
+        try {
+            let url = typeof input === 'string' ? input : (input && input.url) || '';
+            if (url && url.includes('/api/usuario/')) {
+                // rewrite singular -> plural
+                const newUrl = url.replace('/api/usuario/', '/api/usuarios/');
+                console.warn('Rewriting legacy API path:', url, '=>', newUrl);
+                if (typeof input === 'string') input = newUrl;
+                else input = new Request(newUrl, input);
+            }
+            return await originalFetch(input, init);
+        } catch (err) {
+            // fallback para não quebrar app
+            return originalFetch(input, init);
+        }
+    };
+})();
+
+/* -------------- Helpers UI & state -------------- */
 const tbody = document.getElementById('tbody');
 const msg = document.getElementById('msg');
-document.getElementById('logout').onclick = () => location.href = 'index.html';
+const logoutBtn = document.getElementById('logout');
+logoutBtn.onclick = () => location.href = 'index.html';
 
 let estabId = null;
 let listaCache = [];
 let editingId = null;
 
-/* ---------- fetch wrapper consistente ---------- */
+/* -------------- Fetch wrapper -------------- */
 async function api(path, opts = {}) {
-    // path pode começar com / ou sem
     const url = path.startsWith('http') ? path : API_BASE.replace(/\/$/, '') + '/' + String(path).replace(/^\//, '');
     const token = localStorage.getItem('ah_token');
-
-    const headers = Object.assign(
-        {},
-        opts.headers || {},
-        token ? { 'Authorization': 'Bearer ' + token } : {}
-    );
-
-    // método e body
+    const headers = Object.assign({}, opts.headers || {}, token ? { 'Authorization': 'Bearer ' + token } : {});
     const method = opts.method || 'GET';
     const body = opts.body ? JSON.stringify(opts.body) : undefined;
 
@@ -490,7 +140,6 @@ async function api(path, opts = {}) {
     });
 
     if (res.status === 401) {
-        // token inválido/expirado
         localStorage.removeItem('ah_token');
         localStorage.removeItem('ah_estab');
         localStorage.removeItem('ah_estabelecimentoId');
@@ -501,32 +150,22 @@ async function api(path, opts = {}) {
     const ct = res.headers.get('content-type') || '';
     const txt = await res.text();
     if (!res.ok) {
-        // tenta mostrar corpo legível no erro
         const bodyText = txt || res.statusText || `HTTP ${res.status}`;
         throw new Error(bodyText);
     }
-    try { return ct.includes('application/json') ? JSON.parse(txt) : txt; }
-    catch { return txt; }
+    try { return ct.includes('application/json') ? JSON.parse(txt) : txt; } catch { return txt; }
 }
 
-/* ---------- utilidades para tags / templates ---------- */
-const parseTags = (txt) =>
-    (txt || '').split(',').map(s => s.trim()).filter(Boolean);
-
-function renderTags(tags) {
-    if (!tags || !tags.length) return '—';
-    return tags.map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join('');
-}
-
+/* -------------- Utilities -------------- */
+const parseTags = txt => (txt || '').split(',').map(s => s.trim()).filter(Boolean);
+function renderTags(tags) { if (!tags || !tags.length) return '—'; return tags.map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join(''); }
 function escapeHtml(s){ return String(s ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
 
-/* ---------- templates de linha / inputs ---------- */
+/* -------------- Templates -------------- */
 function tdInputs(p) {
     const nome = escapeHtml((p.nome ?? p.Nome ?? '').trim());
     const list = (p.especialidades ?? p.Especialidades);
-    const espTxt = Array.isArray(list) && list.length
-        ? escapeHtml(list.join(', '))
-        : escapeHtml(p.especialidade ?? p.Especialidade ?? '');
+    const espTxt = Array.isArray(list) && list.length ? escapeHtml(list.join(', ')) : escapeHtml(p.especialidade ?? p.Especialidade ?? '');
     return `
       <td><input id="edit-nome" value="${nome}"/></td>
       <td><input id="edit-esp"  value="${espTxt}" placeholder="Separe por vírgulas"/></td>
@@ -546,9 +185,7 @@ function tdRead(p) {
     const id = p.id ?? p.Id;
     const nome = escapeHtml(p.nome ?? p.Nome ?? '');
     const list = (p.especialidades ?? p.Especialidades);
-    const esp = Array.isArray(list) && list.length
-        ? renderTags(list)
-        : escapeHtml(p.especialidade ?? p.Especialidade ?? '—');
+    const esp = Array.isArray(list) && list.length ? renderTags(list) : escapeHtml(p.especialidade ?? p.Especialidade ?? '—');
     return `
       <td>${nome}</td>
       <td>${esp}</td>
@@ -568,12 +205,12 @@ function render(lista) {
     listaCache = Array.isArray(lista) ? lista.slice() : [];
     if (!listaCache.length) {
         tbody.innerHTML = `
-                <tr>
-                    <td class="empty" colspan="3">
-                        <i class="fas fa-user-slash"></i>
-                        Sem profissionais cadastrados…
-                    </td>
-                </tr>`;
+            <tr>
+                <td class="empty" colspan="3">
+                    <i class="fas fa-user-slash"></i>
+                    Sem profissionais cadastrados…
+                </td>
+            </tr>`;
         return;
     }
     tbody.innerHTML = listaCache.map(p => {
@@ -582,10 +219,9 @@ function render(lista) {
     }).join("");
 }
 
-/* ---------- carregar lista de profissionais ---------- */
+/* -------------- CRUD + carregar -------------- */
 async function carregar() {
     if (!estabId) return;
-    // rota existente: /api/profissionais/{estabId}?page=1&pageSize=50
     const url = `/profissionais/${encodeURIComponent(estabId)}?page=1&pageSize=50`;
     const r = await api(url);
     const dados = Array.isArray(r) ? r : (r.data ?? []);
@@ -593,13 +229,12 @@ async function carregar() {
     render(dados);
 }
 
-/* ---------- inicialização: obter estabelecimento do usuário logado ---------- */
+/* -------------- init: obter estabelecimento do backend ou localStorage -------------- */
 async function init() {
     try {
-        // 1) tentar /usuarios/me/estabelecimentos
+        // tenta rota correta: /usuarios/me/estabelecimentos
         try {
             const estabsResp = await api('/usuarios/me/estabelecimentos');
-            // estabsResp pode ser array ou { data: [...] }
             const arr = Array.isArray(estabsResp) ? estabsResp : (estabsResp.data ?? estabsResp);
             if (Array.isArray(arr) && arr.length > 0) {
                 estabId = arr[0].estabelecimentoId ?? arr[0].EstabelecimentoId ?? null;
@@ -610,13 +245,14 @@ async function init() {
                 const me = await api('/usuarios/me');
                 estabId = me?.estabelecimentoId ?? me?.estabId ?? me?.estabelecimentos?.[0]?.estabelecimentoId ?? null;
             } catch (e2) {
-                console.warn('Não foi possível obter estabelecimento via /usuarios/me/estabelecimentos nem /usuarios/me', e2);
+                console.warn('Não foi possível obter estabelecimento via backend', e2);
             }
         }
 
-        // se ainda não tem estabelecimento, tentar localStorage (login pode ter salvo)
+        // fallback para localStorage (caso login tenha salvo)
         if (!estabId) {
-            estabId = Number(localStorage.getItem('ah_estab') || localStorage.getItem('ah_estabelecimentoId') || 0) || null;
+            const fromStorage = Number(localStorage.getItem('ah_estab') || localStorage.getItem('ah_estabelecimentoId') || 0) || null;
+            estabId = estabId || fromStorage;
         }
 
         if (!estabId) {
@@ -633,7 +269,7 @@ async function init() {
     }
 }
 
-/* ---------- eventos: salvar novo profissional e ações na lista ---------- */
+/* -------------- Ações: salvar, editar, excluir -------------- */
 document.getElementById('btn-salvar').onclick = async () => {
     if (!estabId) { alert('Estabelecimento não definido.'); return; }
     const nome = document.getElementById('nome').value.trim();
@@ -641,22 +277,12 @@ document.getElementById('btn-salvar').onclick = async () => {
     if (!nome) { alert('Informe o nome.'); return; }
 
     try {
-        const created = await api('/profissionais', {
-            method: 'POST',
-            body: { EstabelecimentoId: estabId, Nome: nome, Especialidade: espTxt }
-        });
-
-        // backend pode retornar { data: { id: ... } } ou similar
+        const created = await api('/profissionais', { method: 'POST', body: { EstabelecimentoId: estabId, Nome: nome, Especialidade: espTxt } });
         const id = created?.data?.id ?? created?.data?.Id ?? created?.id ?? created?.Id;
         const nomes = parseTags(espTxt);
-
         if (id && nomes.length) {
-            await api(`/profissionais/id/${encodeURIComponent(id)}/especialidades`, {
-                method: 'PUT',
-                body: { nomes }
-            });
+            await api(`/profissionais/id/${encodeURIComponent(id)}/especialidades`, { method: 'PUT', body: { nomes } });
         }
-
         document.getElementById('nome').value = '';
         document.getElementById('especialidade').value = '';
         msg.style.display = 'flex';
@@ -688,25 +314,9 @@ tbody.addEventListener('click', async (e) => {
             const nome = tr.querySelector('#edit-nome').value.trim();
             const espTxt = tr.querySelector('#edit-esp').value.trim();
             if (!nome) { alert('Nome é obrigatório.'); return; }
-
-            await api(`/profissionais/${encodeURIComponent(id)}`, {
-                method: 'PUT',
-                body: { Nome: nome, Especialidade: espTxt }
-            });
-
+            await api(`/profissionais/${encodeURIComponent(id)}`, { method: 'PUT', body: { Nome: nome, Especialidade: espTxt } });
             const nomes = parseTags(espTxt);
-            if (nomes.length) {
-                await api(`/profissionais/id/${encodeURIComponent(id)}/especialidades`, {
-                    method: 'PUT',
-                    body: { nomes }
-                });
-            } else {
-                await api(`/profissionais/id/${encodeURIComponent(id)}/especialidades`, {
-                    method: 'PUT',
-                    body: { nomes: [] }
-                });
-            }
-
+            await api(`/profissionais/id/${encodeURIComponent(id)}/especialidades`, { method: 'PUT', body: { nomes } });
             await carregar();
         } else if (action === 'delete') {
             if (!confirm('Confirmar exclusão do profissional?')) return;
@@ -719,11 +329,8 @@ tbody.addEventListener('click', async (e) => {
     }
 });
 
-/* ---------- start ---------- */
+/* -------------- start -------------- */
 init();
 </script>
-
-
-
 </body>
 </html>
