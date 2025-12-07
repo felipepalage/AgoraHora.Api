@@ -7,30 +7,247 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root{
-            --brand-navy:#0a1933; --brand-teal:#0da5a0; --border:#e2e8f0; --card:#ffffff; --muted:#64748b;
-            --danger:#ef4444; --radius-md:14px; --shadow-medium: 0 10px 25px rgba(10,25,51,.08);
+            --brand-navy:#0a1933;
+            --brand-teal:#0da5a0;
+            --border:#e2e8f0;
+            --card:#ffffff;
+            --muted:#64748b;
+            --danger:#ef4444;
+            --radius-md:14px;
+            --shadow-medium: 0 10px 25px rgba(10,25,51,.08);
         }
         *{box-sizing:border-box;margin:0;padding:0}
-        body{font:500 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, Arial; background:linear-gradient(135deg,#f8fafc 0,#e2e8f0 100%);color:#334155}
-        header{background:rgba(255,255,255,.9);border-bottom:1px solid rgba(226,232,240,.6);backdrop-filter:blur(16px);position:sticky;top:0;z-index:20}
-        .top{max-width:1200px;margin:auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+        body{
+            font:500 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+            background:linear-gradient(135deg,#f8fafc 0,#e2e8f0 100%);
+            color:#334155
+        }
+        header{
+            background:rgba(255,255,255,.9);
+            border-bottom:1px solid rgba(226,232,240,.6);
+            backdrop-filter:blur(16px);
+            position:sticky;
+            top:0;
+            z-index:20
+        }
+        .top{
+            max-width:1200px;
+            margin:auto;
+            padding:14px 20px;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:12px
+        }
         .brand{display:flex;gap:12px;align-items:center}
-        .brand-icon{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--brand-teal),#6366f1);display:flex;align-items:center;justify-content:center;color:#fff}
-        .btn{padding:10px 16px;border-radius:8px;border:0;background:linear-gradient(135deg,var(--brand-teal),#098581);color:#fff;cursor:pointer;font-weight:600;display:inline-flex;gap:8px;align-items:center}
+        .brand-icon{
+            width:40px;
+            height:40px;
+            border-radius:12px;
+            background:linear-gradient(135deg,var(--brand-teal),#6366f1);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:#fff
+        }
+        .name{
+            font-weight:700;
+            font-size:18px;
+            color:var(--brand-navy);
+        }
+        .btn{
+            padding:10px 18px;
+            border-radius:999px;
+            border:0;
+            background:linear-gradient(135deg,var(--brand-teal),#098581);
+            color:#fff;
+            cursor:pointer;
+            font-weight:600;
+            display:inline-flex;
+            gap:8px;
+            align-items:center;
+            font-size:14px;
+            box-shadow:0 8px 20px rgba(13,165,160,.2);
+            transition:transform .1s ease, box-shadow .1s ease, filter .1s ease;
+        }
+        .btn:hover{
+            filter:brightness(1.05);
+            box-shadow:0 10px 30px rgba(13,165,160,.25);
+            transform:translateY(-1px);
+        }
+        .btn:active{
+            transform:translateY(0);
+            box-shadow:0 4px 14px rgba(13,165,160,.2);
+        }
+
         .container{max-width:1200px;margin:24px auto;padding:0 20px}
-        .page-header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:24px}
-        .filters{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:16px;margin-bottom:20px}
-        @media(max-width:768px){.filters{grid-template-columns:1fr}}
-        .field label{font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:6px}
-        .field select,.field input{width:100%;padding:12px 16px;border-radius:var(--radius-md);border:1px solid var(--border);background:#f8fafc}
-        .table-wrapper{overflow-x:auto;border-radius:var(--radius-md);border:1px solid var(--border);background:var(--card);box-shadow:var(--shadow-medium)}
+        .page-header{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:12px;
+            margin-bottom:24px
+        }
+        .page-header h2{
+            font-size:22px;
+            display:flex;
+            align-items:center;
+            gap:8px;
+            color:var(--brand-navy);
+        }
+        .page-header h2 i{
+            font-size:20px;
+        }
+
+        .filters{
+            display:grid;
+            grid-template-columns:1fr 1fr 1fr auto;
+            gap:16px;
+            margin-bottom:20px
+        }
+        @media(max-width:768px){
+            .filters{
+                grid-template-columns:1fr;
+            }
+            .filters > div:last-child{
+                display:flex;
+                justify-content:flex-end;
+            }
+        }
+
+        .field label{
+            font-weight:600;
+            margin-bottom:6px;
+            display:flex;
+            align-items:center;
+            gap:6px;
+            color:var(--brand-navy);
+            font-size:14px;
+        }
+        .field select,
+        .field input{
+            width:100%;
+            padding:12px 16px;
+            border-radius:var(--radius-md);
+            border:1px solid var(--border);
+            background:#f8fafc;
+            outline:none;
+            transition:border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+        }
+        .field select:focus,
+        .field input:focus{
+            border-color:var(--brand-teal);
+            background:#ffffff;
+            box-shadow:0 0 0 1px rgba(13,165,160,0.1);
+        }
+
+        .table-wrapper{
+            overflow-x:auto;
+            border-radius:var(--radius-md);
+            border:1px solid var(--border);
+            background:var(--card);
+            box-shadow:var(--shadow-medium)
+        }
         table{width:100%;border-collapse:collapse}
-        th,td{padding:14px 16px;border-bottom:1px solid var(--border);text-align:left}
-        th{color:var(--brand-navy);font-size:13px;font-weight:700;text-transform:uppercase}
-        .empty{padding:20px;text-align:center;color:var(--muted);font-style:italic}
-        .badge{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;font-weight:600;text-transform:uppercase}
-        .error-message{margin-top:16px;padding:12px 16px;border-radius:12px;background:#fee2e2;border-left:4px solid var(--danger);color:var(--danger);font-weight:600;display:none}
-        .small-muted{font-size:13px;color:var(--muted)}
+        th,td{
+            padding:14px 16px;
+            border-bottom:1px solid var(--border);
+            text-align:left
+        }
+        th{
+            color:var(--brand-navy);
+            font-size:13px;
+            font-weight:700;
+            text-transform:uppercase
+        }
+
+        th:nth-child(1),
+        td:nth-child(1){
+            min-width:180px;
+        }
+        th:nth-child(2),
+        td:nth-child(2){
+            min-width:180px;
+        }
+        th:nth-child(4),
+        td:nth-child(4){
+            white-space:nowrap;
+        }
+        td{
+            font-size:14px;
+        }
+
+        tbody tr:nth-child(odd):not(.empty){
+            background:#f8fafc;
+        }
+        tbody tr:hover:not(.empty){
+            background:#e5f0ff;
+            transition:background-color .15s ease;
+        }
+
+        .empty{
+            padding:20px;
+            text-align:center;
+            color:var(--muted);
+            font-style:italic
+        }
+
+        .badge{
+            display:inline-flex;
+            align-items:center;
+            gap:6px;
+            padding:6px 12px;
+            border-radius:999px;
+            font-weight:600;
+            text-transform:uppercase;
+            font-size:11px;
+            letter-spacing:.04em;
+            border:1px solid transparent;
+        }
+
+        /* Pendente */
+        .badge[data-status="pendente"]{
+            background:#fef3c7;
+            color:#92400e;
+            border-color:#facc15;
+        }
+
+        /* Confirmado */
+        .badge[data-status="confirmado"]{
+            background:#dcfce7;
+            color:#166534;
+            border-color:#22c55e;
+        }
+
+        /* Cancelado */
+        .badge[data-status="cancelado"]{
+            background:#fee2e2;
+            color:#b91c1c;
+            border-color:#ef4444;
+        }
+
+        /* Concluido (sem acento, pois já foi normalizado) */
+        .badge[data-status="concluido"]{
+            background:#e0f2fe;
+            color:#075985;
+            border-color:#38bdf8;
+        }
+
+        .error-message{
+            margin-top:16px;
+            padding:12px 16px;
+            border-radius:12px;
+            background:#fee2e2;
+            border-left:4px solid var(--danger);
+            color:var(--danger);
+            font-weight:600;
+            display:none;
+            align-items:center;
+        }
+        .small-muted{
+            font-size:13px;
+            color:var(--muted)
+        }
     </style>
 </head>
 <body>
@@ -46,7 +263,12 @@
 
     <main class="container">
         <div class="page-header">
-            <h2><i class="fas fa-calendar-alt"></i> Agendamentos</h2>
+            <div>
+                <h2><i class="fas fa-calendar-alt"></i> Agendamentos</h2>
+                <p class="small-muted" style="margin-top:4px">
+                    Veja os horários do dia por profissional e status.
+                </p>
+            </div>
             <div>
                 <button class="btn" id="btn-hoje"><i class="fas fa-calendar-day"></i> Hoje</button>
             </div>
@@ -56,7 +278,9 @@
             <div class="field">
                 <label><i class="fas fa-user-tie"></i> Profissional</label>
                 <select id="profissional" aria-label="Profissional"></select>
-                <div id="prof-help" class="small-muted" style="margin-top:6px">Selecione para ver agendamentos do dia.</div>
+                <div id="prof-help" class="small-muted" style="margin-top:6px">
+                    Selecione para ver agendamentos do dia.
+                </div>
             </div>
             <div class="field">
                 <label><i class="fas fa-calendar"></i> Data</label>
@@ -81,20 +305,27 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Cliente</th>
-                        <th>Serviço</th>
-                        <th>Profissional</th>
-                        <th>Data e horário</th>
-                        <th>Status</th>
+                        <th scope="col">Cliente</th>
+                        <th scope="col">Serviço</th>
+                        <th scope="col">Profissional</th>
+                        <th scope="col">Data e horário</th>
+                        <th scope="col">Status</th>
                     </tr>
                 </thead>
-                <tbody id="tbody">
-                    <tr class="empty"><td colspan="5"><i class="fas fa-spinner fa-spin"></i> Carregando agendamentos…</td></tr>
+                <tbody id="tbody" aria-live="polite">
+                    <tr class="empty">
+                        <td colspan="5">
+                            <i class="fas fa-spinner fa-spin"></i> Carregando agendamentos…
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
 
-        <div id="erro" class="error-message"><i class="fas fa-exclamation-circle"></i> Não foi possível carregar os agendamentos.</div>
+        <div id="erro" class="error-message">
+            <i class="fas fa-exclamation-circle"></i>
+            <span style="margin-left:8px">Não foi possível carregar os agendamentos.</span>
+        </div>
     </main>
 
 <script>
@@ -102,6 +333,7 @@
    CONFIGURAÇÃO GLOBAL
 =========================== */
 const API_BASE = window.API_BASE || "http://179.0.176.111:5000/api";
+const API_ROOT = API_BASE.replace(/\/$/, '');
 console.info("API_BASE =", API_BASE);
 
 /* ===========================
@@ -111,7 +343,6 @@ console.info("API_BASE =", API_BASE);
 (function authGuard() {
     const token = localStorage.getItem("ah_token");
     if (!token) {
-        // se não houver token, volta para login
         window.location.href = "login.html";
         return;
     }
@@ -137,7 +368,13 @@ document.getElementById("voltar").onclick = () => {
 /* ===========================
    UTILIDADES
 =========================== */
-function hojeIso(){ return new Date().toISOString().slice(0,10); }
+function hojeIso(){
+    const d = new Date();
+    const ano = d.getFullYear();
+    const mes = String(d.getMonth() + 1).padStart(2, '0');
+    const dia = String(d.getDate()).padStart(2, '0');
+    return `${ano}-${mes}-${dia}`;
+}
 filtroData.value = hojeIso();
 
 btnHoje.onclick = () => { filtroData.value = hojeIso(); carregar(); };
@@ -146,15 +383,25 @@ selProf.onchange = carregar;
 
 function statusKey(status){
     if(!status) return "pendente";
-    return String(status).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+    return String(status)
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g,"")
+        .toLowerCase();
 }
 
 function fmtData(dt){
     try{
         const d = new Date(dt);
         if(isNaN(d)) return String(dt);
-        return d.toLocaleString("pt-BR", { day:"2-digit", month:"2-digit", hour:"2-digit", minute:"2-digit" });
-    }catch{ return String(dt); }
+        return d.toLocaleString("pt-BR", {
+            day:"2-digit",
+            month:"2-digit",
+            hour:"2-digit",
+            minute:"2-digit"
+        });
+    }catch{
+        return String(dt);
+    }
 }
 
 /* ===========================
@@ -164,6 +411,7 @@ async function fetchWithTimeout(resource, options = {}) {
     const { timeout = 10000 } = options;
     const controller = new AbortController();
     const id = setTimeout(() => controller.abort(), timeout);
+
     try {
         const res = await fetch(resource, { signal: controller.signal, ...options });
         clearTimeout(id);
@@ -176,7 +424,7 @@ async function fetchWithTimeout(resource, options = {}) {
 
 async function getJson(url) {
     if (!/^https?:\/\//i.test(url)) {
-        url = API_BASE.replace(/\/$/, '') + '/' + url.replace(/^\/+/, '');
+        url = API_ROOT + '/' + url.replace(/^\/+/, '');
     }
 
     const headers = { 'Accept': 'application/json' };
@@ -184,11 +432,15 @@ async function getJson(url) {
     if (token) headers['Authorization'] = 'Bearer ' + token;
 
     try {
-        const r = await fetchWithTimeout(url, { headers, cache: 'no-store', timeout: 12000 });
+        const r = await fetchWithTimeout(url, {
+            headers,
+            cache: 'no-store',
+            timeout: 12000
+        });
+
         const ct = r.headers.get('content-type') || '';
 
         if (!r.ok) {
-            // trata 401: token inválido/expirado
             if (r.status === 401) {
                 localStorage.removeItem('ah_token');
                 localStorage.removeItem('ah_estab');
@@ -198,8 +450,12 @@ async function getJson(url) {
 
             let bodyText = '';
             try {
-                bodyText = ct.includes('json') ? JSON.stringify(await r.json()) : await r.text();
-            } catch { bodyText = ''; }
+                bodyText = ct.includes('json')
+                    ? JSON.stringify(await r.json())
+                    : await r.text();
+            } catch {
+                bodyText = '';
+            }
 
             throw new Error(`HTTP ${r.status} - ${bodyText || r.statusText}`);
         }
@@ -207,7 +463,11 @@ async function getJson(url) {
         if (ct.includes('json')) return r.json();
 
         const txt = await r.text();
-        try { return JSON.parse(txt); } catch { return txt; }
+        try {
+            return JSON.parse(txt);
+        } catch {
+            return txt;
+        }
 
     } catch (err) {
         if (err.name === 'AbortError') throw new Error('Request timeout');
@@ -215,36 +475,63 @@ async function getJson(url) {
     }
 }
 
-
 async function resolveEstabId(){
     const token = localStorage.getItem('ah_token');
     if (!token) return null;
-    const headers = { 'Accept':'application/json', 'Authorization': 'Bearer ' + token };
-    const base = API_BASE.replace(/\/$/, '');
 
-    // 1) tenta /usuarios/me/estabelecimentos
+    const headers = {
+        'Accept':'application/json',
+        'Authorization': 'Bearer ' + token
+    };
+
+    // 1) /usuarios/me/estabelecimentos
     try {
-        const r = await fetch(base + '/usuarios/me/estabelecimentos', { headers, cache:'no-store' });
-        if (r.status === 401) { localStorage.removeItem('ah_token'); window.location.href='login.html'; return null; }
+        const r = await fetch(API_ROOT + '/usuarios/me/estabelecimentos', {
+            headers,
+            cache:'no-store'
+        });
+
+        if (r.status === 401) {
+            localStorage.removeItem('ah_token');
+            window.location.href='login.html';
+            return null;
+        }
+
         if (r.ok) {
             const data = await r.json();
-            if (Array.isArray(data) && data.length) return data[0].estabelecimentoId ?? data[0].EstabelecimentoId ?? null;
+            if (Array.isArray(data) && data.length) {
+                return data[0].estabelecimentoId
+                    ?? data[0].EstabelecimentoId
+                    ?? null;
+            }
         }
-    } catch (e) { console.warn('estabs failed', e); }
+    } catch (e) {
+        console.warn('estabs failed', e);
+    }
 
-    // 2) fallback: tenta /usuarios/me (caso seu backend ofereça)
+    // 2) /usuarios/me
     try {
-        const r2 = await fetch(base + '/usuarios/me', { headers, cache:'no-store' });
-        if (r2.status === 401) { localStorage.removeItem('ah_token'); window.location.href='login.html'; return null; }
+        const r2 = await fetch(API_ROOT + '/usuarios/me', {
+            headers,
+            cache:'no-store'
+        });
+
+        if (r2.status === 401) {
+            localStorage.removeItem('ah_token');
+            window.location.href='login.html';
+            return null;
+        }
+
         if (r2.ok) {
             const j = await r2.json();
             return j?.estabelecimentoId ?? j?.estabId ?? null;
         }
-    } catch (e) { console.warn('me failed', e); }
+    } catch (e) {
+        console.warn('me failed', e);
+    }
 
     return null;
 }
-
 
 /* ===========================
    CARREGAR PROFISSIONAIS
@@ -257,7 +544,7 @@ async function carregarProfissionais() {
         const estabResolved = await resolveEstabId();
         const finalEstab = estabSaved || estabResolved || 1;
 
-        const url = `${API_BASE.replace(/\/$/, '')}/profissionais/${finalEstab}`;
+        const url = `${API_ROOT}/profissionais/${finalEstab}`;
         const js = await getJson(url);
 
         const profs = js?.data ?? js;
@@ -291,7 +578,10 @@ async function carregarProfissionais() {
    RENDER TABELA
 =========================== */
 function escapeHtml(s){
-    return String(s ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
+    return String(s ?? '')
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;');
 }
 
 function render(lista) {
@@ -340,7 +630,7 @@ async function carregar(){
     const fim = `${dia}T23:59:59`;
 
     let url =
-        `${API_BASE.replace(/\/$/, '')}/agendamentos/profissional` +
+        `${API_ROOT}/agendamentos/profissional` +
         `?profissionalId=${encodeURIComponent(profId)}` +
         `&ini=${encodeURIComponent(ini)}` +
         `&fim=${encodeURIComponent(fim)}`;
@@ -355,14 +645,22 @@ async function carregar(){
     } catch (e) {
         console.error("Erro carregar agendamentos", e);
         erro.style.display = 'flex';
-        erro.innerHTML = `<i class="fas fa-exclamation-circle"></i> Erro ao carregar: ${escapeHtml(e.message || 'unknown')}`;
-        tbody.innerHTML = `<tr class="empty"><td colspan="5"><i class="fas fa-exclamation-triangle"></i> Erro ao carregar agendamentos. Veja detalhes acima.</td></tr>`;
+        erro.innerHTML = `
+            <i class="fas fa-exclamation-circle"></i>
+            <span style="margin-left:8px">
+                Erro ao carregar: ${escapeHtml(e.message || 'unknown')}
+                <button
+                    style="margin-left:12px;border:0;background:none;color:#b91c1c;cursor:pointer;text-decoration:underline;font-weight:600"
+                    onclick="carregar()">
+                    Tentar novamente
+                </button>
+            </span>`;
+        tbody.innerHTML =
+            `<tr class="empty"><td colspan="5"><i class="fas fa-exclamation-triangle"></i> Erro ao carregar agendamentos. Veja detalhes acima.</td></tr>`;
     }
 }
 
-/* ===========================
-   INIT
-=========================== */
+
 (async function init(){
     try {
         await carregarProfissionais();
@@ -372,7 +670,11 @@ async function carregar(){
 
     } catch (e) {
         erro.style.display = 'flex';
-        erro.innerHTML = `<i class="fas fa-exclamation-circle"></i> Falha na inicialização: ${escapeHtml(e.message || 'Ver console')}`;
+        erro.innerHTML = `
+            <i class="fas fa-exclamation-circle"></i>
+            <span style="margin-left:8px">
+                Falha na inicialização: ${escapeHtml(e.message || 'Ver console')}
+            </span>`;
     }
 })();
 </script>
