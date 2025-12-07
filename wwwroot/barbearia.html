@@ -6,7 +6,6 @@
     <title>Detalhes da Barbearia - AgoraHora</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* --- estilos iguais ao seu layout anterior (resumido) --- */
         :root{--brand-navy:#0a1933;--brand-teal:#0da5a0;--brand-teal-soft:#e6f9f8;--brand-teal-hover:#098581;--brand-purple:#6366f1;--bg:#f8fafc;--card:#fff;--muted:#64748b;--border:#e2e8f0;--radius-md:14px;--radius-sm:8px;--shadow-soft:0 4px 15px rgba(10,25,51,.05);--shadow-medium:0 10px 25px rgba(10,25,51,.08);--shadow-strong:0 20px 40px rgba(10,25,51,.12)}
         *{box-sizing:border-box;margin:0;padding:0}
         body{min-height:100vh;background:var(--bg);color:#334155;font:500 15px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
@@ -124,10 +123,7 @@
     </div>
 
 <script>
-/*
-  Página corrigida.
-  Ajuste API_BASE se necessário.
-*/
+
 const API_BASE = 'http://179.0.176.111:5000/api';
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => Array.from(document.querySelectorAll(sel));
@@ -135,7 +131,6 @@ const $$ = (sel) => Array.from(document.querySelectorAll(sel));
 let estabelecimentoId = null;
 let servicos = [], profs = [], servicoSelecionado = null, slotSelecionado = null;
 
-/* ---------- utilidades ---------- */
 function safeText(el, value){ if(!el) return; el.textContent = value ?? ''; }
 function safeSrc(el, url){ if(!el) return; el.src = url ?? ''; }
 
@@ -154,18 +149,14 @@ function atualizarResumo(hora){
     resumoEl.appendChild(pill);
 }
 
-/* ---------- resolve estabelecimentoId ---------- */
 async function resolveEstabId(){
-    // 1) querystring ?estab=
     const q = new URLSearchParams(location.search);
     const qEst = q.get('estab');
     if (qEst && Number(qEst)) return Number(qEst);
 
-    // 2) localStorage (convenção usada em outras páginas)
     const ls = localStorage.getItem('ah_estab') || localStorage.getItem('ah_estabelecimentoId');
     if (ls && Number(ls)) return Number(ls);
 
-    // 3) if there's a token, try /usuarios/me/estabelecimentos or /usuarios/me
     const token = localStorage.getItem('ah_token');
     if (!token) return null;
     const headers = { 'Authorization': 'Bearer ' + token, 'Accept': 'application/json' };
@@ -187,7 +178,6 @@ async function resolveEstabId(){
     return null;
 }
 
-/* ---------- load configuration (GET /api/configuracao/{id}) ---------- */
 async function loadConfig(){
     if (!estabelecimentoId) return;
     const coverEl = document.getElementById('cover');
@@ -196,9 +186,7 @@ async function loadConfig(){
         const r = await fetch(url, {cache:'no-store'});
         if (!r.ok) {
             console.warn('config fetch status', r.status);
-            // se 404 -> usar fallback (tentativa de /estabelecimentos/{id})
             if (r.status === 404) {
-                // tentamos buscar /estabelecimentos/{id} caso exista no backend
                 try {
                     const r2 = await fetch(`${API_BASE.replace(/\/$/,'')}/estabelecimentos/${encodeURIComponent(estabelecimentoId)}`, {cache:'no-store'});
                     if (r2.ok){
@@ -217,7 +205,6 @@ async function loadConfig(){
                     }
                 } catch(e){ console.warn('estabelecimentos fallback failed', e); }
             }
-            // 404 or other error: set defaults and return
             safeSrc(coverEl, '');
             safeText(document.getElementById('shop-name'), 'Barbearia');
             safeText(document.getElementById('shop-address'), 'Endereço');
@@ -230,7 +217,6 @@ async function loadConfig(){
         const j = await r.json().catch(()=>null);
         const cfg = j?.data?.configuracao ?? j?.configuracao ?? j?.data ?? j;
         const est = j?.data?.estabelecimento ?? j?.estabelecimento ?? j;
-        // safe assign
         const cover = cfg?.ImagemUrl ?? cfg?.IMAGEM ?? est?.ImagemUrl ?? est?.IMAGEM ?? '';
         safeSrc(coverEl, cover);
         safeText(document.getElementById('shop-name'), est?.Nome ?? est?.NM_ESTABELECIMENTO ?? cfg?.NomeEstabelecimento ?? 'Barbearia');
@@ -243,7 +229,6 @@ async function loadConfig(){
 
     } catch (e) {
         console.error('Erro ao carregar configuração', e);
-        // defaults
         safeSrc(document.getElementById('cover'), '');
         safeText(document.getElementById('shop-name'), 'Barbearia');
         safeText(document.getElementById('shop-address'), 'Endereço');
@@ -253,7 +238,6 @@ async function loadConfig(){
     }
 }
 
-/* ---------- load serviços ---------- */
 async function loadServicos(){
     if (!estabelecimentoId) return;
     try {
@@ -284,7 +268,6 @@ async function loadServicos(){
     } catch(e){ console.error('loadServicos', e); }
 }
 
-/* ---------- load profissionais ---------- */
 async function loadProfs(){
     if (!estabelecimentoId) return;
     try {
@@ -303,7 +286,6 @@ async function loadProfs(){
     } catch(e){ console.error('loadProfs', e); }
 }
 
-/* ---------- gerar slots (mock) ---------- */
 function gerarSlots(){
     const slotsEl = document.getElementById('slots');
     slotsEl.innerHTML = '';
@@ -339,7 +321,6 @@ function gerarSlots(){
     }
 }
 
-/* ---------- confirmar agendamento ---------- */
 document.getElementById('confirmar').onclick = () => {
     if (!slotSelecionado) { document.getElementById('erro-slot').style.display = 'block'; return; }
     document.getElementById('modal-cliente').style.display = 'flex';
@@ -354,15 +335,12 @@ document.getElementById('cliente-ok').onclick = async () => {
     const tel = document.getElementById('cliente-tel').value.trim();
     if(!nome || !tel) return alert('Preencha nome e telefone do cliente.');
 
-    // montar payload conforme DTO do backend: AgendamentoCreateDto(EstabelecimentoId, ClienteId, ProfissionalId, ServicoId, DateTime DtInicio)
-    // Se o backend exigir ClienteId você deve criar o cliente antes e usar seu id.
-    // Aqui tentamos postar sem ClienteId (se seu backend criar cliente por nome, ok). Caso contrário, ajuste conforme backend.
+
     const profId = document.getElementById('prof').value;
     const servId = servicoSelecionado?.ID_SERVICO ?? servicoSelecionado?.Id ?? servicoSelecionado?.id;
     if(!profId || !servId) { alert('Selecione profissional e serviço.'); return; }
 
     const dt = (document.getElementById('data').value || new Date().toISOString().slice(0,10)) + 'T' + slotSelecionado + ':00';
-    // tentativa: enviar ClienteId se houver em localStorage (não garantido). Preferência: backend deve aceitar criar cliente.
     const maybeClienteId = Number(localStorage.getItem('ah_cliente_id') || 0) || null;
 
     const payload = {
@@ -372,10 +350,9 @@ document.getElementById('cliente-ok').onclick = async () => {
         DtInicio: dt
     };
 
-    // se houver cliente conhecido, inclua
+  
     if (maybeClienteId) payload.ClienteId = maybeClienteId;
 
-    // Informação adicional enviada em campos opcionais (backend pode ignorar)
     payload.ClienteNome = nome;
     payload.ClienteTelefone = tel;
 
@@ -401,21 +378,18 @@ document.getElementById('ok-sucesso').onclick = () => {
     document.getElementById('modal-sucesso').style.display = 'none';
 };
 
-/* ---------- eventos ---------- */
 document.getElementById('data').addEventListener('change', gerarSlots);
 
-/* ---------- init ---------- */
 document.addEventListener('DOMContentLoaded', async () => {
     estabelecimentoId = await resolveEstabId();
     if (!estabelecimentoId) {
-        // fallback: tentar localStorage numeric
+  
         const fb = Number(localStorage.getItem('ah_estab') || localStorage.getItem('ah_estabelecimentoId') || 0) || null;
         estabelecimentoId = fb;
     }
     if (!estabelecimentoId) {
         console.warn('Estabelecimento indefinido. Use ?estab=ID ou faça login para resolver.');
-        // opcional: se quiser forçar 1 para testes, descomente:
-        // estabelecimentoId = 1;
+       
     }
     await loadConfig();
     await loadServicos();
